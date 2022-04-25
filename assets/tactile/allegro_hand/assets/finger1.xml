@@ -1,0 +1,505 @@
+<!-- See LICENSE.md for legal notices. LICENSE.md must be kept together with this file. -->
+<mujoco>
+    <body pos="0.1 0 0.25" euler="1.5708 0 1.5708">
+
+            <!-- finger 1 -->
+            <body name="link_0.0" pos="0 0.0435 -0.001542" quat="0.999048 -0.0436194 0 0">
+                <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.0119" diaginertia="1.01667e-06 1.01667e-06 6.47677e-07" />
+                <joint name="joint_0.0" pos="0 0 0" axis="0 0 1" limited="true" range="-0.47 0.47" damping="1" frictionloss="1" stiffness="1"/>
+                <geom class="robot0:Finger" type="mesh" mesh="link_0.0" rgba="0.2 0.2 0.2 1"/>
+                <geom class="robot0:D_Contact" type="mesh" mesh="link_0.0" rgba="0.2 0.2 0.2 1"/>
+
+                <body name="link_1.0" pos="0 0 0.0164">
+                    <inertial pos="0 0 0" quat="0.702596 0.559386 -0.178354 0.402039" mass="0.065" diaginertia="6.12799e-05 6.12799e-05 6.12799e-05" />
+                    <joint name="joint_1.0" pos="0 0 0" axis="0 1 0" limited="true" range="-0.196 1.61" damping="3" frictionloss="5" />
+                    <geom class="robot0:Finger" type="mesh" mesh="link_1.0" rgba="0.2 0.2 0.2 1"/>
+                    <geom class="robot0:D_Contact" type="mesh" mesh="link_1.0" rgba="0.2 0.2 0.2 1"/>
+
+                    <!-- tactile pad -->
+                    <body name="link_1.0_middle" pos="0.01 -0.01 0.015" euler="0 0 0">
+                        <inertial pos="0 0 0" quat="0.719796 0.528175 -0.157463 0.422055" mass="0.01" diaginertia="9.99999e-07 -9.92483e-07 9.92475e-07" />
+                        <geom class="robot0:Pad" pos="0 0 0"  type="mesh" mesh="link_middle" rgba="0.9 0.9 0.9 1" euler="0 0 0" />
+                        <geom class="robot0:D_Contact" pos="0 0 0"  type="mesh" mesh="link_middle" rgba="0.9 0.9 0.9 1" euler="0 0 0" />
+
+                        <!-- tactile sensor for link 1.0 -->
+                        <body name="link_1.0_tactile" pos="0.000 0 0">
+                            <body name="touch_2_1_1" pos=" 0.00414 0.01752 0.024 "  euler=" 0.0 0.0 0.485">\
+
+                            <geom name="touch_2_1_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_1_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_2_1" pos=" 0.005265 0.01463 0.024 "  euler=" 0.0 0.0 0.1777">\
+
+                            <geom name="touch_2_2_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_2_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_3_1" pos=" 0.00581 0.01154 0.024"  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_3_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_3_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_4_1" pos=" 0.00581 0.00846 0.024 "  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_4_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_4_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_5_1" pos=" 0.005265 0.00537 0.024 "  euler=" 0.0 0.0 -0.1777">\
+
+                            <geom name="touch_2_5_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_5_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+
+                            <body name="touch_2_6_1" pos=" 0.00414 0.00248 0.024 "  euler=" 0.0 0.0 -0.485">\
+
+                            <geom name="touch_2_6_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_6_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_1_2" pos=" 0.00414 0.01752 0.02 "  euler=" 0.0 0.0 0.485">\
+
+                            <geom name="touch_2_1_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_1_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_2_2" pos=" 0.005265 0.01463 0.02 "  euler=" 0.0 0.0 0.1777">\
+
+                            <geom name="touch_2_2_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_2_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_3_2" pos=" 0.00581 0.01154 0.02"  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_3_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_3_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_4_2" pos=" 0.00581 0.00846 0.02 "  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_4_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_4_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_5_2" pos=" 0.005265 0.00537 0.02 "  euler=" 0.0 0.0 -0.1777">\
+
+                            <geom name="touch_2_5_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_5_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_6_2" pos=" 0.00414 0.00248 0.02 "  euler=" 0.0 0.0 -0.485">\
+
+                            <geom name="touch_2_6_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_6_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_1_3" pos=" 0.00414 0.01752 0.016 "  euler=" 0.0 0.0 0.485">\
+
+                            <geom name="touch_2_1_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_1_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_2_3" pos=" 0.005265 0.01463 0.016 "  euler=" 0.0 0.0 0.1777">\
+
+                            <geom name="touch_2_2_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_2_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_3_3" pos=" 0.00581 0.01154 0.016"  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_3_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_3_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_4_3" pos=" 0.00581 0.00846 0.016 "  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_4_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_4_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_5_3" pos=" 0.005265 0.00537 0.016 "  euler=" 0.0 0.0 -0.1777">\
+
+                            <geom name="touch_2_5_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_5_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_6_3" pos=" 0.00414 0.00248 0.016 "  euler=" 0.0 0.0 -0.485">\
+
+                            <geom name="touch_2_6_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_6_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+
+                            <body name="touch_2_1_4" pos=" 0.00414 0.01752 0.012 "  euler=" 0.0 0.0 0.485">\
+
+                            <geom name="touch_2_1_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_1_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_2_4" pos=" 0.005265 0.01463 0.012 "  euler=" 0.0 0.0 0.1777">\
+
+                            <geom name="touch_2_2_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_2_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_3_4" pos=" 0.00581 0.01154 0.012"  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_3_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_3_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_4_4" pos=" 0.00581 0.00846 0.012 "  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_4_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_4_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_5_4" pos=" 0.005265 0.00537 0.012 "  euler=" 0.0 0.0 -0.1777">\
+
+                            <geom name="touch_2_5_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_5_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_6_4" pos=" 0.00414 0.00248 0.012 "  euler=" 0.0 0.0 -0.485">\
+
+                            <geom name="touch_2_6_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_6_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+
+                            <body name="touch_2_1_5" pos=" 0.00414 0.01752 0.008 "  euler=" 0.0 0.0 0.485">\
+
+                            <geom name="touch_2_1_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_1_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_2_5" pos=" 0.005265 0.01463 0.008 "  euler=" 0.0 0.0 0.1777">\
+
+                            <geom name="touch_2_2_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_2_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_3_5" pos=" 0.00581 0.01154 0.008"  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_3_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_3_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_4_5" pos=" 0.00581 0.00846 0.008 "  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_4_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_4_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_5_5" pos=" 0.005265 0.00537 0.008 "  euler=" 0.0 0.0 -0.1777">\
+
+                            <geom name="touch_2_5_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_5_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_6_5" pos=" 0.00414 0.00248 0.008 "  euler=" 0.0 0.0 -0.485">\
+
+                            <geom name="touch_2_6_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_6_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+
+                            <body name="touch_2_1_6" pos=" 0.00414 0.01752 0.004 "  euler=" 0.0 0.0 0.485">\
+
+                            <geom name="touch_2_1_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_1_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_2_6" pos=" 0.005265 0.01463 0.004 "  euler=" 0.0 0.0 0.1777">\
+
+                            <geom name="touch_2_2_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_2_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_3_6" pos=" 0.00581 0.01154 0.004"  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_3_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_3_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_4_6" pos=" 0.00581 0.00846 0.004 "  euler=" 0.0 0.0 0.0">\
+
+                            <geom name="touch_2_4_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_4_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_5_6" pos=" 0.005265 0.00537 0.004 "  euler=" 0.0 0.0 -0.1777">\
+
+                            <geom name="touch_2_5_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_5_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                            <body name="touch_2_6_6" pos=" 0.00414 0.00248 0.004 "  euler=" 0.0 0.0 -0.485">\
+
+                            <geom name="touch_2_6_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            <geom name="touch_2_6_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>
+                            </body>
+
+                        </body>
+
+                    </body>
+
+                    <body name="link_2.0" pos="0 0 0.054">
+                        <inertial pos="0 0 0" quat="0.719796 0.528175 -0.157463 0.422055" mass="0.0355" diaginertia="2.20969e-05 2.20969e-05 2.20969e-05" />
+                        <joint name="joint_2.0" pos="0 0 0" axis="0 1 0" limited="true" range="-0.174 1.709" damping="1" frictionloss="1" stiffness="1" />
+                        <geom class="robot0:Finger" type="mesh" mesh="link_2.0" rgba="0.2 0.2 0.2 1" />
+                        <geom class="robot0:D_Contact" type="mesh" mesh="link_2.0" rgba="0.2 0.2 0.2 1" />
+
+                        <!-- tactile pad -->
+                        <body name="link_2.0_middle" pos="0.01 -0.01 0.015" euler="0 0 0">
+                            <inertial pos="0 0 0" quat="0.719796 0.528175 -0.157463 0.422055" mass="0.01" diaginertia="9.99999e-07 -9.92483e-07 9.92475e-07" />
+                            <geom class="robot0:Pad" pos="0 0 0"  type="mesh" mesh="link_middle" rgba="0.9 0.9 0.9 1" euler="0 0 0" />
+                            <geom class="robot0:D_Contact" pos="0 0 0"  type="mesh" mesh="link_middle" rgba="0.9 0.9 0.9 1" euler="0 0 0" />
+
+                            <!--tactile sensor for link 2.0 -->
+<!--                            <body name="link_2.0_tactile" pos="0.000 0 0">-->
+<!--                                <body name="touch_1_1_1" pos=" 0.00414 0.01752 0.024 "  euler=" 0.0 0.0 0.485">\-->
+
+<!--                                <geom name="touch_1_1_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_1_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_2_1" pos=" 0.005265 0.01463 0.024 "  euler=" 0.0 0.0 0.1777">\-->
+
+<!--                                <geom name="touch_1_2_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_2_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_3_1" pos=" 0.00581 0.01154 0.024"  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_3_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_3_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_4_1" pos=" 0.00581 0.00846 0.024 "  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_4_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_4_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_5_1" pos=" 0.005265 0.00537 0.024 "  euler=" 0.0 0.0 -0.1777">\-->
+
+<!--                                <geom name="touch_1_5_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_5_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+
+<!--                                <body name="touch_1_6_1" pos=" 0.00414 0.00248 0.024 "  euler=" 0.0 0.0 -0.485">\-->
+
+<!--                                <geom name="touch_1_6_1"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_6_1"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_1_2" pos=" 0.00414 0.01752 0.02 "  euler=" 0.0 0.0 0.485">\-->
+
+<!--                                <geom name="touch_1_1_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_1_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_2_2" pos=" 0.005265 0.01463 0.02 "  euler=" 0.0 0.0 0.1777">\-->
+
+<!--                                <geom name="touch_1_2_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_2_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_3_2" pos=" 0.00581 0.01154 0.02"  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_3_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_3_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_4_2" pos=" 0.00581 0.00846 0.02 "  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_4_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_4_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_5_2" pos=" 0.005265 0.00537 0.02 "  euler=" 0.0 0.0 -0.1777">\-->
+
+<!--                                <geom name="touch_1_5_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_5_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_6_2" pos=" 0.00414 0.00248 0.02 "  euler=" 0.0 0.0 -0.485">\-->
+
+<!--                                <geom name="touch_1_6_2"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_6_2"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_1_3" pos=" 0.00414 0.01752 0.016 "  euler=" 0.0 0.0 0.485">\-->
+
+<!--                                <geom name="touch_1_1_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_1_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_2_3" pos=" 0.005265 0.01463 0.016 "  euler=" 0.0 0.0 0.1777">\-->
+
+<!--                                <geom name="touch_1_2_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_2_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_3_3" pos=" 0.00581 0.01154 0.016"  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_3_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_3_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_4_3" pos=" 0.00581 0.00846 0.016 "  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_4_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_4_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_5_3" pos=" 0.005265 0.00537 0.016 "  euler=" 0.0 0.0 -0.1777">\-->
+
+<!--                                <geom name="touch_1_5_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_5_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_6_3" pos=" 0.00414 0.00248 0.016 "  euler=" 0.0 0.0 -0.485">\-->
+
+<!--                                <geom name="touch_1_6_3"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_6_3"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+
+<!--                                <body name="touch_1_1_4" pos=" 0.00414 0.01752 0.012 "  euler=" 0.0 0.0 0.485">\-->
+
+<!--                                <geom name="touch_1_1_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_1_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_2_4" pos=" 0.005265 0.01463 0.012 "  euler=" 0.0 0.0 0.1777">\-->
+
+<!--                                <geom name="touch_1_2_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_2_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_3_4" pos=" 0.00581 0.01154 0.012"  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_3_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_3_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_4_4" pos=" 0.00581 0.00846 0.012 "  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_4_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_4_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_5_4" pos=" 0.005265 0.00537 0.012 "  euler=" 0.0 0.0 -0.1777">\-->
+
+<!--                                <geom name="touch_1_5_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_5_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_6_4" pos=" 0.00414 0.00248 0.012 "  euler=" 0.0 0.0 -0.485">\-->
+
+<!--                                <geom name="touch_1_6_4"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_6_4"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+
+<!--                                <body name="touch_1_1_5" pos=" 0.00414 0.01752 0.008 "  euler=" 0.0 0.0 0.485">\-->
+
+<!--                                <geom name="touch_1_1_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_1_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_2_5" pos=" 0.005265 0.01463 0.008 "  euler=" 0.0 0.0 0.1777">\-->
+
+<!--                                <geom name="touch_1_2_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_2_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_3_5" pos=" 0.00581 0.01154 0.008"  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_3_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_3_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_4_5" pos=" 0.00581 0.00846 0.008 "  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_4_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_4_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_5_5" pos=" 0.005265 0.00537 0.008 "  euler=" 0.0 0.0 -0.1777">\-->
+
+<!--                                <geom name="touch_1_5_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_5_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_6_5" pos=" 0.00414 0.00248 0.008 "  euler=" 0.0 0.0 -0.485">\-->
+
+<!--                                <geom name="touch_1_6_5"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_6_5"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+
+<!--                                <body name="touch_1_1_6" pos=" 0.00414 0.01752 0.004 "  euler=" 0.0 0.0 0.485">\-->
+
+<!--                                <geom name="touch_1_1_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_1_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_2_6" pos=" 0.005265 0.01463 0.004 "  euler=" 0.0 0.0 0.1777">\-->
+
+<!--                                <geom name="touch_1_2_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_2_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_3_6" pos=" 0.00581 0.01154 0.004"  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_3_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_3_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_4_6" pos=" 0.00581 0.00846 0.004 "  euler=" 0.0 0.0 0.0">\-->
+
+<!--                                <geom name="touch_1_4_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_4_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_5_6" pos=" 0.005265 0.00537 0.004 "  euler=" 0.0 0.0 -0.1777">\-->
+
+<!--                                <geom name="touch_1_5_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_5_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                                <body name="touch_1_6_6" pos=" 0.00414 0.00248 0.004 "  euler=" 0.0 0.0 -0.485">\-->
+
+<!--                                <geom name="touch_1_6_6"   class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                <geom name="touch_1_6_6"   class="robot0:D_Contact" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0"/>-->
+<!--                                </body>-->
+
+<!--                            </body>-->
+
+                        </body>
+
+                        <body name="link_3.0" pos="0 0 0.0384">
+                            <inertial pos="0 0 0.0169909" mass="0.0264" diaginertia="9.67371e-06 9.67371e-06 5.3186e-06" />
+                            <joint name="joint_3.0" pos="0 0 0" axis="0 1 0" limited="true" range="-0.227 1.618" damping="1" frictionloss="12" stiffness="1" />
+                            <geom class="robot0:Finger" size="0.0098 0.01375 0.01335" type="mesh" name="link_3.0" mesh="link_3.0" rgba="0.2 0.2 0.2 1"/>
+                            <geom class="robot0:D_Contact" size="0.0098 0.01375 0.01335" type="mesh" name="link_3.0" mesh="link_3.0" rgba="0.2 0.2 0.2 1"/>
+
+                            <!-- finger tip -->
+                            <body name="link_3.0_tip" pos="0.002 0  0.0157" >
+                                <geom class="robot0:Pad" pos="0 0 0" rgba="0.9 0.9 0.9 1" type="mesh" mesh="link_3.0_tip"  euler="0 0 0"/>
+                                <geom class="robot0:D_Contact" pos="0 0 0" rgba="0.9 0.9 0.9 1" type="mesh" mesh="link_3.0_tip"  euler="0 0 0"/>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+
+    </body>
+</mujoco>

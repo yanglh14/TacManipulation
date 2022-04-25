@@ -68,17 +68,17 @@ def launch_rlg_hydra(cfg: DictConfig):
         # setattr(gymapi.SimParams().physx, "contact_collection", gymapi.ContactCollection(2))
         # env.gym.refresh_force_sensor_tensor(env.sim)
 
-        index_start = env.gym.find_actor_rigid_body_index(env.envs[0], 0, 'touch_111_1_1', gymapi.DOMAIN_SIM)
-        index_end = env.gym.find_actor_rigid_body_index(env.envs[0], 0, 'touch_111_7_12', gymapi.DOMAIN_SIM)
-        sensors_handles = range(index_start, index_end+1)
-
-        env.gym.refresh_net_contact_force_tensor(env.sim)
-        _net_cf = env.gym.acquire_net_contact_force_tensor(env.sim)
-        net_cf = gymtorch.wrap_tensor(_net_cf)
-        tactile = net_cf[sensors_handles,2]
-        tactile_pose = env.rigid_body_states[0,sensors_handles,:3]
-        # plot_tactile(tactile,tactile_pose)
-        print(net_cf)
+        # index_start = env.gym.find_actor_rigid_body_index(env.envs[0], 0, 'touch_111_1_1', gymapi.DOMAIN_SIM)
+        # index_end = env.gym.find_actor_rigid_body_index(env.envs[0], 0, 'touch_111_7_12', gymapi.DOMAIN_SIM)
+        # sensors_handles = range(index_start, index_end+1)
+        #
+        # env.gym.refresh_net_contact_force_tensor(env.sim)
+        # _net_cf = env.gym.acquire_net_contact_force_tensor(env.sim)
+        # net_cf = gymtorch.wrap_tensor(_net_cf)
+        # tactile = net_cf[sensors_handles,2]
+        # tactile_pose = env.rigid_body_states[0,sensors_handles,:3]
+        # # plot_tactile(tactile,tactile_pose)
+        # print(net_cf)
 
 
 def plot_tactile(tactile,tactile_pose):
