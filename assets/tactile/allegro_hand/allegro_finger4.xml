@@ -12,7 +12,7 @@
     </asset>
 
     <worldbody>
-        <include file="assets/finger2.xml"></include>
+        <include file="assets/finger4.xml"></include>
 
     </worldbody>
 
@@ -20,10 +20,11 @@
     <actuator>
 
         <!--gripper-->
-        <position name='finger_4_0' ctrllimited="true" kp="50" ctrlrange="-0.47 0.47" joint='joint_4.0'/>
-        <position name='finger_5_0' ctrllimited="true" kp="50" ctrlrange="-0.196 1.61" joint='joint_5.0'/>
-        <position name='finger_6_0' ctrllimited="true" kp="50" ctrlrange="-0.174 1.25" joint='joint_6.0'/>
-        <position name='finger_7_0' ctrllimited="true" kp="50" ctrlrange="0 0.6" joint='joint_7.0'/>
+
+        <position name='finger_12_0' ctrllimited="true" kp="50" ctrlrange="0.263 1.396" joint='joint_12.0'/>
+        <position name='finger_13_0' ctrllimited="true" kp="50" ctrlrange="-0.105 1.163" joint='joint_13.0'/>
+        <position name='finger_14_0' ctrllimited="true" kp="50" ctrlrange="-0.189 1.25" joint='joint_14.0'/>
+        <position name='finger_15_0' ctrllimited="true" kp="50" ctrlrange="0 1" joint='joint_15.0'/>
 
     </actuator>
 

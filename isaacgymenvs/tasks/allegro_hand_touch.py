@@ -79,7 +79,7 @@ class AllegroHandTouch(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 88
+            "full_state": 741
         }
 
         self.up_axis = 'z'
@@ -119,6 +119,11 @@ class AllegroHandTouch(VecTask):
 
             dof_force_tensor = self.gym.acquire_dof_force_tensor(self.sim)
             self.dof_force_tensor = gymtorch.wrap_tensor(dof_force_tensor).view(self.num_envs, self.num_shadow_hand_dofs)
+
+            self.gym.refresh_net_contact_force_tensor(self.sim)
+            self._net_cf = self.gym.acquire_net_contact_force_tensor(self.sim)
+            self.net_cf = gymtorch.wrap_tensor(self._net_cf).view(self.num_envs,-1,3)
+            self.sensors_handles = self.get_sensor_handles()
 
         self.gym.refresh_actor_root_state_tensor(self.sim)
         self.gym.refresh_dof_state_tensor(self.sim)
@@ -210,17 +215,21 @@ class AllegroHandTouch(VecTask):
         finger1_asset = self.gym.load_asset(self.sim, asset_root, finger1_asset_file, asset_options)
         finger2_asset_file = "tactile/allegro_hand/allegro_finger2.xml"
         finger2_asset = self.gym.load_asset(self.sim, asset_root, finger2_asset_file, asset_options)
+        finger3_asset_file = "tactile/allegro_hand/allegro_finger3.xml"
+        finger3_asset = self.gym.load_asset(self.sim, asset_root, finger3_asset_file, asset_options)
+        finger4_asset_file = "tactile/allegro_hand/allegro_finger4.xml"
+        finger4_asset = self.gym.load_asset(self.sim, asset_root, finger4_asset_file, asset_options)
 
-        self.num_shadow_hand_bodies = self.gym.get_asset_rigid_body_count(shadow_hand_asset) + self.gym.get_asset_rigid_body_count(finger1_asset) + self.gym.get_asset_rigid_body_count(finger2_asset)
-        self.num_shadow_hand_shapes = self.gym.get_asset_rigid_shape_count(shadow_hand_asset) + self.gym.get_asset_rigid_shape_count(finger1_asset) + self.gym.get_asset_rigid_shape_count(finger2_asset)
-        self.num_shadow_hand_dofs = self.gym.get_asset_dof_count(shadow_hand_asset) + self.gym.get_asset_dof_count(finger1_asset) + self.gym.get_asset_dof_count(finger2_asset)
+        self.num_shadow_hand_bodies = self.gym.get_asset_rigid_body_count(shadow_hand_asset) + self.gym.get_asset_rigid_body_count(finger1_asset) + self.gym.get_asset_rigid_body_count(finger2_asset) + self.gym.get_asset_rigid_body_count(finger3_asset) + self.gym.get_asset_rigid_body_count(finger4_asset)
+        self.num_shadow_hand_shapes = self.gym.get_asset_rigid_shape_count(shadow_hand_asset) + self.gym.get_asset_rigid_shape_count(finger1_asset) + self.gym.get_asset_rigid_shape_count(finger2_asset) + self.gym.get_asset_rigid_shape_count(finger3_asset) + self.gym.get_asset_rigid_shape_count(finger4_asset)
+        self.num_shadow_hand_dofs = self.gym.get_asset_dof_count(shadow_hand_asset) + self.gym.get_asset_dof_count(finger1_asset) + self.gym.get_asset_dof_count(finger2_asset) + self.gym.get_asset_dof_count(finger3_asset) + self.gym.get_asset_dof_count(finger4_asset)
         print("Num dofs: ", self.num_shadow_hand_dofs)
         self.num_shadow_hand_actuators = self.num_shadow_hand_dofs #self.gym.get_asset_actuator_count(shadow_hand_asset)
 
         self.actuated_dof_indices = [i for i in range(self.num_shadow_hand_dofs)]
 
         # set shadow_hand dof properties
-        shadow_hand_dof_props = np.concatenate((self.gym.get_asset_dof_properties(finger1_asset),self.gym.get_asset_dof_properties(finger2_asset)))
+        shadow_hand_dof_props = np.concatenate((self.gym.get_asset_dof_properties(finger1_asset),self.gym.get_asset_dof_properties(finger2_asset),self.gym.get_asset_dof_properties(finger3_asset),self.gym.get_asset_dof_properties(finger4_asset)))
 
         self.shadow_hand_dof_lower_limits = []
         self.shadow_hand_dof_upper_limits = []
@@ -259,8 +268,8 @@ class AllegroHandTouch(VecTask):
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        object_start_pose.p.x = shadow_hand_start_pose.p.x +0.02
-        pose_dy, pose_dz = 0.04, 0.05
+        object_start_pose.p.x = shadow_hand_start_pose.p.x
+        pose_dy, pose_dz = -0.02, 0.08
 
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
         object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
@@ -311,21 +320,37 @@ class AllegroHandTouch(VecTask):
                                            0, 0, 0, 0, 0, 0])
 
             # add finger1
-            finger1_actor = self.gym.create_actor(env_ptr, finger1_asset, shadow_hand_start_pose, "finger1", i, 0, 0)
+            finger1_actor = self.gym.create_actor(env_ptr, finger1_asset, shadow_hand_start_pose, "finger1", i, -1, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger1_actor, shadow_hand_dof_props[:4])
 
             self.gym.enable_actor_dof_force_sensors(env_ptr, finger1_actor)
 
-            hand_idx = self.gym.get_actor_index(env_ptr, finger1_actor, gymapi.DOMAIN_SIM)
-            self.hand_indices.append(hand_idx)
 
             # add finger2
-            finger2_actor = self.gym.create_actor(env_ptr, finger2_asset, shadow_hand_start_pose, "finger2", i, 0, 0)
+            finger2_actor = self.gym.create_actor(env_ptr, finger2_asset, shadow_hand_start_pose, "finger2", i, -1, 0)
 
-            self.gym.set_actor_dof_properties(env_ptr, finger2_actor, shadow_hand_dof_props[4:16])
+            self.gym.set_actor_dof_properties(env_ptr, finger2_actor, shadow_hand_dof_props[4:8])
 
-            self.gym.enable_actor_dof_force_sensors(env_ptr, finger1_actor)
+            self.gym.enable_actor_dof_force_sensors(env_ptr, finger2_actor)
+
+            # add finger3
+            finger3_actor = self.gym.create_actor(env_ptr, finger3_asset, shadow_hand_start_pose, "finger3", i, -1, 0)
+
+            self.gym.set_actor_dof_properties(env_ptr, finger3_actor, shadow_hand_dof_props[8:12])
+
+            self.gym.enable_actor_dof_force_sensors(env_ptr, finger3_actor)
+
+            # add finger4
+            finger4_actor = self.gym.create_actor(env_ptr, finger4_asset, shadow_hand_start_pose, "finger4", i, -1, 0)
+
+            self.gym.set_actor_dof_properties(env_ptr, finger4_actor, shadow_hand_dof_props[12:16])
+
+            self.gym.enable_actor_dof_force_sensors(env_ptr, finger4_actor)
+
+
+            hand_idx = self.gym.get_actor_index(env_ptr, finger1_actor, gymapi.DOMAIN_SIM)
+            self.hand_indices.append(hand_idx)
 
             # add object
             object_handle = self.gym.create_actor(env_ptr, object_asset, object_start_pose, "object", i, 0, 0)
@@ -397,6 +422,7 @@ class AllegroHandTouch(VecTask):
 
         if self.obs_type == "full_state" or self.asymmetric_obs:
             self.gym.refresh_dof_force_tensor(self.sim)
+            self.gym.refresh_net_contact_force_tensor(self.sim)
 
         self.object_pose = self.root_state_tensor[self.object_indices, 0:7]
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3]
@@ -502,18 +528,13 @@ class AllegroHandTouch(VecTask):
             self.obs_buf[:, goal_obs_start:goal_obs_start + 7] = self.goal_pose
             self.obs_buf[:, goal_obs_start + 7:goal_obs_start + 11] = quat_mul(self.object_rot, quat_conjugate(self.goal_rot))
 
-            # fingertip observations, state(pose and vel) + force-torque sensors
-            # todo - add later
-            # num_ft_states = 13 * self.num_fingertips  # 65
-            # num_ft_force_torques = 6 * self.num_fingertips  # 30
+            touch_sensor_obs_start = goal_obs_start + 11  # 72
 
-            fingertip_obs_start = goal_obs_start + 11  # 72
+            touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+            self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] = self.force_torque_obs_scale * touch_tensor
 
-            force_obs_start = fingertip_obs_start
-            # self.obs_buf[:, force_obs_start:force_obs_start + 72] = self.force_torque_obs_scale * self.vec_sensor_tensor
-
-            obs_end = fingertip_obs_start  #+ num_ft_states + num_ft_force_torques
-            # obs_total = obs_end + num_actions = 72 + 16 = 88
+            obs_end = touch_sensor_obs_start+653  #725
+            # obs_total = obs_end + num_actions = 725 + 16 = 741
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
     def reset_target_pose(self, env_ids, apply_reset=False):
@@ -551,13 +572,13 @@ class AllegroHandTouch(VecTask):
         self.root_state_tensor[self.object_indices[env_ids], self.up_axis_idx] = self.object_init_state[env_ids, self.up_axis_idx] + \
             self.reset_position_noise * rand_floats[:, self.up_axis_idx]
 
-        # new_object_rot = randomize_rotation(rand_floats[:, 3], rand_floats[:, 4], self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids])
+        new_object_rot = randomize_rotation(rand_floats[:, 3], rand_floats[:, 4], self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids])
         if self.object_type == "pen":
             rand_angle_y = torch.tensor(0.3)
             new_object_rot = randomize_rotation_pen(rand_floats[:, 3], rand_floats[:, 4], rand_angle_y,
                                                     self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids], self.z_unit_tensor[env_ids])
 
-        # self.root_state_tensor[self.object_indices[env_ids], 3:7] = new_object_rot
+        self.root_state_tensor[self.object_indices[env_ids], 3:7] = new_object_rot
         self.root_state_tensor[self.object_indices[env_ids], 7:13] = torch.zeros_like(self.root_state_tensor[self.object_indices[env_ids], 7:13])
 
         object_indices = torch.unique(torch.cat([self.object_indices[env_ids],
@@ -587,11 +608,28 @@ class AllegroHandTouch(VecTask):
         self.gym.set_dof_position_target_tensor_indexed(self.sim,
                                                         gymtorch.unwrap_tensor(self.prev_targets),
                                                         gymtorch.unwrap_tensor(hand_indices), len(env_ids))
+        self.gym.set_dof_position_target_tensor_indexed(self.sim,
+                                                        gymtorch.unwrap_tensor(self.prev_targets),
+                                                        gymtorch.unwrap_tensor(hand_indices+1), len(env_ids))
+        self.gym.set_dof_position_target_tensor_indexed(self.sim,
+                                                        gymtorch.unwrap_tensor(self.prev_targets),
+                                                        gymtorch.unwrap_tensor(hand_indices+2), len(env_ids))
+        self.gym.set_dof_position_target_tensor_indexed(self.sim,
+                                                        gymtorch.unwrap_tensor(self.prev_targets),
+                                                        gymtorch.unwrap_tensor(hand_indices+3), len(env_ids))
 
         self.gym.set_dof_state_tensor_indexed(self.sim,
                                               gymtorch.unwrap_tensor(self.dof_state),
                                               gymtorch.unwrap_tensor(hand_indices), len(env_ids))
-
+        self.gym.set_dof_state_tensor_indexed(self.sim,
+                                              gymtorch.unwrap_tensor(self.dof_state),
+                                              gymtorch.unwrap_tensor(hand_indices+1), len(env_ids))
+        self.gym.set_dof_state_tensor_indexed(self.sim,
+                                              gymtorch.unwrap_tensor(self.dof_state),
+                                              gymtorch.unwrap_tensor(hand_indices+2), len(env_ids))
+        self.gym.set_dof_state_tensor_indexed(self.sim,
+                                              gymtorch.unwrap_tensor(self.dof_state),
+                                              gymtorch.unwrap_tensor(hand_indices+3), len(env_ids))
         self.progress_buf[env_ids] = 0
         self.reset_buf[env_ids] = 0
         self.successes[env_ids] = 0
@@ -667,6 +705,26 @@ class AllegroHandTouch(VecTask):
                 self.gym.add_lines(self.viewer, self.envs[i], 1, [p0[0], p0[1], p0[2], objecty[0], objecty[1], objecty[2]], [0.1, 0.85, 0.1])
                 self.gym.add_lines(self.viewer, self.envs[i], 1, [p0[0], p0[1], p0[2], objectz[0], objectz[1], objectz[2]], [0.1, 0.1, 0.85])
 
+    def get_sensor_handles(self):
+
+        sensors_handles = np.array([])
+        for i in range(12):
+            if i ==0:
+                index_start = self.gym.find_actor_rigid_body_index(self.envs[0], 0, 'touch_111_1_1', gymapi.DOMAIN_SIM)
+                index_end = self.gym.find_actor_rigid_body_index(self.envs[0], 0, 'touch_111_7_12', gymapi.DOMAIN_SIM)
+                sensors_handles = np.concatenate((sensors_handles,np.array(range(index_start, index_end+1))))
+            else:
+                j = (i-1)//3 +1
+                if (i-1)%3 == 0:
+                    index_start = self.gym.find_actor_rigid_body_index(self.envs[0], j, 'touch_%d_1_1'%(i-1), gymapi.DOMAIN_SIM)
+                    index_end = self.gym.find_actor_rigid_body_index(self.envs[0], j, 'touch_%d_6_12'%(i-1), gymapi.DOMAIN_SIM)
+                    sensors_handles = np.concatenate((sensors_handles,np.array(range(index_start, index_end+1))))
+                else:
+                    index_start = self.gym.find_actor_rigid_body_index(self.envs[0], j, 'touch_%d_1_1'%(i-1), gymapi.DOMAIN_SIM)
+                    index_end = self.gym.find_actor_rigid_body_index(self.envs[0], j, 'touch_%d_6_6'%(i-1), gymapi.DOMAIN_SIM)
+                    sensors_handles = np.concatenate((sensors_handles,np.array(range(index_start, index_end+1))))
+
+        return sensors_handles
 #####################################################################
 ###=========================jit functions=========================###
 #####################################################################
