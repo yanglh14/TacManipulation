@@ -14,7 +14,7 @@
       </geometry>
     </collision>
     <inertial>
-      <density value="4000.0"/>
+      <density value="400.0"/>
     </inertial>
   </link>
 </robot>
