@@ -11,8 +11,8 @@
 
     <worldbody>
         <body name="object2" pos="0 0 0">
-
-            <geom name="object2" type="ellipsoid" size="0.03 0.03 0.03" material="MatBall2" mass="0.5" condim="4"></geom>
+<!--            <geom name="object2_Con" type="sphere" size="0.03" material="MatBall2" mass="0.5" condim="4" contype="1" conaffinity="0"></geom>-->
+            <geom name="object2_Vis" type="sphere" size="0.03" material="MatBall2" mass="0.5" condim="4"></geom>
             <site name="object2:center" pos="0 0 0" rgba="1 0 0 0" size="0.01 0.01 0.01"></site>
             <joint name="object2:joint" type="free" damping="0.01"></joint>
         </body>

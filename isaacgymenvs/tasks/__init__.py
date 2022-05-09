@@ -28,6 +28,7 @@
 
 
 from tasks.allegro_hand import AllegroHand
+from tasks.allegro_hand_baoding import AllegroHandBaoding
 from tasks.allegro_hand_touch import AllegroHandTouch
 from tasks.ant import Ant
 from tasks.anymal import Anymal
@@ -44,6 +45,7 @@ from isaacgymenvs.tasks.trifinger import Trifinger
 # Mappings from strings to environments
 isaacgym_task_map = {
     "AllegroHand": AllegroHand,
+    "AllegroHandBaoding": AllegroHandBaoding,
     "AllegroHandTouch": AllegroHandTouch,
     "Ant": Ant,
     "Anymal": Anymal,

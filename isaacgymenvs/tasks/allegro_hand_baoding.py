@@ -67,7 +67,7 @@ class AllegroHandBaoding(VecTask):
             self.asset_files_dict["block"] = self.cfg["env"]["asset"].get("assetFileNameBlock", self.asset_files_dict["block"])
             self.asset_files_dict["egg"] = self.cfg["env"]["asset"].get("assetFileNameEgg", self.asset_files_dict["egg"])
             self.asset_files_dict["pen"] = self.cfg["env"]["asset"].get("assetFileNamePen", self.asset_files_dict["pen"])
-            self.asset_files_dict["ball"] = self.cfg["env"]["asset"].get("assetFileNameBall", self.asset_files_dict["ball"])
+            self.asset_files_dict["baoding"] = self.cfg["env"]["asset"].get("assetFileNameBall", self.asset_files_dict["baoding"])
 
         # can be "full_no_vel", "full", "full_state"
         self.obs_type = self.cfg["env"]["observationType"]
@@ -171,6 +171,9 @@ class AllegroHandBaoding(VecTask):
 
         self.rb_forces = torch.zeros((self.num_envs, self.num_bodies, 3), dtype=torch.float, device=self.device)
 
+        if self.object_type == 'baoding':
+            self.create_goal()
+
     def create_sim(self):
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
@@ -273,7 +276,7 @@ class AllegroHandBaoding(VecTask):
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        pose_dx, pose_dy, pose_dz = 0.02, -0.02, 0.08
+        pose_dx, pose_dy, pose_dz = 0.05, -0.02, 0.08
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -282,13 +285,13 @@ class AllegroHandBaoding(VecTask):
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
             object_start_pose_2.p = gymapi.Vec3()
-            pose_dx, pose_dy, pose_dz = -0.02, -0.02, 0.08
+            pose_dx, pose_dy, pose_dz = -0.05, -0.02, 0.08
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
             object_start_pose_2.p.z = shadow_hand_start_pose.p.z + pose_dz
 
-        self.goal_displacement = gymapi.Vec3(-0.2, -0, 0.2)
+        self.goal_displacement = gymapi.Vec3(0, 0, 0.2)
         self.goal_displacement_tensor = to_torch(
             [self.goal_displacement.x, self.goal_displacement.y, self.goal_displacement.z], device=self.device)
         goal_start_pose = gymapi.Transform()
@@ -425,14 +428,13 @@ class AllegroHandBaoding(VecTask):
         self.goal_object_indices = to_torch(self.goal_object_indices, dtype=torch.long, device=self.device)
 
     def compute_reward(self, actions):
-        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:] = compute_hand_reward(
+        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:],dist_rew,goal_dist = compute_hand_reward(
             self.rew_buf, self.reset_buf, self.reset_goal_buf, self.progress_buf, self.successes, self.consecutive_successes,
             self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot,
             self.dist_reward_scale, self.rot_reward_scale, self.rot_eps, self.actions, self.action_penalty_scale,
             self.success_tolerance, self.reach_goal_bonus, self.fall_dist, self.fall_penalty,
             self.max_consecutive_successes, self.av_factor, (self.object_type == "pen")
         )
-
         self.extras['consecutive_successes'] = self.consecutive_successes.mean()
 
         if self.print_success_stat:
@@ -455,9 +457,9 @@ class AllegroHandBaoding(VecTask):
             self.gym.refresh_dof_force_tensor(self.sim)
             self.gym.refresh_net_contact_force_tensor(self.sim)
 
-        self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(self.object_indices.shape[0]/2, 6)
-        self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(self.object_indices.shape[0]/2, 6)
-
+        self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
+        self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)
+        self.object_rot, self.goal_rot = None, None
         self.goal_pos = torch.cat((self.goal_states[:, 0:3],self.goal_states[:, 13:13+3]),1)
 
         if self.obs_type == "full_no_vel":
@@ -569,10 +571,10 @@ class AllegroHandBaoding(VecTask):
         self.goal_states[env_ids, 0:26] = self.goal_init_state[env_ids, 0:26]
         self.root_state_tensor[self.goal_object_indices[env_ids*2], 0:3] = self.goal_states[env_ids, 0:3] + self.goal_displacement_tensor
         self.root_state_tensor[self.goal_object_indices[env_ids*2], 3:7] = self.goal_states[env_ids, 3:7]
-        self.root_state_tensor[self.goal_object_indices[env_ids*2], 7:13] = torch.zeros_like(self.root_state_tensor[self.goal_object_indices[env_ids], 7:13])
+        self.root_state_tensor[self.goal_object_indices[env_ids*2], 7:13] = torch.zeros_like(self.root_state_tensor[self.goal_object_indices[env_ids*2], 7:13])
         self.root_state_tensor[self.goal_object_indices[env_ids*2+1], 0:3] = self.goal_states[env_ids, 13:13+3] + self.goal_displacement_tensor
         self.root_state_tensor[self.goal_object_indices[env_ids*2+1], 3:7] = self.goal_states[env_ids, 13+3:13+7]
-        self.root_state_tensor[self.goal_object_indices[env_ids*2+1], 7:13] = torch.zeros_like(self.root_state_tensor[self.goal_object_indices[env_ids], 13+7:13+13])
+        self.root_state_tensor[self.goal_object_indices[env_ids*2+1], 7:13] = torch.zeros_like(self.root_state_tensor[self.goal_object_indices[env_ids*2+1], 7:13])
 
         if apply_reset:
             goal_object_indices = self.goal_object_indices[env_ids*2].to(torch.int32)
@@ -664,7 +666,26 @@ class AllegroHandBaoding(VecTask):
         self.successes[env_ids] = 0
 
     def pre_physics_step(self, actions):
-        # Todo list: goal state
+        # progress goal position
+        if self.object_type == 'baoding':
+            for env_index in range(self.num_envs):
+                self.goal_states[env_index, 0:3] = self.goal[env_index,self.progress_buf[env_index],0:3]
+                self.goal_states[env_index, 13:16] = self.goal[env_index,self.progress_buf[env_index],3:6]
+
+            env_ids = np.array(range(self.num_envs))
+            self.root_state_tensor[self.goal_object_indices[env_ids*2], 0:3] = self.goal_states[env_ids, 0:3] + self.goal_displacement_tensor
+            self.root_state_tensor[self.goal_object_indices[env_ids*2+1], 0:3] = self.goal_states[env_ids, 13:13+3] + self.goal_displacement_tensor
+
+            goal_object_indices = self.goal_object_indices[env_ids*2].to(torch.int32)
+            self.gym.set_actor_root_state_tensor_indexed(self.sim,
+                                                         gymtorch.unwrap_tensor(self.root_state_tensor),
+                                                         gymtorch.unwrap_tensor(goal_object_indices), len(env_ids))
+
+            goal_object_indices = self.goal_object_indices[env_ids*2+1].to(torch.int32)
+            self.gym.set_actor_root_state_tensor_indexed(self.sim,
+                                                         gymtorch.unwrap_tensor(self.root_state_tensor),
+                                                         gymtorch.unwrap_tensor(goal_object_indices), len(env_ids))
+
         env_ids = self.reset_buf.nonzero(as_tuple=False).squeeze(-1)
         goal_env_ids = self.reset_goal_buf.nonzero(as_tuple=False).squeeze(-1)
 
@@ -760,24 +781,23 @@ class AllegroHandBaoding(VecTask):
 
         # creat a goal for the object position.
 
-        self.goal = torch.zeros((1000,6), dtype=torch.float, device=self.device)
-        self.center_pose = (self.object_init_state[:3] + self.object_init_state[13:13+3])/2
-        self.y_radius = (self.object_init_state[0] - self.object_init_state[13:14])/2
+        self.goal = torch.zeros((self.num_envs,1000,6), dtype=torch.float, device=self.device)
+        self.center_pose = (self.object_init_state[:,:3] + self.object_init_state[:,13:13+3])/2
+        self.y_radius = (self.object_init_state[:,0:1] - self.object_init_state[:,13:14])/2
         self.x_radius = self.y_radius
         for i in range(1000):
-            if i <= 300:
-                angle = i * np.pi / 300
+            if i <= 100:
+                angle = i * np.pi / 100
             else:
-                angle = 300 * np.pi / 300
+                angle = 100 * np.pi / 100
 
             angle = -angle
-            goal_position = [self.x_radius * np.cos(angle) + self.center_pose[0],
-                             self.y_radius * np.sin(angle) + self.center_pose[1], self.center_pose[2],
-                             -self.x_radius * np.cos(angle) + self.center_pose[0],
-                             -self.y_radius * np.sin(angle) + self.center_pose[1], self.center_pose[2]]
+            goal_position = torch.cat([self.x_radius * np.cos(angle) + self.center_pose[:,0:1],
+                             self.y_radius * np.sin(angle) + self.center_pose[:,1:2], self.center_pose[:,2:3],
+                             -self.x_radius * np.cos(angle) + self.center_pose[:,0:1],
+                             -self.y_radius * np.sin(angle) + self.center_pose[:,1:2], self.center_pose[:,2:3]],dim=1)
 
-            self.goal[i,:] = goal_position
-
+            self.goal[:,i,:] = goal_position
         return self.goal
 #####################################################################
 ###=========================jit functions=========================###
@@ -807,7 +827,8 @@ def compute_hand_reward(
     reward = dist_rew + action_penalty * action_penalty_scale
 
     # Find out which envs hit the goal and update successes count
-    goal_resets = torch.where(torch.abs(goal_dist) <= success_tolerance and progress_buf>= 300, torch.ones_like(reset_goal_buf), reset_goal_buf)
+    goal_resets_index = (torch.abs(goal_dist) <= success_tolerance) * (progress_buf >100)
+    goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
     # Success bonus: orientation is within `success_tolerance` of goal orientation
@@ -820,7 +841,7 @@ def compute_hand_reward(
     resets = torch.where(goal_dist >= fall_dist, torch.ones_like(reset_buf), reset_buf)
     if max_consecutive_successes > 0:
         # Reset progress buffer on goal envs if max_consecutive_successes > 0
-        progress_buf = torch.where(torch.abs(rot_dist) <= success_tolerance, torch.zeros_like(progress_buf), progress_buf)
+        progress_buf = torch.where(torch.abs(goal_dist) <= success_tolerance, torch.zeros_like(progress_buf), progress_buf)
         resets = torch.where(successes >= max_consecutive_successes, torch.ones_like(resets), resets)
     resets = torch.where(progress_buf >= max_episode_length, torch.ones_like(resets), resets)
 
@@ -833,7 +854,7 @@ def compute_hand_reward(
 
     cons_successes = torch.where(num_resets > 0, av_factor*finished_cons_successes/num_resets + (1.0 - av_factor)*consecutive_successes, consecutive_successes)
 
-    return reward, resets, goal_resets, progress_buf, successes, cons_successes
+    return reward, resets, goal_resets, progress_buf, successes, cons_successes,dist_rew,goal_dist
 
 
 @torch.jit.script
