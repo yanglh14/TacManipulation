@@ -43,7 +43,7 @@ env:
   actionPenaltyScale: -0.0002
   reachGoalBonus: 250
   fallDistance: 0.12
-  fallPenalty: 0.0
+  fallPenalty: -100.0
 
   objectType: "baoding" # can be block, egg, pen or baoding
   observationType: "full_state" # can be "full_no_vel", "full","full_state"

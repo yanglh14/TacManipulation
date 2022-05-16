@@ -84,7 +84,7 @@ class AllegroHandBaoding(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 741 if self.obs_touch else 88
+            "full_state": 735 if self.obs_touch else 82
         }
 
         self.up_axis = 'z'
@@ -92,7 +92,7 @@ class AllegroHandBaoding(VecTask):
 
         num_states = 0
         if self.asymmetric_obs:
-            num_states = 88
+            num_states = 735 if self.obs_touch else 82
 
         self.cfg["env"]["numObservations"] = self.num_obs_dict[self.obs_type]
         self.cfg["env"]["numStates"] = num_states
@@ -272,11 +272,11 @@ class AllegroHandBaoding(VecTask):
 
         shadow_hand_start_pose = gymapi.Transform()
         shadow_hand_start_pose.p = gymapi.Vec3(*get_axis_params(0.5, self.up_axis_idx))
-        # shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 1, 0), np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), 0.47 * np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 0, 1), 0.25 * np.pi)
+        shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi/12)
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        pose_dx, pose_dy, pose_dz = 0.05, -0.02, 0.08
+        pose_dx, pose_dy, pose_dz = 0.032, -0.02, 0.08
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -285,13 +285,13 @@ class AllegroHandBaoding(VecTask):
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
             object_start_pose_2.p = gymapi.Vec3()
-            pose_dx, pose_dy, pose_dz = -0.05, -0.02, 0.08
+            pose_dx, pose_dy, pose_dz = -0.032, -0., 0.07
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
             object_start_pose_2.p.z = shadow_hand_start_pose.p.z + pose_dz
 
-        self.goal_displacement = gymapi.Vec3(0, 0, 0.2)
+        self.goal_displacement = gymapi.Vec3(0, -0.01, 0.1)
         self.goal_displacement_tensor = to_torch(
             [self.goal_displacement.x, self.goal_displacement.y, self.goal_displacement.z], device=self.device)
         goal_start_pose = gymapi.Transform()
@@ -459,7 +459,7 @@ class AllegroHandBaoding(VecTask):
 
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)
-        self.object_rot, self.goal_rot = None, None
+        self.object_rot, self.goal_rot = torch.tensor([0]), torch.tensor([0])
         self.goal_pos = torch.cat((self.goal_states[:, 0:3],self.goal_states[:, 13:13+3]),1)
 
         if self.obs_type == "full_no_vel":
@@ -791,7 +791,7 @@ class AllegroHandBaoding(VecTask):
             else:
                 angle = 100 * np.pi / 100
 
-            angle = -angle
+            angle = angle
             goal_position = torch.cat([self.x_radius * np.cos(angle) + self.center_pose[:,0:1],
                              self.y_radius * np.sin(angle) + self.center_pose[:,1:2], self.center_pose[:,2:3],
                              -self.x_radius * np.cos(angle) + self.center_pose[:,0:1],
