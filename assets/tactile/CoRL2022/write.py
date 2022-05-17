@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 file_path = 'assets/desk.xml'
 tree = ET.ElementTree(file=file_path)
 
-num = 10
+num = 8
 width = 0.01
 
 for i in range(-num+1,num):

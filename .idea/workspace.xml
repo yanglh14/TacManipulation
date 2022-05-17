@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="" />
+    <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/cube.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -187,18 +195,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py</url>
-          <line>719</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py</url>
-          <line>581</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
