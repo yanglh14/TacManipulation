@@ -157,7 +157,7 @@ task:
   enableCameraSensors: False
 
 sim:
-  dt: 0.02 # 1/60
+  dt: 0.02 # 1/50
   substeps: 1
   up_axis: "z"
   use_gpu_pipeline: ${eq:${...pipeline},"gpu"}

@@ -304,8 +304,8 @@ class AllegroHandBaoding(VecTask):
             goal_start_pose_2.p = object_start_pose_2.p + self.goal_displacement
 
         # compute aggregate size
-        max_agg_bodies = self.num_shadow_hand_bodies + 4
-        max_agg_shapes = self.num_shadow_hand_shapes + 4
+        max_agg_bodies = self.num_shadow_hand_bodies + 8
+        max_agg_shapes = self.num_shadow_hand_shapes + 8
 
         self.shadow_hands = []
         self.envs = []
