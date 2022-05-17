@@ -43,7 +43,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.train">
+  <component name="RunManager" selected="Python.test">
     <configuration name="CoRL2022" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -78,7 +78,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/baoding_fullstate/nn/baoding_fullstate.pth" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/Baoding_fullstate/nn/Baoding_fullstate.pth" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -190,8 +190,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py</url>
-          <line>65</line>
-          <option name="timeStamp" value="3" />
+          <line>718</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py</url>
+          <line>580</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

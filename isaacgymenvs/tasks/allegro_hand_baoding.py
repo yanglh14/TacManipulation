@@ -263,6 +263,7 @@ class AllegroHandBaoding(VecTask):
 
         # load manipulated object and goal assets
         object_asset_options = gymapi.AssetOptions()
+
         object_asset = self.gym.load_asset(self.sim, asset_root, object_asset_file, object_asset_options)
 
         if self.object_type == "baoding":
@@ -429,7 +430,7 @@ class AllegroHandBaoding(VecTask):
         self.goal_object_indices = to_torch(self.goal_object_indices, dtype=torch.long, device=self.device)
 
     def compute_reward(self, actions):
-        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:],dist_rew,goal_dist = compute_hand_reward(
+        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:],dist_rew,goal_dist,goal_resets_index,goal_resets = compute_hand_reward(
             self.rew_buf, self.reset_buf, self.reset_goal_buf, self.progress_buf, self.successes, self.consecutive_successes,
             self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot,
             self.dist_reward_scale, self.rot_reward_scale, self.rot_eps, self.actions, self.action_penalty_scale,
@@ -579,14 +580,58 @@ class AllegroHandBaoding(VecTask):
 
         if apply_reset:
             goal_object_indices = self.goal_object_indices[env_ids*2].to(torch.int32)
+            goal_indices = torch.cat((goal_object_indices, goal_object_indices + 1))
             self.gym.set_actor_root_state_tensor_indexed(self.sim,
                                                          gymtorch.unwrap_tensor(self.root_state_tensor),
-                                                         gymtorch.unwrap_tensor(goal_object_indices), len(env_ids))
+                                                         gymtorch.unwrap_tensor(goal_indices), len(env_ids)*2)
 
-            goal_object_indices = self.goal_object_indices[env_ids*2+1].to(torch.int32)
+            # generate random values
+            rand_floats = torch_rand_float(-1.0, 1.0, (len(env_ids), self.num_shadow_hand_dofs * 2 + 5),
+                                           device=self.device)
+
+            # reset object
+            self.root_state_tensor[self.object_indices[env_ids * 2]] = self.object_init_state[env_ids, :13].clone()
+
+            self.root_state_tensor[self.object_indices[env_ids * 2], :7] = self.object_init_state[env_ids, :7] + \
+                                                                           self.reset_position_noise * rand_floats[:,
+                                                                                                       :7]
+
+            self.root_state_tensor[self.object_indices[env_ids * 2 + 1]] = self.object_init_state[env_ids,
+                                                                           13:26].clone()
+
+            self.root_state_tensor[self.object_indices[env_ids * 2 + 1], :7] = self.object_init_state[env_ids,
+                                                                               13:13 + 7] + \
+                                                                               self.reset_position_noise * rand_floats[
+                                                                                                           :, 13:13 + 7]
+
+            object_indices = torch.unique(
+                torch.cat([self.object_indices[env_ids * 2], self.object_indices[env_ids * 2 + 1],
+                           self.goal_object_indices[env_ids * 2], self.goal_object_indices[env_ids * 2 + 1]]).to(torch.int32))
             self.gym.set_actor_root_state_tensor_indexed(self.sim,
                                                          gymtorch.unwrap_tensor(self.root_state_tensor),
-                                                         gymtorch.unwrap_tensor(goal_object_indices), len(env_ids))
+                                                         gymtorch.unwrap_tensor(object_indices), len(object_indices))
+
+            # reset shadow hand
+            delta_max = self.shadow_hand_dof_upper_limits - self.shadow_hand_dof_default_pos
+            delta_min = self.shadow_hand_dof_lower_limits - self.shadow_hand_dof_default_pos
+            rand_delta = delta_min + (delta_max - delta_min) * rand_floats[:, 5:5+self.num_shadow_hand_dofs]
+
+            pos = self.shadow_hand_default_dof_pos + self.reset_dof_pos_noise * rand_delta
+            self.shadow_hand_dof_pos[env_ids, :] = pos
+            self.shadow_hand_dof_vel[env_ids, :] = self.shadow_hand_dof_default_vel + \
+                self.reset_dof_vel_noise * rand_floats[:, 5+self.num_shadow_hand_dofs:5+self.num_shadow_hand_dofs*2]
+            self.prev_targets[env_ids, :self.num_shadow_hand_dofs] = pos
+            self.cur_targets[env_ids, :self.num_shadow_hand_dofs] = pos
+
+            hand_indices = self.hand_indices[env_ids].to(torch.int32)
+            hand_indices = torch.cat((hand_indices,hand_indices+1,hand_indices+2,hand_indices+3))
+            self.gym.set_dof_position_target_tensor_indexed(self.sim,
+                                                            gymtorch.unwrap_tensor(self.prev_targets),
+                                                            gymtorch.unwrap_tensor(hand_indices), len(env_ids)*4)
+
+            self.gym.set_dof_state_tensor_indexed(self.sim,
+                                                  gymtorch.unwrap_tensor(self.dof_state_init),
+                                                  gymtorch.unwrap_tensor(hand_indices), len(env_ids)*4)
 
         self.reset_goal_buf[env_ids] = 0
 
@@ -839,7 +884,7 @@ def compute_hand_reward(
 
     cons_successes = torch.where(num_resets > 0, av_factor*finished_cons_successes/num_resets + (1.0 - av_factor)*consecutive_successes, consecutive_successes)
 
-    return reward, resets, goal_resets, progress_buf, successes, cons_successes,dist_rew,goal_dist
+    return reward, resets, goal_resets, progress_buf, successes, cons_successes,dist_rew,goal_dist,goal_resets_index,goal_resets
 
 
 @torch.jit.script
