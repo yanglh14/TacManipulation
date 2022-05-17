@@ -134,6 +134,7 @@ class AllegroHandBaoding(VecTask):
         # create some wrapper tensors for different slices
         self.shadow_hand_default_dof_pos = torch.zeros(self.num_shadow_hand_dofs, dtype=torch.float, device=self.device)
         self.dof_state = gymtorch.wrap_tensor(dof_state_tensor)
+        self.dof_state_init = self.dof_state.clone()
         self.shadow_hand_dof_state = self.dof_state.view(self.num_envs, -1, 2)[:, :self.num_shadow_hand_dofs]
         self.shadow_hand_dof_pos = self.shadow_hand_dof_state[..., 0]
         self.shadow_hand_dof_vel = self.shadow_hand_dof_state[..., 1]
@@ -276,7 +277,7 @@ class AllegroHandBaoding(VecTask):
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        pose_dx, pose_dy, pose_dz = 0.032, -0.02, 0.08
+        pose_dx, pose_dy, pose_dz = 0.032, 0.0, 0.07
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -285,7 +286,7 @@ class AllegroHandBaoding(VecTask):
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
             object_start_pose_2.p = gymapi.Vec3()
-            pose_dx, pose_dy, pose_dz = -0.032, -0., 0.07
+            pose_dx, pose_dy, pose_dz = -0.032, 0.0, 0.07
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -330,13 +331,13 @@ class AllegroHandBaoding(VecTask):
                 self.gym.begin_aggregate(env_ptr, max_agg_bodies, max_agg_shapes, True)
 
             # add hand - collision filter = -1 to use asset collision filters set in mjcf loader
-            shadow_hand_actor = self.gym.create_actor(env_ptr, shadow_hand_asset, shadow_hand_start_pose, "hand", i, -1, 0)
+            shadow_hand_actor = self.gym.create_actor(env_ptr, shadow_hand_asset, shadow_hand_start_pose, "hand", i, 0, 0)
             self.hand_start_states.append([shadow_hand_start_pose.p.x, shadow_hand_start_pose.p.y, shadow_hand_start_pose.p.z,
                                            shadow_hand_start_pose.r.x, shadow_hand_start_pose.r.y, shadow_hand_start_pose.r.z, shadow_hand_start_pose.r.w,
                                            0, 0, 0, 0, 0, 0])
 
             # add finger1
-            finger1_actor = self.gym.create_actor(env_ptr, finger1_asset, shadow_hand_start_pose, "finger1", i, -1, 0)
+            finger1_actor = self.gym.create_actor(env_ptr, finger1_asset, shadow_hand_start_pose, "finger1", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger1_actor, shadow_hand_dof_props[:4])
 
@@ -344,21 +345,21 @@ class AllegroHandBaoding(VecTask):
 
 
             # add finger2
-            finger2_actor = self.gym.create_actor(env_ptr, finger2_asset, shadow_hand_start_pose, "finger2", i, -1, 0)
+            finger2_actor = self.gym.create_actor(env_ptr, finger2_asset, shadow_hand_start_pose, "finger2", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger2_actor, shadow_hand_dof_props[4:8])
 
             self.gym.enable_actor_dof_force_sensors(env_ptr, finger2_actor)
 
             # add finger3
-            finger3_actor = self.gym.create_actor(env_ptr, finger3_asset, shadow_hand_start_pose, "finger3", i, -1, 0)
+            finger3_actor = self.gym.create_actor(env_ptr, finger3_asset, shadow_hand_start_pose, "finger3", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger3_actor, shadow_hand_dof_props[8:12])
 
             self.gym.enable_actor_dof_force_sensors(env_ptr, finger3_actor)
 
             # add finger4
-            finger4_actor = self.gym.create_actor(env_ptr, finger4_asset, shadow_hand_start_pose, "finger4", i, -1, 0)
+            finger4_actor = self.gym.create_actor(env_ptr, finger4_asset, shadow_hand_start_pose, "finger4", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger4_actor, shadow_hand_dof_props[12:16])
 
@@ -636,31 +637,15 @@ class AllegroHandBaoding(VecTask):
         self.cur_targets[env_ids, :self.num_shadow_hand_dofs] = pos
 
         hand_indices = self.hand_indices[env_ids].to(torch.int32)
+        hand_indices = torch.cat((hand_indices,hand_indices+1,hand_indices+2,hand_indices+3))
         self.gym.set_dof_position_target_tensor_indexed(self.sim,
                                                         gymtorch.unwrap_tensor(self.prev_targets),
-                                                        gymtorch.unwrap_tensor(hand_indices), len(env_ids))
-        self.gym.set_dof_position_target_tensor_indexed(self.sim,
-                                                        gymtorch.unwrap_tensor(self.prev_targets),
-                                                        gymtorch.unwrap_tensor(hand_indices+1), len(env_ids))
-        self.gym.set_dof_position_target_tensor_indexed(self.sim,
-                                                        gymtorch.unwrap_tensor(self.prev_targets),
-                                                        gymtorch.unwrap_tensor(hand_indices+2), len(env_ids))
-        self.gym.set_dof_position_target_tensor_indexed(self.sim,
-                                                        gymtorch.unwrap_tensor(self.prev_targets),
-                                                        gymtorch.unwrap_tensor(hand_indices+3), len(env_ids))
+                                                        gymtorch.unwrap_tensor(hand_indices), len(env_ids)*4)
 
         self.gym.set_dof_state_tensor_indexed(self.sim,
-                                              gymtorch.unwrap_tensor(self.dof_state),
-                                              gymtorch.unwrap_tensor(hand_indices), len(env_ids))
-        self.gym.set_dof_state_tensor_indexed(self.sim,
-                                              gymtorch.unwrap_tensor(self.dof_state),
-                                              gymtorch.unwrap_tensor(hand_indices+1), len(env_ids))
-        self.gym.set_dof_state_tensor_indexed(self.sim,
-                                              gymtorch.unwrap_tensor(self.dof_state),
-                                              gymtorch.unwrap_tensor(hand_indices+2), len(env_ids))
-        self.gym.set_dof_state_tensor_indexed(self.sim,
-                                              gymtorch.unwrap_tensor(self.dof_state),
-                                              gymtorch.unwrap_tensor(hand_indices+3), len(env_ids))
+                                              gymtorch.unwrap_tensor(self.dof_state_init),
+                                              gymtorch.unwrap_tensor(hand_indices), len(env_ids)*4)
+
         self.progress_buf[env_ids] = 0
         self.reset_buf[env_ids] = 0
         self.successes[env_ids] = 0

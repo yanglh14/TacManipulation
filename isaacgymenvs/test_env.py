@@ -60,7 +60,8 @@ def launch_rlg_hydra(cfg: DictConfig):
 
     env = create_rlgpu_env(_sim_device='cuda:0', _rl_device='cuda:0')
 
-    actions = torch.as_tensor(np.zeros([1,16]),dtype=torch.long)
+    actions = torch.as_tensor(np.ones([1,16])*0,dtype=torch.float32)
+
     _net_cf = env.gym.acquire_net_contact_force_tensor(env.sim)
     net_cf = gymtorch.wrap_tensor(_net_cf)
 

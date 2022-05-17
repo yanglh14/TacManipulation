@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cube.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
-    </list>
+    <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,17 +24,17 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="28uYW6k7emOuBDXHzJ3HpTyZKhb" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/home/amax/isaacgym/TacManipulation/assets/tactile/objects"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/assets/tactile/objects" />
@@ -48,7 +43,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.CoRL2022">
+  <component name="RunManager" selected="Python.test_env">
     <configuration name="CoRL2022" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -83,7 +78,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=Baoding_fullstate headless=False checkpoint=runs/Baoding_fullstate/nn/Baoding_fullstate.pth" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/baoding_fullstate/nn/baoding_fullstate.pth" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -104,7 +99,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/test_env.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=2 experiment=Baoding_test" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=1 experiment=Baoding_test" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
