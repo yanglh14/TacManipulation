@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/AllegroHandBaodingPPO.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/AllegroHandBaodingPPO.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +46,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.train">
+  <component name="RunManager" selected="Python.CoRL2022">
     <configuration name="CoRL2022" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -232,7 +232,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -243,14 +242,19 @@
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py</url>
-          <line>177</line>
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/test_env.py</url>
           <line>36</line>
           <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py</url>
+          <line>190</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py</url>
+          <line>114</line>
+          <option name="timeStamp" value="51" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
