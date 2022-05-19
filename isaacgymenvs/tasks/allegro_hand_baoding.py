@@ -439,7 +439,7 @@ class AllegroHandBaoding(VecTask):
         )
         self.extras['consecutive_successes'] = self.consecutive_successes.mean()
         # print(self.rew_buf[0],dist_rew,goal_dist,goal_resets_index,goal_resets)
-        
+
         if self.print_success_stat:
             self.total_resets = self.total_resets + self.reset_buf.sum()
             direct_average_successes = self.total_successes + self.successes.sum()

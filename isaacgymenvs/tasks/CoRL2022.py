@@ -1,6 +1,7 @@
 from isaacgym import gymapi
 from isaacgym import gymtorch
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 gym = gymapi.acquire_gym()
 
@@ -47,7 +48,7 @@ asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 #### load object asset
 asset_root = "../../assets"
 # asset_file = "tactile/objects/ball.xml"
-asset_file = "urdf/ycb/010_potted_meat_can/010_potted_meat_can.urdf"
+asset_file = "urdf/ycb/011_banana/011_banana.urdf"
 
 asset_options = gymapi.AssetOptions()
 
@@ -82,6 +83,74 @@ cam_pos = gymapi.Vec3(0.3, 0.3, 0.3)
 cam_target = gymapi.Vec3(0, 0, 0)
 gym.viewer_camera_look_at(viewer, None, cam_pos, cam_target)
 
+def plot_tactile_heatmap(tactile,tactile_pose):
+
+    tac = np.abs(np.array(tactile.to('cpu')))
+    tac_pose= np.array(tactile_pose.to('cpu'))
+
+    u = tac[:,0].reshape(15,15)
+    v = tac[:,1].reshape(15,15)
+    w = tac[:,2].reshape(15,15)
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111)
+
+    im = ax.imshow(w, cmap=plt.cm.hot_r)
+    ax.set_xticks(range(15))
+    ax.set_yticks(range(15))
+
+    fig.colorbar(im)
+
+    plt.show()
+
+def plot_tactile_streamplot(tactile,tactile_pose):
+
+    tac = np.abs(np.array(tactile.to('cpu')))
+    tac_pose= np.array(tactile_pose.to('cpu'))
+
+    y, x = np.mgrid[0:0.15:15j, 0:0.15:15j]
+
+    u = tac[:,0].reshape(15,15)
+    v = tac[:,1].reshape(15,15)
+    w = tac[:,2].reshape(15,15)
+
+    if np.sum(u+v)>0:
+
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111)
+
+        strm = ax.streamplot(x, y, u, v, color=u+v, linewidth=2, cmap='autumn')
+        fig.colorbar(strm.lines)
+
+        plt.show()
+
+def plot_tactile_3d(tactile,tactile_pose):
+
+    tac = np.abs(np.array(tactile.to('cpu')))
+    tac_pose= np.array(tactile_pose.to('cpu'))
+
+    x = tac_pose[:, 0]
+    y = tac_pose[:, 1]
+    z = tac_pose[:, 2]
+    u = tac[:,0]
+    v = tac[:,1]
+    w = tac[:,2]
+    colors = np.concatenate((  np.clip((w.reshape([225,1])*10),0,1)
+                             ,np.zeros([225,1]),np.zeros([225,1]),np.ones([225,1])),axis=1)
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.quiver(x, y, z, u, v, w,length=0.5,arrow_length_ratio=0.2,linewidths =2.5)
+    # ax.quiverkey(q,X=0.3,Y=1.1,U=10,label='Quiver key', labelpos='E')
+    ax.scatter(x, y, z,s=10)
+
+    ax.set_xlim(0, 0.2)
+    ax.set_ylim(0, 0.2)
+    ax.set_zlim(0.1, 0.3)
+
+    plt.show()
+
 while not gym.query_viewer_has_closed(viewer):
 
     # step the physics
@@ -95,12 +164,15 @@ while not gym.query_viewer_has_closed(viewer):
     gym.refresh_rigid_body_state_tensor(sim)
     gym.refresh_net_contact_force_tensor(sim)
     _net_cf = gym.acquire_net_contact_force_tensor(sim)
-    net_cf = gymtorch.wrap_tensor(_net_cf)
+    net_cf = gymtorch.wrap_tensor(_net_cf).view(1, -1, 3)
+    tactile = net_cf[0,3:3+225,2]
+    tactile_3d = net_cf[0,3:3+225,:3]
 
     rigid_body_tensor = gym.acquire_rigid_body_state_tensor(sim)
     rigid_body_states = gymtorch.wrap_tensor(rigid_body_tensor).view(1, -1, 13)
-    tactile_pose = rigid_body_states[0,3:3+225,:3]
+    tac_pose = rigid_body_states[0,3:3+225,:3]
 
+    plot_tactile_streamplot(tactile_3d,tac_pose)
     # Wait for dt to elapse in real time.
     # This synchronizes the physics simulation with the rendering rate.
     gym.sync_frame_time(sim)

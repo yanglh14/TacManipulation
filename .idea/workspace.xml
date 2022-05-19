@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/cube.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
     </list>
@@ -51,7 +48,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test">
+  <component name="RunManager" selected="Python.train">
     <configuration name="CoRL2022" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -65,6 +62,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/tasks" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tasks/test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -136,6 +154,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="train_touch" type="PythonConfigurationType" factoryName="Python">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/rlgpu/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=64 experiment=Baoding_fullstate_test max_iterations=25000 headless=True task.env.observationTouch=True" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="write" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -160,13 +199,16 @@
     <list>
       <item itemvalue="Python.test_env" />
       <item itemvalue="Python.train" />
+      <item itemvalue="Python.train_touch" />
       <item itemvalue="Python.test" />
       <item itemvalue="Python.CoRL2022" />
       <item itemvalue="Python.write" />
+      <item itemvalue="Python.test (1)" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.CoRL2022" />
+        <item itemvalue="Python.test (1)" />
         <item itemvalue="Python.write" />
       </list>
     </recent_temporary>
@@ -195,6 +237,23 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/test.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py</url>
+          <line>177</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/test_env.py</url>
+          <line>36</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
