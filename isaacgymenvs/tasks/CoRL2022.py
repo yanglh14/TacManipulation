@@ -47,8 +47,8 @@ asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 #### load object asset
 asset_root = "../../assets"
-asset_file = "tactile/objects/ball.xml"
-# asset_file = "urdf/ycb/011_banana/011_banana.urdf"
+# asset_file = "tactile/objects/ball.xml"
+asset_file = "urdf/ycb/011_banana/011_banana.urdf"
 
 asset_options = gymapi.AssetOptions()
 
@@ -69,11 +69,11 @@ def run_sim():
 
         pose = gymapi.Transform()
         pose.p = gymapi.Vec3(0.1, 0.1, 0.1)
-        actor_handle = gym.create_actor(env, asset1, pose, "Desk", i, 0)
+        actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 0)
 
         pose = gymapi.Transform()
         pose.p = gymapi.Vec3(0.1, 0.1, 0.2)
-        actor_handle = gym.create_actor(env, asset2, pose, "Object", i, 0)
+        actor_handle1 = gym.create_actor(env, asset2, pose, "Object", i, 0)
 
         gym.end_aggregate(env)
 
@@ -83,7 +83,7 @@ def run_sim():
     cam_target = gymapi.Vec3(0, 0, 0)
     gym.viewer_camera_look_at(viewer, None, cam_pos, cam_target)
 
-
+    f,p = [],[]
     while not gym.query_viewer_has_closed(viewer):
 
         # step the physics
@@ -104,20 +104,34 @@ def run_sim():
         rigid_body_states = gymtorch.wrap_tensor(rigid_body_tensor).view(1, -1, 13)
         tac_pose = rigid_body_states[0,3:3+225,:3]
 
-        # print(np.array(rigid_body_states[0,115,2]))
-
-        # plot_tactile_3d(tactile,tac_pose)
+        plot_tactile_streamplot(tactile,tac_pose)
 
         contacts =gym.get_env_rigid_contacts(env)
 
+        a = []
         for i in range(contacts.shape[0]):
             if contacts[i]['body1'] == 115:
-                print(contacts[i]['initialOverlap'])
-        # gym.draw_env_rigid_contacts(viewer,env,gymapi.Vec3(0.3, 0.3, 0.3),1.0,False)
+                a.append(contacts[i]['body1'])
+                p.append(contacts[i]['initialOverlap'])
+                f.append( np.linalg.norm(np.array(tactile[112,:3])) )
+        if 115 not in a:
+            p.append(-0.004)
+            f.append(np.linalg.norm(np.array(tactile[112, :3])))
 
         # Wait for dt to elapse in real time.
         # This synchronizes the physics simulation with the rendering rate.
         gym.sync_frame_time(sim)
+
+    # plot_forceposition(p, f)
+
+def plot_forceposition(p,f):
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111)
+    ax.plot(0.4+np.array(p)*100,label='position')
+    ax.plot(np.array(f)*10,label='force')
+
+    ax.legend()
+    plt.show()
 
 def plot_tactile_heatmap(tactile,tactile_pose):
 
