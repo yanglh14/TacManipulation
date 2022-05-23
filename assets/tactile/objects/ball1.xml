@@ -5,6 +5,8 @@
         <flag warmstart="enable"></flag>
     </option>
 
+<!--    <include file="../allegro_hand/assets/shared.xml"></include>-->
+
     <asset>
         <include file="../allegro_hand/assets/shared_asset.xml"></include>
     </asset>

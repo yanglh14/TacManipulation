@@ -35,10 +35,10 @@
         </default>
 
         <default class="object1_Vis">
-            <geom material="MatBall1" contype="0" conaffinity="0" group="1" type="mesh"></geom>
+            <geom material="MatBall1" contype="0" conaffinity="0" group="1" ></geom>
         </default>
         <default class="object2_Vis">
-            <geom material="MatBall2" contype="0" conaffinity="0" group="1" type="mesh"></geom>
+            <geom material="MatBall2" contype="0" conaffinity="0" group="1" ></geom>
         </default>
 
         <default class="robot0:D_Contact">

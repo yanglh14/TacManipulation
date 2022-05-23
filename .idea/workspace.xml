@@ -5,7 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/ball_big.urdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cube_big.urdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cylinder_big.urdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cylinder_small.urdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared_asset.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared_asset.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/objects/ball1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/objects/ball2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/urdf/ycb/011_banana/textured.mtl" beforeDir="false" afterPath="$PROJECT_DIR$/assets/urdf/ycb/011_banana/textured.mtl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,21 +42,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "/home/amax/isaacgym/TacManipulation/assets/tactile/objects"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/assets/tactile/objects" />
+      <recent name="$PROJECT_DIR$/assets/urdf/ycb" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/urdf/ycb/011_banana" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.CoRL2022">
+  <component name="RunManager" selected="Python.test_env">
     <configuration name="CoRL2022" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -240,11 +251,6 @@
           <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/test.py</url>
           <line>15</line>
           <option name="timeStamp" value="41" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py</url>
-          <line>172</line>
-          <option name="timeStamp" value="47" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

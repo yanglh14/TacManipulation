@@ -46,11 +46,14 @@ asset_options.armature = 0.01
 asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 #### load object asset
+if_viewer = True
+object_name = '025_mug'
 asset_root = "../../assets"
-# asset_file = "tactile/objects/ball.xml"
-asset_file = "urdf/ycb/011_banana/011_banana.urdf"
+asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
+# asset_file = "tactile/objects/"+ object_name +".urdf"
 
 asset_options = gymapi.AssetOptions()
+asset_options.armature = 0.01
 
 asset2 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
@@ -61,7 +64,7 @@ env_spacing = 2.0
 env_lower = gymapi.Vec3(-env_spacing, 0.0, -env_spacing)
 env_upper = gymapi.Vec3(env_spacing, env_spacing, env_spacing)
 
-def run_sim():
+def run_sim(if_viewer):
     # create and populate the environments
     for i in range(num_envs):
         env = gym.create_env(sim, env_lower, env_upper, envs_per_row)
@@ -72,27 +75,29 @@ def run_sim():
         actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 0)
 
         pose = gymapi.Transform()
-        pose.p = gymapi.Vec3(0.1, 0.1, 0.2)
+        pose.p = gymapi.Vec3(0.1, 0.1, 0.15)
         actor_handle1 = gym.create_actor(env, asset2, pose, "Object", i, 0)
 
         gym.end_aggregate(env)
 
-    cam_props = gymapi.CameraProperties()
-    viewer = gym.create_viewer(sim, cam_props)
-    cam_pos = gymapi.Vec3(0.3, 0.3, 0.3)
-    cam_target = gymapi.Vec3(0, 0, 0)
-    gym.viewer_camera_look_at(viewer, None, cam_pos, cam_target)
+    if if_viewer:
+        cam_props = gymapi.CameraProperties()
+        viewer = gym.create_viewer(sim, cam_props)
+        cam_pos = gymapi.Vec3(0.3, 0.3, 0.3)
+        cam_target = gymapi.Vec3(0, 0, 0)
+        gym.viewer_camera_look_at(viewer, None, cam_pos, cam_target)
 
     f,p = [],[]
-    while not gym.query_viewer_has_closed(viewer):
-
+    # while not gym.query_viewer_has_closed(viewer):
+    for i in range(100):
         # step the physics
         gym.simulate(sim)
         gym.fetch_results(sim, True)
 
         # update the viewer
-        gym.step_graphics(sim);
-        gym.draw_viewer(viewer, sim, True)
+        if if_viewer:
+            gym.step_graphics(sim);
+            gym.draw_viewer(viewer, sim, True)
 
         gym.refresh_rigid_body_state_tensor(sim)
         gym.refresh_net_contact_force_tensor(sim)
@@ -104,22 +109,20 @@ def run_sim():
         rigid_body_states = gymtorch.wrap_tensor(rigid_body_tensor).view(1, -1, 13)
         tac_pose = rigid_body_states[0,3:3+225,:3]
 
-        plot_tactile_streamplot(tactile,tac_pose)
+        if i ==99:
+            plot_tactile_heatmap(tactile,tac_pose,object_name)
 
-        contacts =gym.get_env_rigid_contacts(env)
+        # contacts =gym.get_env_rigid_contacts(env)
+        # a = []
+        # for i in range(contacts.shape[0]):
+        #     if contacts[i]['body1'] == 115:
+        #         a.append(contacts[i]['body1'])
+        #         p.append(contacts[i]['initialOverlap'])
+        #         f.append( np.linalg.norm(np.array(tactile[112,:3])) )
+        # if 115 not in a:
+        #     p.append(-0.004)
+        #     f.append(np.linalg.norm(np.array(tactile[112, :3])))
 
-        a = []
-        for i in range(contacts.shape[0]):
-            if contacts[i]['body1'] == 115:
-                a.append(contacts[i]['body1'])
-                p.append(contacts[i]['initialOverlap'])
-                f.append( np.linalg.norm(np.array(tactile[112,:3])) )
-        if 115 not in a:
-            p.append(-0.004)
-            f.append(np.linalg.norm(np.array(tactile[112, :3])))
-
-        # Wait for dt to elapse in real time.
-        # This synchronizes the physics simulation with the rendering rate.
         gym.sync_frame_time(sim)
 
     # plot_forceposition(p, f)
@@ -133,7 +136,7 @@ def plot_forceposition(p,f):
     ax.legend()
     plt.show()
 
-def plot_tactile_heatmap(tactile,tactile_pose):
+def plot_tactile_heatmap(tactile,tactile_pose,object_name):
 
     tac = np.abs(np.array(tactile.to('cpu')))
     tac_pose= np.array(tactile_pose.to('cpu'))
@@ -152,7 +155,9 @@ def plot_tactile_heatmap(tactile,tactile_pose):
 
         fig.colorbar(im)
 
-        plt.show()
+        plt.savefig("/home/amax/Pictures/"+object_name+".png")
+        plt.close(fig)
+        # plt.show()
 
 def plot_tactile_streamplot(tactile,tactile_pose):
 
@@ -170,8 +175,10 @@ def plot_tactile_streamplot(tactile,tactile_pose):
         fig = plt.figure(figsize=(8, 8))
         ax = fig.add_subplot(111)
 
-        strm = ax.streamplot(x, y, u, v, color=u+v, linewidth=2, cmap='autumn')
+        strm = ax.streamplot(x, y, u, v, density=1, color=u+v, linewidth=2, cmap='autumn')
         fig.colorbar(strm.lines)
+
+        ax.quiver(x, y, u, v)
 
         plt.show()
 
@@ -205,4 +212,4 @@ def plot_tactile_3d(tactile,tactile_pose):
         print('step+1')
 
 if __name__ == "__main__":
-    run_sim()
+    run_sim(if_viewer)

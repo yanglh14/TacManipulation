@@ -10,7 +10,7 @@
     <material name="robot0:MatViz" specular="0.75" shininess="0.1" reflectance="0.5" rgba="0.3 0.3 0.3 1"></material>
     <material name="robot0:MatViz_Pad" specular="0.75" shininess="0.1" reflectance="0.5" rgba="0.7 0.7 0.7 1"></material>
 
-    <material name="MatBall1" specular="0.75" shininess="0.1" reflectance="0.5" rgba="0.7 0.7 0.7 1"></material>
+    <material name="MatBall1" specular="0.75" shininess="0.1" reflectance="0.5" rgba="1.0 0.0 0.0 1"></material>
     <material name="MatBall2" specular="0.75" shininess="0.1" reflectance="0.5" rgba="0.7 0.7 0.7 1"></material>
 
     <material name="robot0:object" texture="robot0:texgeom" texuniform="false"></material>
