@@ -79,6 +79,7 @@ def run_sim(if_viewer):
         pose.p = gymapi.Vec3(0.1, 0.1, 0.1)
         actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 0)
 
+        object_pos, object_orientation = random_pose() ## Todo list
         pose = gymapi.Transform()
         pose.p = gymapi.Vec3(0.1, 0.1, 0.15)
         actor_handle1 = gym.create_actor(env, asset2, pose, "Object", i, 0)
@@ -93,8 +94,9 @@ def run_sim(if_viewer):
         gym.viewer_camera_look_at(viewer, None, cam_pos, cam_target)
 
     f,p = [],[]
+
     # while not gym.query_viewer_has_closed(viewer):
-    for i in range(100):
+    for i in range(1000):
         # step the physics
         gym.simulate(sim)
         gym.fetch_results(sim, True)
@@ -103,9 +105,11 @@ def run_sim(if_viewer):
         if if_viewer:
             gym.step_graphics(sim);
             gym.draw_viewer(viewer, sim, True)
-
+        # refresh
         gym.refresh_rigid_body_state_tensor(sim)
         gym.refresh_net_contact_force_tensor(sim)
+
+        # get pose and tactile
         _net_cf = gym.acquire_net_contact_force_tensor(sim)
         net_cf = gymtorch.wrap_tensor(_net_cf).view(1, -1, 3)
         tactile = net_cf[0,3:3+225,:3]
@@ -114,11 +118,15 @@ def run_sim(if_viewer):
         rigid_body_states = gymtorch.wrap_tensor(rigid_body_tensor).view(1, -1, 13)
         tac_pose = rigid_body_states[0,3:3+225,:3]
 
-        # if i ==99:
-        #     plot_tactile_heatmap(tactile,tac_pose,object_name)
-        #     save_tactile(tactile,tac_pose)
-        plot_tactile_heatmap(tactile,tac_pose)
+        object_pos, object_orientation = rigid_body_states[0,-1,:3], rigid_body_states[0,-1,3:7]
 
+        # if i ==999:
+        #     plot_tactile_heatmap(tactile,tac_pose,object_name)
+
+        #     save_tactile(tactile,tac_pose)
+        #     plot_tactile_heatmap(tactile,tac_pose)
+
+        #### get contacts information
         # contacts =gym.get_env_rigid_contacts(env)
         # a = []
         # for i in range(contacts.shape[0]):
@@ -126,15 +134,13 @@ def run_sim(if_viewer):
         #         a.append(contacts[i]['body1'])
         #         p.append(contacts[i]['initialOverlap'])
         #         f.append( np.linalg.norm(np.array(tactile[112,:3])) )
-        # if 115 not in a:
-        #     p.append(-0.004)
-        #     f.append(np.linalg.norm(np.array(tactile[112, :3])))
 
         gym.sync_frame_time(sim)
 
     # plot_forceposition(p, f)
+    return tactile, tac_pose, object_pos, object_orientation
 
-# def save_tactile(tactile, tactile_pose, object_lable, object_position, object_orientation):
+# def save_tactile(tactile_list, tactile_pose_list, object_lable_list, object_position_list, object_orientation_list):
 
 
 def plot_forceposition(p,f):
