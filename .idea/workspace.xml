@@ -5,18 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/ball_big.urdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cube_big.urdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cylinder_big.urdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cylinder_small.urdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/tactile/objects/cal_tac_indentor.urdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/Calibration_tac.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared_asset.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared_asset.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/objects/ball1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/objects/ball2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/urdf/ycb/011_banana/textured.mtl" beforeDir="false" afterPath="$PROJECT_DIR$/assets/urdf/ycb/011_banana/textured.mtl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,14 +35,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "last_opened_file_path": "/home/amax/isaacgym/TacManipulation/assets/tactile/objects"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/tasks/Calibration_tac.py" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/assets/tactile/objects" />
+      <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
       <recent name="$PROJECT_DIR$/assets/urdf/ycb" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -57,7 +49,28 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_env">
+  <component name="RunManager" selected="Python.CoRL2022">
+    <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/tasks" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tasks/Calibration_tac.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="CoRL2022" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -210,6 +223,7 @@
       <item itemvalue="Python.train" />
       <item itemvalue="Python.train_touch" />
       <item itemvalue="Python.test" />
+      <item itemvalue="Python.Calibration_tac" />
       <item itemvalue="Python.CoRL2022" />
       <item itemvalue="Python.write" />
       <item itemvalue="Python.test (1)" />
@@ -248,9 +262,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/test.py</url>
-          <line>15</line>
-          <option name="timeStamp" value="41" />
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py</url>
+          <line>29</line>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

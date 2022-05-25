@@ -1,22 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import pandas as pd
+import numpy as np
 
-w = 3
-Y, X = np.mgrid[-w:w:100j, -w:w:100j]
-U = -1 - X**2 + Y
-V = 1 + X - Y**2
-speed = np.sqrt(U**2 + V**2)
+data = pd.read_csv('tactile_data',delim_whitespace=True)
+data = data.values
+tactile = data[:,26]
+position = np.linalg.norm(data[:,2:5],axis=1)
 
-fig = plt.figure(figsize=(7, 9))
-gs = gridspec.GridSpec(nrows=3, ncols=2, height_ratios=[1, 1, 2])
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111)
+ax.plot(-np.array(position-0.53219397) * 1000, label='position')
+ax.plot(np.array(tactile)/100, label='force/100')
 
-# Varying color along a streamline
-ax1 = fig.add_subplot(gs[0, 1])
-strm = ax1.streamplot(X, Y, U, V, color=U, linewidth=2, cmap='autumn')
-fig.colorbar(strm.lines)
-ax1.set_title('Varying Color')
-
-
-plt.tight_layout()
+ax.legend()
 plt.show()
