@@ -52,10 +52,10 @@ asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 #### load object asset
 if_viewer = True
-object_name = 'cylinder_big'
+object_name = '025_mug'
 asset_root = "../../assets"
-# asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
-asset_file = "tactile/objects/"+ object_name +".urdf"
+asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
+# asset_file = "tactile/objects/"+ object_name +".urdf"
 
 asset_options = gymapi.AssetOptions()
 asset_options.armature = 0.01
@@ -116,6 +116,7 @@ def run_sim(if_viewer):
 
         # if i ==99:
         #     plot_tactile_heatmap(tactile,tac_pose,object_name)
+        #     save_tactile(tactile,tac_pose)
         plot_tactile_heatmap(tactile,tac_pose)
 
         # contacts =gym.get_env_rigid_contacts(env)
@@ -132,6 +133,9 @@ def run_sim(if_viewer):
         gym.sync_frame_time(sim)
 
     # plot_forceposition(p, f)
+
+# def save_tactile(tactile, tactile_pose, object_lable, object_position, object_orientation):
+
 
 def plot_forceposition(p,f):
     fig = plt.figure(figsize=(8, 8))
