@@ -1,9 +1,11 @@
 import os.path
-
+import pickle
 from isaacgym import gymapi
 from isaacgym import gymtorch
 import numpy as np
 import matplotlib.pyplot as plt
+import torch
+from isaacgym.torch_utils import *
 
 gym = gymapi.acquire_gym()
 
@@ -52,7 +54,9 @@ asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 #### load object asset
 if_viewer = True
-object_name = '025_mug'
+sim_length = 100
+num_iter = 2
+object_name = '011_banana'
 asset_root = "../../assets"
 asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
 # asset_file = "tactile/objects/"+ object_name +".urdf"
@@ -69,7 +73,7 @@ env_spacing = 2.0
 env_lower = gymapi.Vec3(-env_spacing, 0.0, -env_spacing)
 env_upper = gymapi.Vec3(env_spacing, env_spacing, env_spacing)
 
-def run_sim(if_viewer):
+def run_sim(if_viewer, sim_length, num_iter):
     # create and populate the environments
     for i in range(num_envs):
         env = gym.create_env(sim, env_lower, env_upper, envs_per_row)
@@ -79,7 +83,6 @@ def run_sim(if_viewer):
         pose.p = gymapi.Vec3(0.1, 0.1, 0.1)
         actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 0)
 
-        object_pos, object_orientation = random_pose() ## Todo list
         pose = gymapi.Transform()
         pose.p = gymapi.Vec3(0.1, 0.1, 0.15)
         actor_handle1 = gym.create_actor(env, asset2, pose, "Object", i, 0)
@@ -94,12 +97,16 @@ def run_sim(if_viewer):
         gym.viewer_camera_look_at(viewer, None, cam_pos, cam_target)
 
     f,p = [],[]
+    step, i = 0,0
+    tactile_list, tac_pose_list, object_pos_list = [],[],[]
 
     # while not gym.query_viewer_has_closed(viewer):
-    for i in range(1000):
+    while i < num_iter:
+
         # step the physics
         gym.simulate(sim)
         gym.fetch_results(sim, True)
+        step += 1
 
         # update the viewer
         if if_viewer:
@@ -108,6 +115,7 @@ def run_sim(if_viewer):
         # refresh
         gym.refresh_rigid_body_state_tensor(sim)
         gym.refresh_net_contact_force_tensor(sim)
+        gym.refresh_actor_root_state_tensor(sim)
 
         # get pose and tactile
         _net_cf = gym.acquire_net_contact_force_tensor(sim)
@@ -118,12 +126,23 @@ def run_sim(if_viewer):
         rigid_body_states = gymtorch.wrap_tensor(rigid_body_tensor).view(1, -1, 13)
         tac_pose = rigid_body_states[0,3:3+225,:3]
 
-        object_pos, object_orientation = rigid_body_states[0,-1,:3], rigid_body_states[0,-1,3:7]
+        actor_root_state_tensor = gym.acquire_actor_root_state_tensor(sim)
+        root_state_tensor = gymtorch.wrap_tensor(actor_root_state_tensor).view(-1, 13)
 
-        # if i ==999:
+        if step == sim_length:
+            tactile_list.append(tactile)
+            tac_pose_list.append(tac_pose)
+            object_pos_list.append(rigid_body_states[0,-1,:7])
+
+            step = 0
+            i=i+1
+            ###reset object
+            root_state_tensor[-1,:] = random_pose()
+            object_indices = torch.tensor([root_state_tensor.shape[0]-1],dtype=torch.int32)
+            gym.set_actor_root_state_tensor_indexed(sim,gymtorch.unwrap_tensor(root_state_tensor),
+                                                         gymtorch.unwrap_tensor(object_indices), len(object_indices))
+
         #     plot_tactile_heatmap(tactile,tac_pose,object_name)
-
-        #     save_tactile(tactile,tac_pose)
         #     plot_tactile_heatmap(tactile,tac_pose)
 
         #### get contacts information
@@ -138,10 +157,15 @@ def run_sim(if_viewer):
         gym.sync_frame_time(sim)
 
     # plot_forceposition(p, f)
-    return tactile, tac_pose, object_pos, object_orientation
+    return tactile_list, tac_pose_list, object_pos_list
 
-# def save_tactile(tactile_list, tactile_pose_list, object_lable_list, object_position_list, object_orientation_list):
-
+def random_pose():
+    noise_scale = 0.01
+    pose = torch.tensor([0.1,0.1,0.15, 0,0,0,1, 0,0,0,0,0,0])
+    rand_quat = quat_from_angle_axis(torch.rand(1)*np.pi, torch.tensor([0, 0, 1], dtype=torch.float))
+    pose[3:7] = rand_quat
+    pose[:3] = pose[:3] + noise_scale * torch.rand(3)
+    return pose
 
 def plot_forceposition(p,f):
     fig = plt.figure(figsize=(8, 8))
@@ -228,4 +252,19 @@ def plot_tactile_3d(tactile,tactile_pose):
         print('step+1')
 
 if __name__ == "__main__":
-    run_sim(if_viewer)
+    tactile_list, tac_pose_list, object_pos_list=run_sim(if_viewer,sim_length, num_iter)
+
+    save_dir = '../tac_data/'
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    data = {'tactile': np.array(tactile_list),
+            'tac_pose': np.array(tac_pose_list),
+            'object_pos': np.array(object_pos_list)
+    }
+
+    with open(save_dir+object_name+'.pkl','wb') as f:
+        pickle.dump(data,f,pickle.HIGHEST_PROTOCOL)
+
+    # with open(save_dir+object_name+'.pkl','rb') as f:
+    #     d = pickle.load(f)
