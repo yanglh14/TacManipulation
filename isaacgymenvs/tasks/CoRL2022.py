@@ -53,10 +53,11 @@ asset_options.armature = 0.01
 asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 #### load object asset
-if_viewer = True
-sim_length = 100
-num_iter = 2
-object_name = '011_banana'
+if_viewer = False
+sim_length = 500
+num_iter = 1000
+noise_scale = 0.01
+object_name = '025_mug'
 asset_root = "../../assets"
 asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
 # asset_file = "tactile/objects/"+ object_name +".urdf"
@@ -73,7 +74,7 @@ env_spacing = 2.0
 env_lower = gymapi.Vec3(-env_spacing, 0.0, -env_spacing)
 env_upper = gymapi.Vec3(env_spacing, env_spacing, env_spacing)
 
-def run_sim(if_viewer, sim_length, num_iter):
+def run_sim(if_viewer, sim_length, num_iter, noise_scale):
     # create and populate the environments
     for i in range(num_envs):
         env = gym.create_env(sim, env_lower, env_upper, envs_per_row)
@@ -130,14 +131,14 @@ def run_sim(if_viewer, sim_length, num_iter):
         root_state_tensor = gymtorch.wrap_tensor(actor_root_state_tensor).view(-1, 13)
 
         if step == sim_length:
-            tactile_list.append(tactile)
-            tac_pose_list.append(tac_pose)
-            object_pos_list.append(rigid_body_states[0,-1,:7])
+            tactile_list.append(np.array(tactile))
+            tac_pose_list.append(np.array(tac_pose))
+            object_pos_list.append(np.array(rigid_body_states[0,-1,:7]))
 
             step = 0
             i=i+1
             ###reset object
-            root_state_tensor[-1,:] = random_pose()
+            root_state_tensor[-1,:] = random_pose(noise_scale)
             object_indices = torch.tensor([root_state_tensor.shape[0]-1],dtype=torch.int32)
             gym.set_actor_root_state_tensor_indexed(sim,gymtorch.unwrap_tensor(root_state_tensor),
                                                          gymtorch.unwrap_tensor(object_indices), len(object_indices))
@@ -159,8 +160,7 @@ def run_sim(if_viewer, sim_length, num_iter):
     # plot_forceposition(p, f)
     return tactile_list, tac_pose_list, object_pos_list
 
-def random_pose():
-    noise_scale = 0.01
+def random_pose(noise_scale):
     pose = torch.tensor([0.1,0.1,0.15, 0,0,0,1, 0,0,0,0,0,0])
     rand_quat = quat_from_angle_axis(torch.rand(1)*np.pi, torch.tensor([0, 0, 1], dtype=torch.float))
     pose[3:7] = rand_quat
@@ -252,7 +252,7 @@ def plot_tactile_3d(tactile,tactile_pose):
         print('step+1')
 
 if __name__ == "__main__":
-    tactile_list, tac_pose_list, object_pos_list=run_sim(if_viewer,sim_length, num_iter)
+    tactile_list, tac_pose_list, object_pos_list=run_sim(if_viewer,sim_length, num_iter,noise_scale)
 
     save_dir = '../tac_data/'
     if not os.path.exists(save_dir):
