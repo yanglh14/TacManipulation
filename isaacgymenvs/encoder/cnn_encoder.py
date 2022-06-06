@@ -1,18 +1,20 @@
 import os.path
-
+from sklearn.manifold import TSNE
 from torch.utils.data import DataLoader,random_split,TensorDataset
 import pickle
 import matplotlib.pyplot as plt # plotting library
 import numpy as np # this module is useful to work with numerical arrays
-import torch
-from torchvision import transforms
 from model import *
+
+# Check if the GPU is available
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+print(f'Selected device: {device}')
 
 model_dir = './models'
 if_model = True
 save_dir = '../tac_data/'
 
-task_name = 'ycb'
+task_name = 'ycb_new'
 object_name = '011_banana'
 object_name_2 = '010_potted_meat_can'
 object_name_3 = '025_mug'
@@ -27,22 +29,13 @@ with open(save_dir+object_name_3+'.pkl','rb') as f:
 with open(save_dir+object_name_4+'.pkl','rb') as f:
     d_4 = pickle.load(f)
 
-tac = np.concatenate((d['tactile'],d_2['tactile'],d_3['tactile'],d_4['tactile']),axis=0)
-y = np.concatenate((d['class'],d_2['class'],d_3['class'],d_4['class']),axis=0)
-# tac = d['tactile']
-# pos = d['object_pos']
+tac = abs(torch.tensor(np.concatenate((d['tactile'],d_2['tactile'],d_3['tactile'],d_4['tactile']),axis=0), device=device)[:,:,2])
+y = torch.tensor(np.concatenate((d['class'],d_2['class'],d_3['class'],d_4['class']),axis=0), device=device)
+tac /= tac.max(1,keepdim=True)[0]
 
-x = torch.tensor(tac[:,:,2].reshape(-1,1,15,15)*(100))
-x = abs(x)
-y = torch.tensor(y)
+x = tac.reshape(-1,1,15,15)
+y = y
 tactile_dataset = TensorDataset(x,y)
-
-train_transform = transforms.Compose([
-transforms.ToTensor(),
-])
-
-
-tactile_dataset.transform = train_transform
 
 m=len(tactile_dataset)
 
@@ -79,9 +72,6 @@ params_to_optimize = [
 
 optim = torch.optim.Adam(params_to_optimize, lr=lr, weight_decay=1e-05)
 
-# Check if the GPU is available
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-print(f'Selected device: {device}')
 
 # Move both the encoder and the decoder to the selected device
 encoder.to(device)
@@ -208,10 +198,9 @@ encoded_samples = pd.DataFrame(encoded_samples)
 
 import plotly.express as px
 
-px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
+fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
            color=encoded_samples.label.astype(str), opacity=0.7)
-
-from sklearn.manifold import TSNE
+fig.show()
 
 tsne = TSNE(n_components=2)
 tsne_results = tsne.fit_transform(encoded_samples.drop(['label'],axis=1))

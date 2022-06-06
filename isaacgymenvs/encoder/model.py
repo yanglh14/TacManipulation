@@ -1,4 +1,6 @@
 from torch import nn
+import torch
+import torch.nn.functional as F
 
 class Encoder(nn.Module):
 
@@ -63,4 +65,37 @@ class Decoder(nn.Module):
         x = self.decoder_lin(x)
         x = self.unflatten(x)
         x = self.decoder_conv(x)
+        x = torch.sigmoid(x)
+        return x
+
+class classifier(nn.Module):
+
+    def __init__(self, encoded_space_dim):
+        super().__init__()
+
+        ### Convolutional section
+        self.encoder_cnn = nn.Sequential(
+            nn.Conv2d(1, 8, 3, stride=1, padding=0),
+            nn.ReLU(True),
+            nn.Conv2d(8, 16, 3, stride=1, padding=0),
+            nn.BatchNorm2d(16),
+            nn.ReLU(True),
+            nn.Conv2d(16, 32, 3, stride=1, padding=0),
+            nn.ReLU(True)
+        )
+
+        ### Flatten layer
+        self.flatten = nn.Flatten(start_dim=1)
+        ### Linear section
+        self.encoder_lin = nn.Sequential(
+            nn.Linear(9 * 9 * 32, 128),
+            nn.ReLU(True),
+            nn.Linear(128, encoded_space_dim)
+        )
+
+    def forward(self, x):
+        x = self.encoder_cnn(x)
+        x = self.flatten(x)
+        x = self.encoder_lin(x)
+        x = torch.sigmoid(x)
         return x
