@@ -11,26 +11,30 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 print(f'Selected device: {device}')
 
 model_dir = './models'
-if_model = True
+if_model = False
 save_dir = '../tac_data/'
 
-task_name = 'ycb_new'
-object_name = '011_banana'
-object_name_2 = '010_potted_meat_can'
-object_name_3 = '025_mug'
-object_name_4 = '061_foam_brick'
+task_name = 'final'
+object_name = 'tac_data'
+# object_name_2 = '010_potted_meat_can'
+# object_name_3 = '025_mug'
+# object_name_4 = '061_foam_brick'
 
 with open(save_dir+object_name+'.pkl','rb') as f:
     d = pickle.load(f)
-with open(save_dir+object_name_2+'.pkl','rb') as f:
-    d_2 = pickle.load(f)
-with open(save_dir+object_name_3+'.pkl','rb') as f:
-    d_3 = pickle.load(f)
-with open(save_dir+object_name_4+'.pkl','rb') as f:
-    d_4 = pickle.load(f)
+tac = abs(torch.tensor(d['tactile'], device=device)[:,:,2])
+y = torch.tensor(d['class'], device=device)
 
-tac = abs(torch.tensor(np.concatenate((d['tactile'],d_2['tactile'],d_3['tactile'],d_4['tactile']),axis=0), device=device)[:,:,2])
-y = torch.tensor(np.concatenate((d['class'],d_2['class'],d_3['class'],d_4['class']),axis=0), device=device)
+# with open(save_dir+object_name_2+'.pkl','rb') as f:
+#     d_2 = pickle.load(f)
+# with open(save_dir+object_name_3+'.pkl','rb') as f:
+#     d_3 = pickle.load(f)
+# with open(save_dir+object_name_4+'.pkl','rb') as f:
+#     d_4 = pickle.load(f)
+
+# tac = abs(torch.tensor(np.concatenate((d['tactile'],d_2['tactile'],d_3['tactile'],d_4['tactile']),axis=0), device=device)[:,:,2])
+# y = torch.tensor(np.concatenate((d['class'],d_2['class'],d_3['class'],d_4['class']),axis=0), device=device)
+
 tac /= tac.max(1,keepdim=True)[0]
 
 x = tac.reshape(-1,1,15,15)
