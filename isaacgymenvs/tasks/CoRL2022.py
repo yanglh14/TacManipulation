@@ -17,6 +17,7 @@ sim_params.dt = 1 / 50
 sim_params.substeps = 1
 sim_params.up_axis = gymapi.UP_AXIS_Z
 sim_params.gravity = gymapi.Vec3(0.0, 0.0, -9.81)
+# sim_params.use_gpu_pipeline = True
 
 # set PhysX-specific parameters
 sim_params.physx.use_gpu = True
@@ -54,13 +55,13 @@ asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 #### load object asset
 if_viewer = False
-sim_length = 500
+sim_length = 100
 num_iter = 1000
-noise_scale = 0.01
-object_name = '025_mug'
+noise_scale = 0.05
+object_name = 'cube_small'
 asset_root = "../../assets"
-asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
-# asset_file = "tactile/objects/"+ object_name +".urdf"
+# asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
+asset_file = "tactile/objects/"+ object_name +".urdf"
 
 asset_options = gymapi.AssetOptions()
 asset_options.armature = 0.01
@@ -85,7 +86,7 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
         actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 0)
 
         pose = gymapi.Transform()
-        pose.p = gymapi.Vec3(0.1, 0.1, 0.15)
+        pose.p = gymapi.Vec3(0.1, 0.1, 0.12)
         actor_handle1 = gym.create_actor(env, asset2, pose, "Object", i, 0)
 
         gym.end_aggregate(env)

@@ -1,20 +1,40 @@
+import os.path
+
 from torch.utils.data import DataLoader,random_split,TensorDataset
 import pickle
 import matplotlib.pyplot as plt # plotting library
 import numpy as np # this module is useful to work with numerical arrays
 import torch
 from torchvision import transforms
-from torch import nn
+from model import *
 
+model_dir = './models'
+if_model = True
 save_dir = '../tac_data/'
+
+task_name = 'ycb'
 object_name = '011_banana'
+object_name_2 = '010_potted_meat_can'
+object_name_3 = '025_mug'
+object_name_4 = '061_foam_brick'
 
 with open(save_dir+object_name+'.pkl','rb') as f:
     d = pickle.load(f)
+with open(save_dir+object_name_2+'.pkl','rb') as f:
+    d_2 = pickle.load(f)
+with open(save_dir+object_name_3+'.pkl','rb') as f:
+    d_3 = pickle.load(f)
+with open(save_dir+object_name_4+'.pkl','rb') as f:
+    d_4 = pickle.load(f)
 
-x = torch.tensor(d['tactile'][:,:,2].reshape(-1,1,15,15)*(100))
+tac = np.concatenate((d['tactile'],d_2['tactile'],d_3['tactile'],d_4['tactile']),axis=0)
+y = np.concatenate((d['class'],d_2['class'],d_3['class'],d_4['class']),axis=0)
+# tac = d['tactile']
+# pos = d['object_pos']
+
+x = torch.tensor(tac[:,:,2].reshape(-1,1,15,15)*(100))
 x = abs(x)
-y = torch.tensor(d['object_pos'])
+y = torch.tensor(y)
 tactile_dataset = TensorDataset(x,y)
 
 train_transform = transforms.Compose([
@@ -32,71 +52,6 @@ batch_size=32
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size)
 valid_loader = torch.utils.data.DataLoader(val_data, batch_size=batch_size)
 
-class Encoder(nn.Module):
-
-    def __init__(self, encoded_space_dim, fc2_input_dim):
-        super().__init__()
-
-        ### Convolutional section
-        self.encoder_cnn = nn.Sequential(
-            nn.Conv2d(1, 8, 3, stride=1, padding=0),
-            nn.ReLU(True),
-            nn.Conv2d(8, 16, 3, stride=1, padding=0),
-            nn.BatchNorm2d(16),
-            nn.ReLU(True),
-            nn.Conv2d(16, 32, 3, stride=1, padding=0),
-            nn.ReLU(True)
-        )
-
-        ### Flatten layer
-        self.flatten = nn.Flatten(start_dim=1)
-        ### Linear section
-        self.encoder_lin = nn.Sequential(
-            nn.Linear(9 * 9 * 32, 128),
-            nn.ReLU(True),
-            nn.Linear(128, encoded_space_dim)
-        )
-
-    def forward(self, x):
-        x = self.encoder_cnn(x)
-        x = self.flatten(x)
-        x = self.encoder_lin(x)
-        return x
-
-
-class Decoder(nn.Module):
-
-    def __init__(self, encoded_space_dim, fc2_input_dim):
-        super().__init__()
-        self.decoder_lin = nn.Sequential(
-            nn.Linear(encoded_space_dim, 128),
-            nn.ReLU(True),
-            nn.Linear(128, 9 * 9 * 32),
-            nn.ReLU(True)
-        )
-
-        self.unflatten = nn.Unflatten(dim=1,
-                                      unflattened_size=(32, 9, 9))
-
-        self.decoder_conv = nn.Sequential(
-            nn.ConvTranspose2d(32, 16, 3,
-                               stride=1, output_padding=0),
-            nn.BatchNorm2d(16),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(16, 8, 3, stride=1,
-                               padding=0, output_padding=0),
-            nn.BatchNorm2d(8),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(8, 1, 3, stride=1,
-                               padding=0, output_padding=0)
-        )
-
-    def forward(self, x):
-        x = self.decoder_lin(x)
-        x = self.unflatten(x)
-        x = self.decoder_conv(x)
-        return x
-
 ### Define the loss function
 loss_fn = torch.nn.MSELoss()
 
@@ -110,8 +65,13 @@ torch.manual_seed(0)
 d = 10
 
 #model = Autoencoder(encoded_space_dim=encoded_space_dim)
-encoder = Encoder(encoded_space_dim=d,fc2_input_dim=128)
-decoder = Decoder(encoded_space_dim=d,fc2_input_dim=128)
+if if_model:
+    encoder = torch.load(os.path.join(model_dir,task_name+'_encoder.pt'))
+    decoder = torch.load(os.path.join(model_dir,task_name+'_decoder.pt'))
+else:
+    encoder = Encoder(encoded_space_dim=d,fc2_input_dim=128)
+    decoder = Decoder(encoded_space_dim=d,fc2_input_dim=128)
+
 params_to_optimize = [
     {'params': encoder.parameters()},
     {'params': decoder.parameters()}
@@ -201,12 +161,61 @@ def plot_ae_outputs(encoder,decoder,n=10):
          ax.set_title('Reconstructed images')
     plt.show()
 
-num_epochs = 30
-diz_loss = {'train_loss':[],'val_loss':[]}
-for epoch in range(num_epochs):
-   train_loss =train_epoch(encoder,decoder,device,train_loader,loss_fn,optim)
-   val_loss = test_epoch(encoder,decoder,device,valid_loader,loss_fn)
-   print('\n EPOCH {}/{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs,train_loss,val_loss))
-   diz_loss['train_loss'].append(train_loss)
-   diz_loss['val_loss'].append(val_loss)
-   plot_ae_outputs(encoder,decoder,n=10)
+if not if_model:
+    num_epochs = 30
+    diz_loss = {'train_loss': [], 'val_loss': []}
+
+    for epoch in range(num_epochs):
+       train_loss =train_epoch(encoder,decoder,device,train_loader,loss_fn,optim)
+       val_loss = test_epoch(encoder,decoder,device,valid_loader,loss_fn)
+       print('\n EPOCH {}/{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs,train_loss,val_loss))
+       diz_loss['train_loss'].append(train_loss)
+       diz_loss['val_loss'].append(val_loss)
+
+    torch.save(encoder, os.path.join(model_dir, task_name + '_encoder.pt'))
+    torch.save(decoder, os.path.join(model_dir, task_name + '_decoder.pt'))
+
+    # Plot losses
+    plt.figure(figsize=(10,8))
+    plt.semilogy(diz_loss['train_loss'], label='Train')
+    plt.semilogy(diz_loss['val_loss'], label='Valid')
+    plt.xlabel('Epoch')
+    plt.ylabel('Average Loss')
+    #plt.grid()
+    plt.legend()
+    #plt.title('loss')
+    plt.show()
+
+plot_ae_outputs(encoder, decoder, n=10)
+
+encoded_samples = []
+import tqdm
+for sample in val_data.dataset:
+    img = sample[0].unsqueeze(0).to(device)
+    label = sample[1]
+    # Encode image
+    encoder.eval()
+    with torch.no_grad():
+        encoded_img  = encoder(img)
+    # Append to list
+    encoded_img = encoded_img.flatten().cpu().numpy()
+    encoded_sample = {f"Enc. Variable {i}": enc for i, enc in enumerate(encoded_img)}
+    encoded_sample['label'] = label
+    encoded_samples.append(encoded_sample)
+
+import pandas as pd
+encoded_samples = pd.DataFrame(encoded_samples)
+
+import plotly.express as px
+
+px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
+           color=encoded_samples.label.astype(str), opacity=0.7)
+
+from sklearn.manifold import TSNE
+
+tsne = TSNE(n_components=2)
+tsne_results = tsne.fit_transform(encoded_samples.drop(['label'],axis=1))
+fig = px.scatter(tsne_results, x=0, y=1,
+                 color=encoded_samples.label.astype(str),
+                 labels={'0': 'tsne-2d-one', '1': 'tsne-2d-two'})
+fig.show()
