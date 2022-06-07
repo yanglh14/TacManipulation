@@ -14,8 +14,8 @@ model_dir = './models'
 if_model = False
 save_dir = '../tac_data/'
 
-task_name = 'final'
-object_name = 'tac_data'
+task_name = 'cylinder_big'
+object_name = 'cylinder_small'
 # object_name_2 = '010_potted_meat_can'
 # object_name_3 = '025_mug'
 # object_name_4 = '061_foam_brick'

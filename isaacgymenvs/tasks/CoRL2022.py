@@ -162,10 +162,10 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
     return tactile_list, tac_pose_list, object_pos_list
 
 def random_pose(noise_scale):
-    pose = torch.tensor([0.1,0.1,0.15, 0,0,0,1, 0,0,0,0,0,0])
+    pose = torch.tensor([0.1,0.1,0.12, 0,0,0,1, 0,0,0,0,0,0])
     rand_quat = quat_from_angle_axis(torch.rand(1)*np.pi, torch.tensor([0, 0, 1], dtype=torch.float))
     pose[3:7] = rand_quat
-    pose[:3] = pose[:3] + noise_scale * torch.rand(3)
+    pose[:2] = pose[:2] + noise_scale * torch.rand(2)
     return pose
 
 def plot_forceposition(p,f):
