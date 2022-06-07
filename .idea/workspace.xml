@@ -5,18 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Dynamic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/AntPPO.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/AntPPO.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/AnymalPPO.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/AnymalPPO.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/HumanoidPPO.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/HumanoidPPO.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/IngenuityPPO.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/IngenuityPPO.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/ShadowHandPPO.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/ShadowHandPPO.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/ShadowHandPPOAsymmLSTM.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/ShadowHandPPOAsymmLSTM.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/train/ShadowHandPPOLSTM.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/train/ShadowHandPPOLSTM.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_decoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_decoder.pt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/011_banana_decoder" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/011_banana_encoder" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ball_small_decoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ball_small_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/final_decoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/models/final_decoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/final_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/models/final_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_decoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tac_data/cube_small.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tac_data/cube_small.pkl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tac_data/cylinder_small.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tac_data/cylinder_small.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tac_data/tac_data.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tac_data/tac_data.pkl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,6 +39,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -44,14 +57,14 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/tac_data" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/tasks" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/tac_data" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/encoder" />
       <recent name="$PROJECT_DIR$/assets/tactile/objects" />
-      <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
       <recent name="$PROJECT_DIR$/assets/urdf/ycb" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -59,7 +72,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.cnn_encoder">
+  <component name="RunManager" selected="Python.CoRL2022_Dynamic">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -300,6 +313,7 @@
       <item itemvalue="Python.cnn_encoder_sample" />
       <item itemvalue="Python.cnn_encoder" />
       <item itemvalue="Python.CoRL2022" />
+      <item itemvalue="Python.CoRL2022_Dynamic" />
       <item itemvalue="Python.cnn_classifer" />
       <item itemvalue="Python.process_data" />
       <item itemvalue="Python.write" />
@@ -307,11 +321,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.CoRL2022_Dynamic" />
+        <item itemvalue="Python.cnn_classifer" />
         <item itemvalue="Python.process_data" />
         <item itemvalue="Python.process_data_1" />
-        <item itemvalue="Python.cnn_classifer" />
         <item itemvalue="Python.cnn_encoder_sample" />
-        <item itemvalue="Python.write" />
       </list>
     </recent_temporary>
   </component>
@@ -342,13 +356,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py</url>
-          <line>107</line>
-          <option name="timeStamp" value="114" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py</url>
           <line>94</line>
           <option name="timeStamp" value="115" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py</url>
+          <line>8</line>
+          <option name="timeStamp" value="118" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py</url>
+          <line>69</line>
+          <option name="timeStamp" value="145" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

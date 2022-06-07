@@ -92,10 +92,12 @@ class classifier(nn.Module):
             nn.ReLU(True),
             nn.Linear(128, encoded_space_dim)
         )
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         x = self.encoder_cnn(x)
         x = self.flatten(x)
         x = self.encoder_lin(x)
         x = torch.sigmoid(x)
+        # x = self.softmax(x)
         return x

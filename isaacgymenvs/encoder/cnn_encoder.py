@@ -11,11 +11,11 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 print(f'Selected device: {device}')
 
 model_dir = './models'
-if_model = False
+if_model = True
 save_dir = '../tac_data/'
 
-task_name = 'cylinder_big'
-object_name = 'cylinder_small'
+task_name = 'final'
+object_name = 'tac_data'
 # object_name_2 = '010_potted_meat_can'
 # object_name_3 = '025_mug'
 # object_name_4 = '061_foam_brick'
@@ -183,7 +183,7 @@ if not if_model:
 plot_ae_outputs(encoder, decoder, n=10)
 
 encoded_samples = []
-import tqdm
+
 for sample in val_data.dataset:
     img = sample[0].unsqueeze(0).to(device)
     label = sample[1]
@@ -202,9 +202,9 @@ encoded_samples = pd.DataFrame(encoded_samples)
 
 import plotly.express as px
 
-fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
-           color=encoded_samples.label.astype(str), opacity=0.7)
-fig.show()
+# fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
+#            color=encoded_samples.label.astype(str), opacity=0.7)
+# fig.show()
 
 tsne = TSNE(n_components=2)
 tsne_results = tsne.fit_transform(encoded_samples.drop(['label'],axis=1))
