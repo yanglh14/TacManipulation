@@ -31,7 +31,7 @@ sim_params.physx.rest_offset = 0.0
 sim_params.physx.bounce_threshold_velocity = 0.2
 sim_params.physx.max_depenetration_velocity = 1000.0
 sim_params.physx.default_buffer_size_multiplier = 10.0
-index = 3
+index = 0
 sim = gym.create_sim(index, index, gymapi.SIM_PHYSX, sim_params)
 
 # configure the ground plane
@@ -47,27 +47,32 @@ gym.add_ground(sim, plane_params)
 
 #### load desk asset
 asset_root = "../../assets"
-asset_file = "tactile/CoRL2022/corl2022.xml"
+asset_file = "tactile/CoRL2022/corl2022_multi1.xml"
 asset_options = gymapi.AssetOptions()
 asset_options.fix_base_link = True
 asset_options.armature = 0.01
-
+asset_options.default_dof_drive_mode = gymapi.DOF_MODE_POS
 asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
+asset_file = "tactile/CoRL2022/corl2022_multi2.xml"
+asset2 = gym.load_asset(sim, asset_root, asset_file, asset_options)
+asset_file = "tactile/CoRL2022/corl2022_multi3.xml"
+asset3 = gym.load_asset(sim, asset_root, asset_file, asset_options)
+
 #### load object asset
-if_viewer = False
-sim_length = 500
+if_viewer = True
+sim_length = 100
 num_iter = 1000
 noise_scale = 1
-object_name = 'cube_small'
+object_name = '025_mug'
 asset_root = "../../assets"
-# asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
-asset_file = "tactile/objects/"+ object_name +".urdf"
+asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
+# asset_file = "tactile/objects/"+ object_name +".urdf"
 
 asset_options = gymapi.AssetOptions()
 asset_options.armature = 0.01
 
-asset2 = gym.load_asset(sim, asset_root, asset_file, asset_options)
+asset4 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 # set up the env grid
 num_envs = 1
@@ -80,15 +85,19 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
     # create and populate the environments
     for i in range(num_envs):
         env = gym.create_env(sim, env_lower, env_upper, envs_per_row)
-        gym.begin_aggregate(env, 300, 1000, True)
+        gym.begin_aggregate(env, 1000, 1000, True)
 
         pose = gymapi.Transform()
         pose.p = gymapi.Vec3(0.1, 0.1, 0.1)
-        actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 0)
+        actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 1)
+        pose.p = gymapi.Vec3(0.1, 0.05, 0.15)
+        actor_handle1 = gym.create_actor(env, asset2, pose, "Desk2", i, 1)
+        pose.p = gymapi.Vec3(0.1, 0.15, 0.15)
+        actor_handle2 = gym.create_actor(env, asset3, pose, "Desk3", i, 1)
 
         pose = gymapi.Transform()
-        pose.p = gymapi.Vec3(0.1, 0.1, 0.12)
-        actor_handle1 = gym.create_actor(env, asset2, pose, "Object", i, 0)
+        # pose.p = gymapi.Vec3(0.1, 0.1, 0.12)
+        # actor_handle3 = gym.create_actor(env, asset4, pose, "Object", i, 0)
 
         gym.end_aggregate(env)
 
@@ -123,6 +132,13 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
         gym.refresh_rigid_body_state_tensor(sim)
         gym.refresh_net_contact_force_tensor(sim)
         gym.refresh_actor_root_state_tensor(sim)
+        gym.refresh_dof_state_tensor(sim)
+
+        dof_tensor = gym.acquire_dof_state_tensor(sim)
+        dof_state = gymtorch.wrap_tensor(dof_tensor)
+        print(dof_state[:,0])
+        cur_targets = torch.ones((1, 2), dtype=torch.float, device=f'cuda:{index}')* (-0.05)
+        gym.set_dof_position_target_tensor(sim, gymtorch.unwrap_tensor(cur_targets))
 
         # get pose and tactile
         _net_cf = gym.acquire_net_contact_force_tensor(sim)
@@ -136,36 +152,24 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
         actor_root_state_tensor = gym.acquire_actor_root_state_tensor(sim)
         root_state_tensor = gymtorch.wrap_tensor(actor_root_state_tensor).view(-1, 13)
 
-        if step%50 == 0:
-            tactile_.append(np.array(tactile.cpu()))
-            tac_pose_.append(np.array(tac_pose.cpu()))
-            object_pos_.append(np.array(rigid_body_states[0,-1,:7].cpu()))
-
-        if step ==100:
-            root_state_tensor[-1,-3] = 1
-            object_indices = torch.tensor([root_state_tensor.shape[0]-1],device=f'cuda:{index}',dtype=torch.int32)
-            gym.set_actor_root_state_tensor_indexed(sim,gymtorch.unwrap_tensor(root_state_tensor),
-                                                         gymtorch.unwrap_tensor(object_indices), len(object_indices))
-
-        if step == sim_length:
-            tactile_list.append(np.array(tactile_))
-            tac_pose_list.append(np.array(tac_pose_))
-            object_pos_list.append(np.array(object_pos_))
-
-            tactile_, tac_pose_, object_pos_ = [], [], []
-
-            step = 0
-            i=i+1
-            print("time cost:", time.time() - t)
-            t = time.time()
-            print('episode:',i)
-            ###reset object
-            root_state_tensor[-1,:] = random_pose(noise_scale)
-            object_indices = torch.tensor([root_state_tensor.shape[0]-1],device=f'cuda:{index}',dtype=torch.int32)
-            gym.set_actor_root_state_tensor_indexed(sim,gymtorch.unwrap_tensor(root_state_tensor),
-                                                         gymtorch.unwrap_tensor(object_indices), len(object_indices))
-
-        #     plot_tactile_heatmap(tactile,tac_pose,object_name)
+        # if step == sim_length:
+        #     tactile_list.append(np.array(tactile_))
+        #     tac_pose_list.append(np.array(tac_pose_))
+        #     object_pos_list.append(np.array(object_pos_))
+        #
+        #     tactile_, tac_pose_, object_pos_ = [], [], []
+        #
+        #     step = 0
+        #     i=i+1
+        #     print("time cost:", time.time() - t)
+        #     t = time.time()
+        #     print('episode:',i)
+        #     ###reset object
+        #     root_state_tensor[-1,:] = random_pose(noise_scale)
+        #     object_indices = torch.tensor([root_state_tensor.shape[0]-1],device=f'cuda:{index}',dtype=torch.int32)
+        #     gym.set_actor_root_state_tensor_indexed(sim,gymtorch.unwrap_tensor(root_state_tensor),
+        #                                                  gymtorch.unwrap_tensor(object_indices), len(object_indices))
+        #
         #     plot_tactile_heatmap(tactile,tac_pose)
 
         gym.sync_frame_time(sim)
@@ -179,7 +183,6 @@ def random_pose(noise_scale):
     pose[3:7] = rand_quat
     # pose[-3:] = noise_scale * torch.rand(3)
     return pose
-
 
 def plot_tactile_heatmap(tactile,tactile_pose,object_name=None):
 
@@ -199,11 +202,8 @@ def plot_tactile_heatmap(tactile,tactile_pose,object_name=None):
         ax.set_yticks(range(15))
 
         fig.colorbar(im)
-        if object_name != None:
-            plt.savefig(os.path.abspath(os.path.join(os.getcwd(),'../..')) + "/Pictures/"+object_name+".png")
-            plt.close(fig)
-        plt.show()
 
+        plt.show()
 
 if __name__ == "__main__":
 

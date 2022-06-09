@@ -1,15 +1,15 @@
 import xml.etree.ElementTree as ET
 
-file_path = 'assets/desk.xml'
+file_path = 'assets/desk_multi2.xml'
 tree = ET.ElementTree(file=file_path)
 
 num = 8
-width = 0.01
+width = 0.005
 
 for i in range(-num+1,num):
 
     for j in range(-num+1,num):
-        pos = '0.01 {} {}'.format((i*width),(j*width))
+        pos = '0.005 {} {}'.format((i*width),(j*width))
         tactile = ET.Element('body')
         tactile.attrib = {'pos': pos, 'euler': '0.0 0.0 0'}
         geom1 = ET.SubElement(tactile,'geom')
