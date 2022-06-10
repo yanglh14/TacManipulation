@@ -103,13 +103,15 @@ class classifier(nn.Module):
         return x
 
 class LSTMModel(nn.Module):
-    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim,device):
         super(LSTMModel, self).__init__()
         # Hidden dimensions
         self.hidden_dim = hidden_dim
 
         # Number of hidden layers
         self.layer_dim = layer_dim
+
+        self.device = device
 
         # Building your LSTM
         # batch_first=True causes input/output tensors to be of shape
@@ -121,10 +123,10 @@ class LSTMModel(nn.Module):
 
     def forward(self, x):
         # Initialize hidden state with zeros
-        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_()
+        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim, device=self.device).requires_grad_()
 
         # Initialize cell state
-        c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).requires_grad_()
+        c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim, device=self.device).requires_grad_()
 
         # 28 time steps
         # We need to detach as we are doing truncated backpropagation through time (BPTT)

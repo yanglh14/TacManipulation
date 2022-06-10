@@ -5,18 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Multi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/CoRL2022_Multi.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_classifer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Dynamic.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Dynamic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Multi.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Multi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,15 +53,16 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "last_opened_file_path": "/home/amax/isaacgym/TacManipulation/assets/tactile/CoRL2022/assets"
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "/home/amax/isaacgym/TacManipulation/isaacgymenvs/encoder"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/isaacgymenvs/encoder" />
       <recent name="$PROJECT_DIR$/assets/tactile/CoRL2022/assets" />
       <recent name="$PROJECT_DIR$/assets/tactile/CoRL2022" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
-      <recent name="$PROJECT_DIR$/isaacgymenvs/encoder" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/tac_data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -68,7 +70,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.CoRL2022_Multi">
+  <component name="RunManager" selected="Python.lstm_classifer">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -82,27 +84,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tasks/Calibration_tac.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="CoRL2022_Multi" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TacManipulation" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/tasks" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Multi.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -166,6 +147,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder_sample.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="lstm_classifer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/encoder" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -332,6 +334,7 @@
       <item itemvalue="Python.CoRL2022" />
       <item itemvalue="Python.CoRL2022_Dynamic" />
       <item itemvalue="Python.CoRL2022_Multi" />
+      <item itemvalue="Python.lstm_classifer" />
       <item itemvalue="Python.cnn_classifer" />
       <item itemvalue="Python.process_data" />
       <item itemvalue="Python.write" />
@@ -339,11 +342,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.CoRL2022_Multi" />
-        <item itemvalue="Python.write" />
-        <item itemvalue="Python.cnn_classifer" />
+        <item itemvalue="Python.lstm_classifer" />
         <item itemvalue="Python.process_data" />
         <item itemvalue="Python.process_data_1" />
+        <item itemvalue="Python.CoRL2022_Multi" />
+        <item itemvalue="Python.write" />
       </list>
     </recent_temporary>
   </component>
@@ -378,19 +381,9 @@
           <option name="timeStamp" value="115" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py</url>
-          <line>8</line>
-          <option name="timeStamp" value="118" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py</url>
           <line>69</line>
           <option name="timeStamp" value="145" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Multi.py</url>
-          <line>143</line>
-          <option name="timeStamp" value="154" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

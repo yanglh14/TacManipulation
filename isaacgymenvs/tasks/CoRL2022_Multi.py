@@ -31,7 +31,8 @@ sim_params.physx.rest_offset = 0.0
 sim_params.physx.bounce_threshold_velocity = 0.2
 sim_params.physx.max_depenetration_velocity = 1000.0
 sim_params.physx.default_buffer_size_multiplier = 10.0
-index = 0
+index = 2
+device = f'cuda:{index}'
 sim = gym.create_sim(index, index, gymapi.SIM_PHYSX, sim_params)
 
 # configure the ground plane
@@ -51,24 +52,25 @@ asset_file = "tactile/CoRL2022/corl2022_multi1.xml"
 asset_options = gymapi.AssetOptions()
 asset_options.fix_base_link = True
 asset_options.armature = 0.01
-asset_options.default_dof_drive_mode = gymapi.DOF_MODE_POS
+asset_options.default_dof_drive_mode = gymapi.DOF_MODE_EFFORT
 asset1 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
+asset_options.disable_gravity = True
 asset_file = "tactile/CoRL2022/corl2022_multi2.xml"
 asset2 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 asset_file = "tactile/CoRL2022/corl2022_multi3.xml"
 asset3 = gym.load_asset(sim, asset_root, asset_file, asset_options)
 
 #### load object asset
-if_viewer = True
-sim_length = 100
+if_viewer = False
+sim_length = 200
 num_iter = 1000
 noise_scale = 1
-object_name = '025_mug'
+object_name = 'cylinder_big'
 asset_root = "../../assets"
 asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
-# asset_file = "tactile/objects/"+ object_name +".urdf"
-
+asset_file = "tactile/objects/"+ object_name +".urdf"
+object_height = 0.15
 asset_options = gymapi.AssetOptions()
 asset_options.armature = 0.01
 
@@ -90,14 +92,14 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
         pose = gymapi.Transform()
         pose.p = gymapi.Vec3(0.1, 0.1, 0.1)
         actor_handle0 = gym.create_actor(env, asset1, pose, "Desk", i, 1)
-        pose.p = gymapi.Vec3(0.1, 0.05, 0.15)
+        pose.p = gymapi.Vec3(0.1, 0.0, 0.20)
         actor_handle1 = gym.create_actor(env, asset2, pose, "Desk2", i, 1)
-        pose.p = gymapi.Vec3(0.1, 0.15, 0.15)
+        pose.p = gymapi.Vec3(0.1, 0.20, 0.20)
         actor_handle2 = gym.create_actor(env, asset3, pose, "Desk3", i, 1)
 
         pose = gymapi.Transform()
-        # pose.p = gymapi.Vec3(0.1, 0.1, 0.12)
-        # actor_handle3 = gym.create_actor(env, asset4, pose, "Object", i, 0)
+        pose.p = gymapi.Vec3(0.1, 0.1, object_height)
+        actor_handle3 = gym.create_actor(env, asset4, pose, "Object", i, 0)
 
         gym.end_aggregate(env)
 
@@ -113,7 +115,6 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
     f,p = [],[]
     step, i = 0,0
     tactile_list, tac_pose_list, object_pos_list = [],[],[]
-    tactile_, tac_pose_, object_pos_ = [], [], []
 
     # while not gym.query_viewer_has_closed(viewer):
     t = time.time()
@@ -136,48 +137,59 @@ def run_sim(if_viewer, sim_length, num_iter, noise_scale):
 
         dof_tensor = gym.acquire_dof_state_tensor(sim)
         dof_state = gymtorch.wrap_tensor(dof_tensor)
-        print(dof_state[:,0])
-        cur_targets = torch.ones((1, 2), dtype=torch.float, device=f'cuda:{index}')* (-0.05)
-        gym.set_dof_position_target_tensor(sim, gymtorch.unwrap_tensor(cur_targets))
+        # print(step,dof_state[:,0])
+
+        cur_targets = torch.ones((1, 2), dtype=torch.float, device=f'cuda:{index}') * (0)
+        if step > 50:
+            cur_targets = torch.ones((1, 2), dtype=torch.float, device=f'cuda:{index}')* (0.05)
+            # gym.set_dof_position_target_tensor(sim, gymtorch.unwrap_tensor(cur_targets))
+        gym.set_dof_actuation_force_tensor(sim, gymtorch.unwrap_tensor(cur_targets))
 
         # get pose and tactile
         _net_cf = gym.acquire_net_contact_force_tensor(sim)
         net_cf = gymtorch.wrap_tensor(_net_cf).view(1, -1, 3)
-        tactile = net_cf[0,3:3+225,:3]
+        tactile1 = net_cf[0,3:3+225,:3]
+        tactile2 = net_cf[0,3+3+225:3+225+3+225,:3]
+        tactile3 = net_cf[0,3+3+225+3+225:3+225+3+225+3+225,:3]
 
         rigid_body_tensor = gym.acquire_rigid_body_state_tensor(sim)
         rigid_body_states = gymtorch.wrap_tensor(rigid_body_tensor).view(1, -1, 13)
-        tac_pose = rigid_body_states[0,3:3+225,:3]
+        tac_pose1 = rigid_body_states[0,3:3+225,:3]
+        tac_pose2 = rigid_body_states[0,3+3+225:3+225+3+225,:3]
+        tac_pose3 = rigid_body_states[0,3+3+225+3+225:3+225+3+225+3+225,:3]
 
         actor_root_state_tensor = gym.acquire_actor_root_state_tensor(sim)
         root_state_tensor = gymtorch.wrap_tensor(actor_root_state_tensor).view(-1, 13)
 
-        # if step == sim_length:
-        #     tactile_list.append(np.array(tactile_))
-        #     tac_pose_list.append(np.array(tac_pose_))
-        #     object_pos_list.append(np.array(object_pos_))
-        #
-        #     tactile_, tac_pose_, object_pos_ = [], [], []
-        #
-        #     step = 0
-        #     i=i+1
-        #     print("time cost:", time.time() - t)
-        #     t = time.time()
-        #     print('episode:',i)
-        #     ###reset object
-        #     root_state_tensor[-1,:] = random_pose(noise_scale)
-        #     object_indices = torch.tensor([root_state_tensor.shape[0]-1],device=f'cuda:{index}',dtype=torch.int32)
-        #     gym.set_actor_root_state_tensor_indexed(sim,gymtorch.unwrap_tensor(root_state_tensor),
-        #                                                  gymtorch.unwrap_tensor(object_indices), len(object_indices))
-        #
-        #     plot_tactile_heatmap(tactile,tac_pose)
+        if step == sim_length:
+            tactile_list.append(np.concatenate([np.array(tactile1.cpu()),np.array(tactile2.cpu()),np.array(tactile3.cpu())]))
+            tac_pose_list.append(np.concatenate([np.array(tac_pose1.cpu()),np.array(tac_pose2.cpu()),np.array(tac_pose3.cpu())]))
+            object_pos_list.append(np.array(rigid_body_states[0,-1,:7].cpu()))
+
+            step = 0
+            i=i+1
+            print("time cost:", time.time() - t)
+            t = time.time()
+            print('episode:',i)
+            # plot_tactile_heatmap(tactile1,tac_pose1)
+            # plot_tactile_heatmap(tactile2,tac_pose2)
+            # plot_tactile_heatmap(tactile3,tac_pose3)
+            ###reset
+
+            dof_state[:,:] = 0
+            gym.set_dof_state_tensor(sim, gymtorch.unwrap_tensor(dof_state))
+
+            root_state_tensor[-1,:] = random_pose(noise_scale)
+            object_indices = torch.tensor([3],device=f'cuda:{index}',dtype=torch.int32)
+            gym.set_actor_root_state_tensor_indexed(sim,gymtorch.unwrap_tensor(root_state_tensor),
+                                                         gymtorch.unwrap_tensor(object_indices), len(object_indices))
 
         gym.sync_frame_time(sim)
 
     return tactile_list, tac_pose_list, object_pos_list
 
 def random_pose(noise_scale):
-    pose = torch.tensor([0.1,0.1,0.12, 0,0,0,1, 0,0,0,0,0,0])
+    pose = torch.tensor([0.1,0.1,object_height, 0,0,0,1, 0,0,0,0,0,0])
     rand_quat = quat_from_angle_axis(torch.rand(1)*np.pi*2, torch.tensor([0, 0, 1], dtype=torch.float))
 
     pose[3:7] = rand_quat
@@ -218,7 +230,7 @@ if __name__ == "__main__":
             'object_pos': np.array(object_pos_list)
     }
 
-    with open(save_dir+object_name+'_dynamic.pkl','wb') as f:
+    with open(save_dir+object_name+'_multi.pkl','wb') as f:
         pickle.dump(data,f,pickle.HIGHEST_PROTOCOL)
 
     # with open(save_dir+object_name+'.pkl','rb') as f:

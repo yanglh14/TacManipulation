@@ -31,7 +31,7 @@ sim_params.physx.rest_offset = 0.0
 sim_params.physx.bounce_threshold_velocity = 0.2
 sim_params.physx.max_depenetration_velocity = 1000.0
 sim_params.physx.default_buffer_size_multiplier = 10.0
-index = 3
+index = 1
 sim = gym.create_sim(index, index, gymapi.SIM_PHYSX, sim_params)
 
 # configure the ground plane
@@ -59,7 +59,7 @@ if_viewer = False
 sim_length = 500
 num_iter = 1000
 noise_scale = 1
-object_name = 'cube_small'
+object_name = 'cylinder_big'
 asset_root = "../../assets"
 # asset_file = "tactile/objects/ycb/"+object_name+"/"+object_name+ ".urdf"
 asset_file = "tactile/objects/"+ object_name +".urdf"
