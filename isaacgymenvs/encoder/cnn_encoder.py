@@ -21,7 +21,7 @@ object_name = 'tac_data'
 # object_name_4 = '061_foam_brick'
 
 plt.rcParams["font.family"] = 'Times New Roman'
-plt.rcParams["font.size"] = 24
+plt.rcParams["font.size"] = 30
 
 with open(save_dir+object_name+'.pkl','rb') as f:
     d = pickle.load(f)
@@ -138,9 +138,10 @@ def test_epoch(encoder, decoder, device, dataloader, loss_fn):
 def plot_ae_outputs(encoder,decoder,n=10):
     plt.figure(figsize=(16,4.5))
     t_idx = np.random.randint(0,val_data.__len__(),n)
+    t_idx = np.array([500,1500,2500,3500,4500,5500,6500,7500,8500,9500])
     for i in range(n):
       ax = plt.subplot(2,n,i+1)
-      img = val_data[t_idx[i]][0].unsqueeze(0).to(device)
+      img = tactile_dataset[t_idx[i]][0].unsqueeze(0).to(device)
       encoder.eval()
       decoder.eval()
       with torch.no_grad():
@@ -148,14 +149,14 @@ def plot_ae_outputs(encoder,decoder,n=10):
       plt.imshow(img.cpu().squeeze().numpy(), cmap=plt.cm.hot_r)
       ax.get_xaxis().set_visible(False)
       ax.get_yaxis().set_visible(False)
-      if i == n//2:
-        ax.set_title('Original images')
+      # if i == n//2:
+      #   ax.set_title('Original images')
       ax = plt.subplot(2, n, i + 1 + n)
       plt.imshow(rec_img.cpu().squeeze().numpy(), cmap=plt.cm.hot_r)
       ax.get_xaxis().set_visible(False)
       ax.get_yaxis().set_visible(False)
-      if i == n//2:
-         ax.set_title('Reconstructed images')
+      # if i == n//2:
+      #    ax.set_title('Reconstructed images')
     plt.show()
 
 if not if_model:
@@ -175,47 +176,62 @@ if not if_model:
     np.save(os.path.join('./data', task_name + '_train_loss'),np.array(diz_loss['train_loss']))
     np.save(os.path.join('./data', task_name + '_val_loss'),np.array(diz_loss['val_loss']))
 
+if if_model:
 
-    # Plot losses
-    plt.figure(figsize=(10,8))
-    plt.plot(diz_loss['train_loss'], label='Train')
-    plt.plot(diz_loss['val_loss'], label='Valid')
-    plt.xlabel('Epoch')
-    plt.ylabel('Average Loss')
-    #plt.grid()
-    plt.legend()
-    plt.show()
+    # diz_loss = {'train_loss': [], 'val_loss': []}
+    # diz_loss['train_loss'] = np.load('./data/final_2_train_loss.npy')
+    # diz_loss['val_loss'] = np.load('./data/final_2_val_loss.npy')
+    #
+    # # Plot losses
+    # plt.figure(figsize=(10,8))
+    # plt.semilogy(diz_loss['train_loss'], label='Train')
+    # plt.semilogy(diz_loss['val_loss'], label='Valid')
+    # # plt.xlabel('Epoch')
+    # # plt.ylabel('Average Loss')
+    # plt.ylim([0,0.1])
+    # #plt.grid()
+    # plt.legend()
+    # plt.show()
 
-# plot_ae_outputs(encoder, decoder, n=10)
+    # plot_ae_outputs(encoder, decoder, n=10)
 
-encoded_samples = []
+    encoded_samples = []
 
-for sample in val_data.dataset:
-    img = sample[0].unsqueeze(0).to(device)
-    label = sample[1]
-    # Encode image
-    encoder.eval()
-    with torch.no_grad():
-        encoded_img  = encoder(img)
-    # Append to list
-    encoded_img = encoded_img.flatten().cpu().numpy()
-    encoded_sample = {f"Enc. Variable {i}": enc for i, enc in enumerate(encoded_img)}
-    encoded_sample['label'] = label
-    encoded_samples.append(encoded_sample)
+    for sample in val_data.dataset:
+        img = sample[0].unsqueeze(0).to(device)
+        label = sample[1]
+        # Encode image
+        encoder.eval()
+        with torch.no_grad():
+            encoded_img  = encoder(img)
+        # Append to list
+        encoded_img = encoded_img.flatten().cpu().numpy()
+        encoded_sample = {f"Enc. Variable {i}": enc for i, enc in enumerate(encoded_img)}
+        encoded_sample['label'] = label
+        encoded_samples.append(encoded_sample)
 
-import pandas as pd
-encoded_samples = pd.DataFrame(encoded_samples)
+    import pandas as pd
+    encoded_samples = pd.DataFrame(encoded_samples)
 
-import plotly.express as px
+    import plotly.express as px
 
-# fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
-#            color=encoded_samples.label.astype(str), opacity=0.7)
-# fig.show()
+    # fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
+    #            color=encoded_samples.label.astype(str), opacity=0.7)
+    # fig.show()
 
-tsne = TSNE(n_components=2)
-tsne_results = tsne.fit_transform(encoded_samples.drop(['label'],axis=1))
-fig = px.scatter(tsne_results, x=0, y=1,
-                 color=encoded_samples.label.astype(str),
-                 labels={'0': 'tsne-2d-one', '1': 'tsne-2d-two'})
+    tsne = TSNE(n_components=2)
+    tsne_results = tsne.fit_transform(encoded_samples.drop(['label'],axis=1))
+    fig = px.scatter(tsne_results, x=0, y=1,
+                     color=encoded_samples.label.astype(str),
+                     labels={'0': 'tsne-2d-one', '1': 'tsne-2d-two'})
 
-fig.show()
+    fig.show()
+
+    # label = np.array(encoded_samples.label.astype(float))
+    # fig, ax = plt.subplots()
+    #
+    # scatter = ax.scatter(tsne_results[:,0], tsne_results[:,1],c = label)
+    # legend1 = ax.legend(*scatter.legend_elements(),
+    #                     loc="lower left", title="Classes")
+    # ax.add_artist(legend1)
+    # plt.show()
