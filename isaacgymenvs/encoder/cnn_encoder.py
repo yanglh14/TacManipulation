@@ -14,11 +14,14 @@ model_dir = './models'
 if_model = True
 save_dir = '../tac_data/'
 
-task_name = 'final'
+task_name = 'final_2'
 object_name = 'tac_data'
 # object_name_2 = '010_potted_meat_can'
 # object_name_3 = '025_mug'
 # object_name_4 = '061_foam_brick'
+
+plt.rcParams["font.family"] = 'Times New Roman'
+plt.rcParams["font.size"] = 24
 
 with open(save_dir+object_name+'.pkl','rb') as f:
     d = pickle.load(f)
@@ -169,18 +172,21 @@ if not if_model:
     torch.save(encoder, os.path.join(model_dir, task_name + '_encoder.pt'))
     torch.save(decoder, os.path.join(model_dir, task_name + '_decoder.pt'))
 
+    np.save(os.path.join('./data', task_name + '_train_loss'),np.array(diz_loss['train_loss']))
+    np.save(os.path.join('./data', task_name + '_val_loss'),np.array(diz_loss['val_loss']))
+
+
     # Plot losses
     plt.figure(figsize=(10,8))
-    plt.semilogy(diz_loss['train_loss'], label='Train')
-    plt.semilogy(diz_loss['val_loss'], label='Valid')
+    plt.plot(diz_loss['train_loss'], label='Train')
+    plt.plot(diz_loss['val_loss'], label='Valid')
     plt.xlabel('Epoch')
     plt.ylabel('Average Loss')
     #plt.grid()
     plt.legend()
-    #plt.title('loss')
     plt.show()
 
-plot_ae_outputs(encoder, decoder, n=10)
+# plot_ae_outputs(encoder, decoder, n=10)
 
 encoded_samples = []
 
@@ -211,4 +217,5 @@ tsne_results = tsne.fit_transform(encoded_samples.drop(['label'],axis=1))
 fig = px.scatter(tsne_results, x=0, y=1,
                  color=encoded_samples.label.astype(str),
                  labels={'0': 'tsne-2d-one', '1': 'tsne-2d-two'})
+
 fig.show()

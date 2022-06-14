@@ -5,19 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/CoRL2022_Multi.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_classifer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/assets/desk_multi3.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/CoRL2022/corl2022_multi3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_classifer.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_classifer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/final_softmax_classifier.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_classifier.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_new_decoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/models/ycb_new_encoder.pt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Dynamic.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Dynamic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Multi.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Multi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +56,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/amax/isaacgym/TacManipulation/isaacgymenvs/encoder"
+    "last_opened_file_path": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/encoder"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -70,7 +72,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.lstm_classifer">
+  <component name="RunManager" selected="Python.Fig4.2">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -84,6 +86,48 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tasks/Calibration_tac.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Fig4" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/encoder" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Fig4.2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/encoder" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -155,6 +199,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="gnn_classifer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/encoder" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_classifer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="lstm_classifer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -168,48 +233,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="process_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TacManipulation" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/tac_data" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="process_data_1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TacManipulation" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/tac_data" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -302,27 +325,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="write" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TacManipulation" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/assets/tactile/CoRL2022" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/assets/tactile/CoRL2022/write.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Python.test_env" />
       <item itemvalue="Python.train" />
@@ -334,19 +336,19 @@
       <item itemvalue="Python.CoRL2022" />
       <item itemvalue="Python.CoRL2022_Dynamic" />
       <item itemvalue="Python.CoRL2022_Multi" />
-      <item itemvalue="Python.lstm_classifer" />
+      <item itemvalue="Python.Fig4" />
+      <item itemvalue="Python.Fig4.2" />
       <item itemvalue="Python.cnn_classifer" />
-      <item itemvalue="Python.process_data" />
-      <item itemvalue="Python.write" />
-      <item itemvalue="Python.process_data_1" />
+      <item itemvalue="Python.gnn_classifer" />
+      <item itemvalue="Python.lstm_classifer" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Fig4.2" />
+        <item itemvalue="Python.gnn_classifer" />
         <item itemvalue="Python.lstm_classifer" />
-        <item itemvalue="Python.process_data" />
-        <item itemvalue="Python.process_data_1" />
-        <item itemvalue="Python.CoRL2022_Multi" />
-        <item itemvalue="Python.write" />
+        <item itemvalue="Python.cnn_classifer" />
+        <item itemvalue="Python.Fig4" />
       </list>
     </recent_temporary>
   </component>
@@ -376,14 +378,24 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py</url>
-          <line>94</line>
-          <option name="timeStamp" value="115" />
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tac_data/process_data_1.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="146" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tac_data/process_data.py</url>
+          <line>38</line>
+          <option name="timeStamp" value="147" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/Fig2.py</url>
+          <line>60</line>
+          <option name="timeStamp" value="149" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py</url>
-          <line>69</line>
-          <option name="timeStamp" value="145" />
+          <line>253</line>
+          <option name="timeStamp" value="155" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

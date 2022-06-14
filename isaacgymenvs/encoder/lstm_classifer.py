@@ -17,7 +17,7 @@ model_dir = './models'
 if_model = True
 save_dir = '../tac_data/'
 
-task_name = 'final_dynamic'
+task_name = 'final_dynamic_2'
 object_name = 'tac_data_dynamic'
 
 
@@ -188,6 +188,10 @@ if not if_model:
        Accuracy_list.append(Accuracy)
     torch.save(classifier, os.path.join(model_dir, task_name + '_classifier.pt'))
 
+    np.save(os.path.join('./data', task_name + '_classifier_train_loss'),np.array(diz_loss['train_loss']))
+    np.save(os.path.join('./data', task_name + '_classifier_val_loss'),np.array(diz_loss['val_loss']))
+    np.save(os.path.join('./data', task_name + '_classifier_accuracy'),np.array(Accuracy_list))
+
     # Plot losses
     plt.figure(figsize=(10,8))
     plt.semilogy(diz_loss['train_loss'], label='Train')
@@ -224,8 +228,10 @@ if if_model:
     ax.legend()
     plt.show()
 
+    pro_list=[]
     for i in range(10):
         probablity = probablity_dis(classifier, device, valid_loader, one_class=i)
+        pro_list.append(probablity)
         fig, ax = plt.subplots()
         labels = list(range(10))
         ax.bar(labels, probablity, 0.35, label='Test')
@@ -233,7 +239,8 @@ if if_model:
         ax.set_ylabel('Average Probability')
         ax.set_title(f'Object{i} Prediction Probability')
         ax.legend()
-        plt.show()
+        # plt.show()
+    np.save(os.path.join('./data', 'pro_'+task_name),np.array(pro_list))
 
     # encoded_samples = []
     #

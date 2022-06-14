@@ -1,14 +1,15 @@
 import os.path
-from sklearn.manifold import TSNE
-import plotly.express as px
-import pandas as pd
-from torch.utils.data import DataLoader,random_split,TensorDataset
-import pickle
-import matplotlib.pyplot as plt # plotting library
-import numpy as np # this module is useful to work with numerical arrays
+
 import torch
-from torchvision import transforms
-from model import *
+from torch.utils.data import random_split
+from torch_geometric.data import Data
+from torch_geometric.loader import DataLoader
+import pickle
+from gnn import *
+from torch import nn
+import numpy as np
+import matplotlib.pyplot as plt # plotting library
+
 # Check if the GPU is available
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 print(f'Selected device: {device}')
@@ -17,106 +18,103 @@ model_dir = './models'
 if_model = True
 save_dir = '../tac_data/'
 
-task_name = 'final_dynamic'
-object_name = 'tac_data_dynamic'
+task_name = 'final_multi_2'
+object_name = 'tac_data_multi'
 
 
 with open(save_dir+object_name+'.pkl','rb') as f:
     d = pickle.load(f)
-tac = abs(torch.tensor(d['tactile'],dtype=torch.float32, device=device)[:,:,:,2])
+tac = abs(torch.tensor(d['tactile'],dtype=torch.float32, device=device)[:,:,2])
+pos = torch.tensor(d['tac_pose'],dtype=torch.float32, device=device)
 y = torch.tensor(d['class'],dtype=torch.long, device=device)
-tac = tac.reshape([10000,-1])
-tac /= tac.max(1,keepdim=True)[0]
-tac = tac.view(10000,10,-1)
 
-x = tac
-y = y
-tactile_dataset = TensorDataset(x,y)
+tac /= tac.max(1,keepdim=True)[0]
+tac = tac.view(10000,-1,1)
+
+tactile_dataset = []
+for i in range(tac.shape[0]):
+
+    data = Data(x=tac[i,tac[i,:,0]!=0,:],pos=pos[i,tac[i,:,0]!=0,:],y=y[i])
+    tactile_dataset.append(data)
 
 m=len(tactile_dataset)
 
 train_data, val_data = random_split(tactile_dataset, [int(m-m*0.2), int(m*0.2)])
-batch_size=32
 
-train_loader = torch.utils.data.DataLoader(train_data, batch_size = batch_size)
-valid_loader = torch.utils.data.DataLoader(val_data, batch_size = batch_size)
+train_loader = DataLoader(train_data, batch_size=32)
+valid_loader = DataLoader(val_data, batch_size=32)
 
 ### Define the loss function
 loss_fn = nn.CrossEntropyLoss()
-
-### Define an optimizer (both for the encoder and the decoder!)
-lr= 0.001
 
 ### Set the random seed for reproducible results
 torch.manual_seed(0)
 
 ### Initialize the network
-input_dim = 15*15
-hidden_dim = 100
-layer_dim = 3
-output_dim = 10
 
 if if_model:
     classifier = torch.load(os.path.join(model_dir,task_name+'_classifier.pt'))
 else:
-    classifier = LSTMModel(input_dim, hidden_dim, layer_dim, output_dim,device)
+    classifier = PointNet(device=device)
 
-params_to_optimize = [
-    {'params': classifier.parameters()},
-]
-
-optim = torch.optim.Adam(params_to_optimize, lr=lr, weight_decay=1e-05)
+optimizer = torch.optim.Adam(classifier.parameters(), lr=0.001, weight_decay=1e-05)
 
 # Move both the encoder and the decoder to the selected device
 classifier.to(device)
 
+def train(model, optimizer, loader):
+    model.train()
+
+    total_loss = 0
+    for data in loader:
+        optimizer.zero_grad()  # Clear gradients.
+        logits = model(data.x, data.pos, data.batch)  # Forward pass.
+        loss = loss_fn(logits, data.y)  # Loss computation.
+        loss.backward()  # Backward pass.
+        optimizer.step()  # Update model parameters.
+        total_loss += loss.item() * data.num_graphs
+
+    return total_loss / len(train_loader.dataset)
+
+@torch.no_grad()
+def test(model, loader):
+    model.eval()
+
+    total_correct = 0
+    for data in loader:
+        logits = model(data.x, data.pos, data.batch)
+        pred = logits.argmax(dim=-1)
+        total_correct += int((pred == data.y).sum())
+
+    return total_correct / len(loader.dataset)
+
 ### Training function
-def train_epoch(classifier, device, dataloader, loss_fn, optimizer):
+def train_epoch(classifier, dataloader, loss_fn, optimizer):
     # Set train mode for both the encoder and the decoder
     classifier.train()
-    train_loss = []
-    # Iterate the dataloader (we do not need the label values, this is unsupervised learning)
-    for image_batch, labels in dataloader:
-        # Move tensor to the proper device
-        image_batch = image_batch.to(device)
-        # Encode data
-        encoded_data = classifier(image_batch)
 
-        # Evaluate loss
-        loss = loss_fn(encoded_data, labels)
-        # Backward pass
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-        # Print batch loss
-        print('\t partial train loss (single batch): %f' % (loss.data))
-        train_loss.append(loss.detach().cpu().numpy())
+    total_loss = 0
+    for data in dataloader:
+        optimizer.zero_grad()  # Clear gradients.
+        logits = classifier(data.x, data.pos, data.batch)  # Forward pass.
+        loss = loss_fn(logits, data.y)  # Loss computation.
+        loss.backward()  # Backward pass.
+        optimizer.step()  # Update model parameters.
+        total_loss += loss.item() * data.num_graphs
 
-    return np.mean(train_loss)
+    return total_loss / len(dataloader.dataset)
 
-def test_epoch(classifier, device, dataloader, loss_fn):
+@torch.no_grad()
+def test_epoch(classifier, dataloader, loss_fn):
     # Set evaluation mode for encoder and decoder
     classifier.eval()
-    with torch.no_grad(): # No need to track the gradients
-        # Define the lists to store the outputs for each batch
-        conc_out = []
-        conc_label = []
-        for image_batch, labels in dataloader:
-            # Move tensor to the proper device
-            image_batch = image_batch.to(device)
-            # Encode data
-            encoded_data = classifier(image_batch)
+    total_loss = 0
+    for data in dataloader:
+        logits = classifier(data.x, data.pos, data.batch)  # Forward pass.
+        loss = loss_fn(logits, data.y)  # Loss computation.
+        total_loss += loss.item() * data.num_graphs
 
-            # Append the network output and the original image to the lists
-            conc_out.append(encoded_data.cpu())
-            conc_label.append(labels.cpu())
-
-        # Create a single tensor with all the values in the lists
-        conc_out = torch.cat(conc_out)
-        conc_label = torch.cat(conc_label)
-        # Evaluate global loss
-        val_loss = loss_fn(conc_out, conc_label)
-    return val_loss.data
+    return total_loss / len(dataloader.dataset)
 
 def accuracy_epoch(classifier, device, dataloader,one_class=None):
     # Set evaluation mode for encoder and decoder
@@ -126,21 +124,30 @@ def accuracy_epoch(classifier, device, dataloader,one_class=None):
         correct = 0
         total = 0
 
-        for image_batch, labels in dataloader:
-            # Move tensor to the proper device
-            image_batch = image_batch.to(device)
-            labels = labels.to(device)
+        for data in dataloader:
 
             # Encode data
             if one_class != None:
-                image_batch = image_batch[labels==one_class]
-                labels = labels[labels==one_class]
+                class_ = torch.zeros_like(data.batch)
+                for i in range(data.batch.shape[0]):
+                    class_[i] = ((data.y==one_class)[data.batch[i]] == True)
 
-            if labels.size(0)>0:
-                encoded_data = classifier(image_batch)
-                _, predicted = torch.max(encoded_data.data, 1)
-                correct += (predicted == labels).sum().item()
-                total += labels.size(0)
+                data.x = data.x[class_==True]
+                data.batch = data.batch[class_==True]
+                data.pos = data.pos[class_==True]
+                data.y = data.y[data.y==one_class]
+
+                uni = torch.unique(data.batch)
+                j = 0
+                for i in uni:
+                    data.batch[data.batch==i] = j
+                    j += 1
+            if data.y.size(0)>0:
+                encoded_data = classifier(data.x, data.pos, data.batch)
+                pred = encoded_data.argmax(dim=-1)
+
+                correct += int((pred == data.y).sum())
+                total += data.y.size(0)
 
     Accuracy = 100 * correct / total
     print(f'Accuracy of the network on the test images: {Accuracy} %')
@@ -152,18 +159,26 @@ def probablity_dis(classifier, device, dataloader,one_class=None):
     classifier.eval()
     with torch.no_grad(): # No need to track the gradients
         First = True
-        for image_batch, labels in dataloader:
-            # Move tensor to the proper device
-            image_batch = image_batch.to(device)
-            labels = labels.to(device)
-
+        for data in dataloader:
             # Encode data
             if one_class != None:
-                image_batch = image_batch[labels==one_class]
-                labels = labels[labels==one_class]
+                class_ = torch.zeros_like(data.batch)
+                for i in range(data.batch.shape[0]):
+                    class_[i] = ((data.y==one_class)[data.batch[i]] == True)
 
-            if labels.size(0)>0:
-                encoded_data = classifier(image_batch)
+                data.x = data.x[class_==True]
+                data.batch = data.batch[class_==True]
+                data.pos = data.pos[class_==True]
+                data.y = data.y[data.y==one_class]
+
+                uni = torch.unique(data.batch)
+                j = 0
+                for i in uni:
+                    data.batch[data.batch==i] = j
+                    j += 1
+
+            if data.y.size(0)>0:
+                encoded_data = classifier(data.x, data.pos, data.batch)
 
                 if First:
                     predicted_list = encoded_data.cpu().numpy()
@@ -175,18 +190,25 @@ def probablity_dis(classifier, device, dataloader,one_class=None):
         return probablity
 
 if not if_model:
-    num_epochs = 30
+
+    num_epochs = 50
     diz_loss = {'train_loss': [], 'val_loss': []}
     Accuracy_list = []
+
     for epoch in range(num_epochs):
-       train_loss = train_epoch(classifier,device,train_loader,loss_fn,optim)
-       val_loss = test_epoch(classifier,device,valid_loader,loss_fn)
-       print('\n EPOCH {}/{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs,train_loss,val_loss))
-       Accuracy = accuracy_epoch(classifier, device, valid_loader)
-       diz_loss['train_loss'].append(train_loss)
-       diz_loss['val_loss'].append(val_loss)
-       Accuracy_list.append(Accuracy)
+        train_loss = train_epoch(classifier, train_loader, loss_fn, optimizer)
+        val_loss = test_epoch(classifier, valid_loader, loss_fn)
+        print('\n EPOCH {}/{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs, train_loss, val_loss))
+        Accuracy = accuracy_epoch(classifier, device, valid_loader)
+        diz_loss['train_loss'].append(train_loss)
+        diz_loss['val_loss'].append(val_loss)
+        Accuracy_list.append(Accuracy)
+
     torch.save(classifier, os.path.join(model_dir, task_name + '_classifier.pt'))
+
+    np.save(os.path.join('./data', task_name + '_classifier_train_loss'),np.array(diz_loss['train_loss']))
+    np.save(os.path.join('./data', task_name + '_classifier_val_loss'),np.array(diz_loss['val_loss']))
+    np.save(os.path.join('./data', task_name + '_classifier_accuracy'),np.array(Accuracy_list))
 
     # Plot losses
     plt.figure(figsize=(10,8))
@@ -224,8 +246,10 @@ if if_model:
     ax.legend()
     plt.show()
 
+    pro_list=[]
     for i in range(10):
         probablity = probablity_dis(classifier, device, valid_loader, one_class=i)
+        pro_list.append(probablity)
         fig, ax = plt.subplots()
         labels = list(range(10))
         ax.bar(labels, probablity, 0.35, label='Test')
@@ -234,31 +258,4 @@ if if_model:
         ax.set_title(f'Object{i} Prediction Probability')
         ax.legend()
         plt.show()
-
-    # encoded_samples = []
-    #
-    # for sample in val_data.dataset:
-    #     img = sample[0].unsqueeze(0).to(device)
-    #     label = sample[1]
-    #     # Encode image
-    #     classifier.eval()
-    #     with torch.no_grad():
-    #         encoded_img = classifier(img)
-    #     # Append to list
-    #     encoded_img = encoded_img.flatten().cpu().numpy()
-    #     encoded_sample = {f"Enc. Variable {i}": enc for i, enc in enumerate(encoded_img)}
-    #     encoded_sample['label'] = label
-    #     encoded_samples.append(encoded_sample)
-    #
-    # encoded_samples = pd.DataFrame(encoded_samples)
-    #
-    # # fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
-    # #            color=encoded_samples.label.astype(str), opacity=0.7)
-    # # fig.show()
-    #
-    # tsne = TSNE(n_components=2)
-    # tsne_results = tsne.fit_transform(encoded_samples.drop(['label'], axis=1))
-    # fig = px.scatter(tsne_results, x=0, y=1,
-    #                  color=encoded_samples.label.astype(str),
-    #                  labels={'0': 'tsne-2d-one', '1': 'tsne-2d-two'})
-    # fig.show()
+    np.save(os.path.join('./data', 'pro_'+task_name),np.array(pro_list))

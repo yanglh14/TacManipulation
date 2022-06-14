@@ -1,7 +1,7 @@
 import os.path
 from sklearn.manifold import TSNE
-import plotly.express as px
 import pandas as pd
+import plotly.express as px
 from torch.utils.data import DataLoader,random_split,TensorDataset
 import pickle
 import matplotlib.pyplot as plt # plotting library
@@ -17,7 +17,7 @@ model_dir = './models'
 if_model = True
 save_dir = '../tac_data/'
 
-task_name = 'final'
+task_name = 'final_2'
 object_name = 'tac_data'
 # object_name_2 = '010_potted_meat_can'
 # object_name_3 = '025_mug'
@@ -199,6 +199,10 @@ if not if_model:
        Accuracy_list.append(Accuracy)
     torch.save(classifier, os.path.join(model_dir, task_name + '_classifier.pt'))
 
+    np.save(os.path.join('./data', task_name + '_classifier_train_loss'),np.array(diz_loss['train_loss']))
+    np.save(os.path.join('./data', task_name + '_classifier_val_loss'),np.array(diz_loss['val_loss']))
+    np.save(os.path.join('./data', task_name + '_classifier_accuracy'),np.array(Accuracy_list))
+
     # Plot losses
     plt.figure(figsize=(10,8))
     plt.semilogy(diz_loss['train_loss'], label='Train')
@@ -234,42 +238,45 @@ if if_model:
     # ax.set_ylabel('Average Accuracy')
     # ax.legend()
     # plt.show()
+
+    pro_list = []
+    for i in range(10):
+        probablity = probablity_dis(classifier, device, valid_loader, one_class=i)
+        pro_list.append(probablity)
+        fig, ax = plt.subplots()
+        labels = list(range(10))
+        ax.bar(labels, probablity, 0.35, label='Test')
+        ax.set_xlabel('Object Class')
+        ax.set_ylabel('Average Probability')
+        ax.set_title(f'Object{i} Prediction Probability')
+        ax.legend()
+        plt.show()
+    np.save(os.path.join('./data', 'pro_'+task_name),np.array(pro_list))
+
+    # encoded_samples = []
     #
-    # for i in range(10):
-    #     probablity = probablity_dis(classifier, device, valid_loader, one_class=i)
-    #     fig, ax = plt.subplots()
-    #     labels = list(range(10))
-    #     ax.bar(labels, probablity, 0.35, label='Test')
-    #     ax.set_xlabel('Object Class')
-    #     ax.set_ylabel('Average Probability')
-    #     ax.set_title(f'Object{i} Prediction Probability')
-    #     ax.legend()
-    #     plt.show()
-
-    encoded_samples = []
-
-    for sample in val_data.dataset:
-        img = sample[0].unsqueeze(0).to(device)
-        label = sample[1]
-        # Encode image
-        classifier.eval()
-        with torch.no_grad():
-            encoded_img = classifier(img)
-        # Append to list
-        encoded_img = encoded_img.flatten().cpu().numpy()
-        encoded_sample = {f"Enc. Variable {i}": enc for i, enc in enumerate(encoded_img)}
-        encoded_sample['label'] = label
-        encoded_samples.append(encoded_sample)
-
-    encoded_samples = pd.DataFrame(encoded_samples)
-
-    # fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
-    #            color=encoded_samples.label.astype(str), opacity=0.7)
+    # for sample in val_data.dataset:
+    #     img = sample[0].unsqueeze(0).to(device)
+    #     label = sample[1]
+    #     # Encode image
+    #     classifier.eval()
+    #     with torch.no_grad():
+    #         encoded_img = classifier(img)
+    #     # Append to list
+    #     encoded_img = encoded_img.flatten().cpu().numpy()
+    #     encoded_sample = {f"Enc. Variable {i}": enc for i, enc in enumerate(encoded_img)}
+    #     encoded_sample['label'] = label
+    #     encoded_samples.append(encoded_sample)
+    #
+    # encoded_samples = pd.DataFrame(encoded_samples)
+    #
+    # # fig= px.scatter(encoded_samples, x='Enc. Variable 0', y='Enc. Variable 1',
+    # #            color=encoded_samples.label.astype(str), opacity=0.7)
+    # # fig.show()
+    #
+    # tsne = TSNE(n_components=2)
+    # tsne_results = tsne.fit_transform(encoded_samples.drop(['label'], axis=1))
+    # fig = px.scatter(tsne_results, x=0, y=1,
+    #                  color=encoded_samples.label.astype(str),
+    #                  labels={'0': 'tsne-2d-one', '1': 'tsne-2d-two'})
     # fig.show()
-
-    tsne = TSNE(n_components=2)
-    tsne_results = tsne.fit_transform(encoded_samples.drop(['label'], axis=1))
-    fig = px.scatter(tsne_results, x=0, y=1,
-                     color=encoded_samples.label.astype(str),
-                     labels={'0': 'tsne-2d-one', '1': 'tsne-2d-two'})
-    fig.show()
