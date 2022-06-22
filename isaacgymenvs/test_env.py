@@ -68,18 +68,15 @@ def launch_rlg_hydra(cfg: DictConfig):
     while True:
         env.step(actions)
 
-        # index_start = env.gym.find_actor_rigid_body_index(env.envs[0], 0, 'touch_111_1_1', gymapi.DOMAIN_SIM)
-        # index_end = env.gym.find_actor_rigid_body_index(env.envs[0], 0, 'touch_111_7_12', gymapi.DOMAIN_SIM)
-        # sensors_handles = range(index_start, index_end+1)
-        #
-        # env.gym.refresh_net_contact_force_tensor(env.sim)
-        #
-        # touch_sensor = env.net_cf[:,env.sensors_handles,:]
-        # tactile = touch_sensor[0,:,2]
-        # tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
-        # plot_tactile(tactile,tactile_pose)
-        # print(net_cf)
+        env.gym.refresh_net_contact_force_tensor(env.sim)
 
+        touch_sensor = env.net_cf[:,env.sensors_handles,:]
+        tactile = touch_sensor[0,:,2]
+        tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
+        plot_tactile(tactile,tactile_pose)
+
+        # tactile = tactile[113:113+72]
+        # print(tactile.max())
 
 def plot_tactile(tactile,tactile_pose):
 
@@ -92,10 +89,10 @@ def plot_tactile(tactile,tactile_pose):
 
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111, projection='3d')
-    # ax = fig.add_subplot(111)
+    ax.scatter(x,y,z,s=(tac) * 1000 )
 
-    # ax.scatter(x, y, z, s=(tac) * 50 + 0.2)
-    ax.scatter(x,y,z,s=(tac) * 1000 + 1)
+    # ax = fig.add_subplot(111)
+    # ax.scatter(x,y,s=(tac) * 1000 )
 
     plt.show()
 if __name__ == "__main__":

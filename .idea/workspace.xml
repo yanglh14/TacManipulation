@@ -6,22 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/accuracy.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/accuracy.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_0.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_5.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_6.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_8.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_9.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/train_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/train_loss.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/val_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/Pictures/val_loss.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.2.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/test_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/test_env.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +62,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Fig4.2">
+  <component name="RunManager" selected="Python.test_env">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
