@@ -7,8 +7,9 @@
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/test_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/test_env.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,12 +44,9 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/encoder&quot;
-  }
-}</component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/isaacgymenvs/encoder" />
@@ -384,13 +382,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py</url>
-          <line>258</line>
+          <line>263</line>
           <option name="timeStamp" value="155" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py</url>
           <line>140</line>
           <option name="timeStamp" value="157" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/test_env.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="161" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
