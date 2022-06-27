@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger3.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/finger4.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/test_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/test_env.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -392,8 +390,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/test_env.py</url>
-          <line>68</line>
-          <option name="timeStamp" value="161" />
+          <line>83</line>
+          <option name="timeStamp" value="168" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
