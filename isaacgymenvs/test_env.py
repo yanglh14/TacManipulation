@@ -10,6 +10,7 @@ from isaacgym import gymapi
 from isaacgym import gymtorch
 import numpy as np
 import matplotlib.pyplot as plt
+from isaacgym.torch_utils import *
 
 from utils.utils import set_np_formatting, set_seed
 
@@ -60,8 +61,9 @@ def launch_rlg_hydra(cfg: DictConfig):
 
     env = create_rlgpu_env(_sim_device='cpu', _rl_device='cpu')
 
-    actions = torch.as_tensor(np.ones([1,16])*0,dtype=torch.float32)
+    actions = torch.as_tensor(np.ones([1,16])*(0),dtype=torch.float32,device='cuda:0')
 
+    actions = unscale(actions,env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
     _net_cf = env.gym.acquire_net_contact_force_tensor(env.sim)
     net_cf = gymtorch.wrap_tensor(_net_cf)
 
@@ -75,27 +77,25 @@ def launch_rlg_hydra(cfg: DictConfig):
         tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
         plot_tactile(tactile,tactile_pose)
 
-        contacts = env.gym.get_env_rigid_contacts(env.envs[0])
-
-        a = contacts[contacts['body0']==199]
-        for body in contacts['body0']:
-
-
-        tactile = tactile[113:113+72]
-        print(tactile.max())
+        # contacts = env.gym.get_env_rigid_contacts(env.envs[0])
+        #
+        # a = contacts[contacts['body0']==199]
+        # b = contacts[contacts['body1']==199]
 
 def plot_tactile(tactile,tactile_pose):
 
     tac = np.abs(np.array(tactile.to('cpu')))
     tac_pose= np.array(tactile_pose.to('cpu'))
 
+    print(tac.argmax(),tac.max())
+    tac[tac<0.0001] = 0
     x = tac_pose[:, 0]
     y = tac_pose[:, 1]
     z = tac_pose[:, 2]
 
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x,y,z,s=(tac) * 1000)
+    ax.scatter(x,y,z,s=(tac) * 1000 )
 
     # ax = fig.add_subplot(111)
     # ax.scatter(x,y,s=(tac) * 1000 )
