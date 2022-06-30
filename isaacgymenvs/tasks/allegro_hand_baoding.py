@@ -558,6 +558,7 @@ class AllegroHandBaoding(VecTask):
 
             if self.obs_touch:
                 touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+                touch_tensor[touch_tensor<0.0001] = 0
                 self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] = self.force_torque_obs_scale * touch_tensor
                 obs_end = touch_sensor_obs_start+653  #719
                 # obs_total = obs_end + num_actions = 719 + 16 = 735

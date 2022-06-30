@@ -63,7 +63,7 @@ def launch_rlg_hydra(cfg: DictConfig):
 
     actions = torch.as_tensor(np.ones([1,16])*(0),dtype=torch.float32,device='cuda:0')
 
-    actions = unscale(actions,env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
+    # actions = unscale(actions,env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
     _net_cf = env.gym.acquire_net_contact_force_tensor(env.sim)
     net_cf = gymtorch.wrap_tensor(_net_cf)
 
@@ -89,6 +89,7 @@ def plot_tactile(tactile,tactile_pose):
 
     print(tac.argmax(),tac.max())
     tac[tac<0.0001] = 0
+
     x = tac_pose[:, 0]
     y = tac_pose[:, 1]
     z = tac_pose[:, 2]
