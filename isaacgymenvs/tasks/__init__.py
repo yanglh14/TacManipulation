@@ -29,6 +29,7 @@
 
 from tasks.allegro_hand import AllegroHand
 from tasks.allegro_hand_baoding import AllegroHandBaoding
+from tasks.allegro_hand_baoding_graph import AllegroHandBaodingGraph
 from tasks.allegro_hand_touch import AllegroHandTouch
 from tasks.ant import Ant
 from tasks.anymal import Anymal
@@ -46,6 +47,7 @@ from isaacgymenvs.tasks.trifinger import Trifinger
 isaacgym_task_map = {
     "AllegroHand": AllegroHand,
     "AllegroHandBaoding": AllegroHandBaoding,
+    "AllegroHandBaodingGraph": AllegroHandBaodingGraph,
     "AllegroHandTouch": AllegroHandTouch,
     "Ant": Ant,
     "Anymal": Anymal,
