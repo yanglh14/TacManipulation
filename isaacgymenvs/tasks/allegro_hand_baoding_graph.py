@@ -7,7 +7,7 @@ from isaacgym import gymapi
 from isaacgym.torch_utils import *
 
 from .base.vec_task import VecTask
-
+from isaacgymenvs.encoder.gnn_model import gnn_model
 
 class AllegroHandBaodingGraph(VecTask):
 
@@ -84,7 +84,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 735 if self.obs_touch else 82
+            "full_state": 82 if self.obs_touch else 82
         }
 
         self.up_axis = 'z'
@@ -174,6 +174,8 @@ class AllegroHandBaodingGraph(VecTask):
 
         if self.object_type == 'baoding':
             self.create_goal()
+
+        self.gnn_model = gnn_model(self.device,self.num_envs)
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -558,13 +560,18 @@ class AllegroHandBaodingGraph(VecTask):
 
             if self.obs_touch:
                 touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+                touch_tensor = touch_tensor.abs()
                 touch_tensor[touch_tensor<0.0001] = 0
-                self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] = self.force_torque_obs_scale * touch_tensor
-                obs_end = touch_sensor_obs_start+653  #719
-                # obs_total = obs_end + num_actions = 719 + 16 = 735
+                ## touch = 0 when first step
+                touch_tensor[self.progress_buf==1, :] = 0
+                tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
-                self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos *0
+                object_predict = self.gnn_model.step(touch_tensor,tactile_pose,self.object_pos)
+
+                self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
                 self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
+
+                obs_end = touch_sensor_obs_start  #66
             else:
 
                 obs_end = touch_sensor_obs_start  #66
