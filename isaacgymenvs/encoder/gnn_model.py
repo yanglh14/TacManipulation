@@ -82,7 +82,7 @@ class gnn_model():
 
     def train(self):
 
-        print('Start Trainin Encoder!')
+        print('Start Training Encoder!')
 
         for epoch in range(self.epoch_num):
 
