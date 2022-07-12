@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_lstm_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +56,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.train_graph">
+  <component name="RunManager" selected="Python.train_graph_lstm">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -314,6 +309,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="train_graph_lstm" type="PythonConfigurationType" factoryName="Python">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/rlgpu/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph_lstm max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:0' rl_device='cuda:1'" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="train_touch" type="PythonConfigurationType" factoryName="Python">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -340,6 +356,7 @@
       <item itemvalue="Python.train" />
       <item itemvalue="Python.train_touch" />
       <item itemvalue="Python.train_graph" />
+      <item itemvalue="Python.train_graph_lstm" />
       <item itemvalue="Python.test" />
       <item itemvalue="Python.Calibration_tac" />
       <item itemvalue="Python.cnn_encoder_sample" />
