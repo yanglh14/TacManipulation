@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_lstm_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +45,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/encoder" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -259,7 +264,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/test_env.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=16 experiment=Baoding_test headless=True" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=2 experiment=Baoding_test headless=True" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -379,7 +384,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -408,11 +412,6 @@
           <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py</url>
           <line>140</line>
           <option name="timeStamp" value="157" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py</url>
-          <line>128</line>
-          <option name="timeStamp" value="195" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

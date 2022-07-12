@@ -38,7 +38,7 @@ class PointNetLayer(MessagePassing):
         return self.mlp(input)  # Apply our final MLP.
 
 class PointNet(torch.nn.Module):
-    def __init__(self,device):
+    def __init__(self,device,output_dim=6):
         super().__init__()
 
         torch.manual_seed(12345)
@@ -46,7 +46,7 @@ class PointNet(torch.nn.Module):
         self.conv2 = PointNetLayer(32, 32,device=device)
         self.conv3 = PointNetLayer(32, 32,device=device)
 
-        self.regression = Linear(32, 6,device=device)
+        self.regression = Linear(32, output_dim,device=device)
 
     def forward(self,x, pos, batch):
         # Compute the kNN graph:

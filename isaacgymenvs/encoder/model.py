@@ -116,10 +116,10 @@ class LSTMModel(nn.Module):
         # Building your LSTM
         # batch_first=True causes input/output tensors to be of shape
         # (batch_dim, seq_dim, feature_dim)
-        self.lstm = nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True)
+        self.lstm = nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True,device=self.device)
 
         # Readout layer
-        self.fc = nn.Linear(hidden_dim, output_dim)
+        self.fc = nn.Linear(hidden_dim, output_dim,device=self.device)
 
     def forward(self, x):
         # Initialize hidden state with zeros

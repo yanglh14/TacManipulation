@@ -23,9 +23,9 @@ class gnn_model():
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
-        self.horizon_length = 20
+        self.horizon_length = 100
         self.num_envs = num_envs
-        self.epoch_num = 10
+        self.epoch_num = 30
         self.device = device
         self.step_n = 0
 
@@ -39,7 +39,7 @@ class gnn_model():
             (self.num_envs*self.horizon_length, 6), device=self.device, dtype=torch.float)
 
         self.diz_loss = {'train_loss': [], 'val_loss': []}
-    def step(self,obs,pos,y):
+    def step(self,obs,pos,y,progress):
 
         pos = pos*100
         y = y *100

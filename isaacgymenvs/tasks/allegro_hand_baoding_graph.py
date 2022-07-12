@@ -8,6 +8,7 @@ from isaacgym.torch_utils import *
 
 from .base.vec_task import VecTask
 from isaacgymenvs.encoder.gnn_model import gnn_model
+from isaacgymenvs.encoder.gnn_lstm_model import gnn_lstm_model
 
 class AllegroHandBaodingGraph(VecTask):
 
@@ -175,7 +176,7 @@ class AllegroHandBaodingGraph(VecTask):
         if self.object_type == 'baoding':
             self.create_goal()
 
-        self.gnn_model = gnn_model(self.device,self.num_envs)
+        self.model = gnn_lstm_model(self.device,self.num_envs)
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -566,7 +567,7 @@ class AllegroHandBaodingGraph(VecTask):
                 touch_tensor[self.progress_buf==1, :] = 0
                 tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
-                object_predict = self.gnn_model.step(touch_tensor,tactile_pose,self.object_pos)
+                object_predict = self.model.step(touch_tensor,tactile_pose,self.object_pos,self.progress_buf)
 
                 self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
                 self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
