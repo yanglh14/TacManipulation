@@ -87,7 +87,7 @@ class gnn_model():
         for epoch in range(self.epoch_num):
 
             train_loss = self.train_epoch()
-            val_loss = self.test_epoch()
+        val_loss = self.test_epoch()
 
         print('\n train loss {} \t val loss {}'.format(train_loss, val_loss))
 
