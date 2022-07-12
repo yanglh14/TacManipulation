@@ -135,7 +135,8 @@ class gnn_lstm_model():
 
         save_dir = 'runs/gnn_lstm_training'
         os.makedirs(save_dir,exist_ok =True)
-        torch.save(self.model, os.path.join(save_dir, 'model.pt'))
+        torch.save(self.gnn, os.path.join(save_dir, 'gnn.pt'))
+        torch.save(self.lstm, os.path.join(save_dir, 'lstm.pt'))
         np.save(os.path.join(save_dir, 'train_loss'), np.array(self.diz_loss['train_loss']))
         np.save(os.path.join(save_dir, 'val_loss'), np.array(self.diz_loss['val_loss']))
 
