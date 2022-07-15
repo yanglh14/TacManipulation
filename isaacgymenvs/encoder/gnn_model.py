@@ -82,7 +82,7 @@ class gnn_model():
 
     def train(self):
 
-        print('Start Training Encoder!')
+        print('Start Training Encoder! Training data set {} \t Validation data set {}'.format(self.train_loader.dataset.__len__(),self.valid_loader.dataset.__len__()))
 
         for epoch in range(self.epoch_num):
 

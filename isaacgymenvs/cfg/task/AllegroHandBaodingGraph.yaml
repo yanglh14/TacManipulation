@@ -48,6 +48,8 @@ env:
   objectType: "baoding" # can be block, egg, pen or baoding
   observationType: "full_state" # can be "full_no_vel", "full","full_state"
   observationTouch: True
+  touchmodel: "gnn" #can be "gnn" or "gnn_lstm"
+  warmstart: True
   asymmetric_observations: False
   successTolerance: 0.01
   printNumSuccesses: False

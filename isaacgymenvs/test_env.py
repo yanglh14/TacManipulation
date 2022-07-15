@@ -75,7 +75,7 @@ def launch_rlg_hydra(cfg: DictConfig):
         touch_sensor = env.net_cf[:,env.sensors_handles,:]
         tactile = touch_sensor[0,:,2]
         tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
-        # plot_tactile(tactile,tactile_pose)
+        plot_tactile(tactile,tactile_pose)
 
         # contacts = env.gym.get_env_rigid_contacts(env.envs[0])
         #
@@ -88,7 +88,7 @@ def plot_tactile(tactile,tactile_pose):
     tac_pose= np.array(tactile_pose.to('cpu'))
 
     print(tac.argmax(),tac.max())
-    tac[tac<0.0001] = 0
+    tac[tac<0.0005] = 0
 
     x = tac_pose[:, 0]
     y = tac_pose[:, 1]

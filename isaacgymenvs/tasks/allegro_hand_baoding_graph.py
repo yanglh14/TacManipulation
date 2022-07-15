@@ -176,7 +176,15 @@ class AllegroHandBaodingGraph(VecTask):
         if self.object_type == 'baoding':
             self.create_goal()
 
-        self.model = gnn_lstm_model(self.device,self.num_envs)
+        self.model_type = self.cfg["env"]["touchmodel"]
+        self.warmstart  = self.cfg["env"]["warmstart"]
+
+        if self.model_type == "gnn":
+            self.model = gnn_model(self.device,self.num_envs)
+        else:
+            self.model = gnn_lstm_model(self.device,self.num_envs)
+
+        self.warmstart_buffer = torch.zeros((self.num_envs), dtype=torch.long, device=self.device)
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -551,7 +559,7 @@ class AllegroHandBaodingGraph(VecTask):
             self.obs_buf[:, 2*self.num_shadow_hand_dofs:3*self.num_shadow_hand_dofs] = self.force_torque_obs_scale * self.dof_force_tensor
 
             obj_obs_start = 3*self.num_shadow_hand_dofs  # 48
-            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos
+            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos *100
             self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel
 
             goal_obs_start = obj_obs_start + 12  # 60
@@ -562,14 +570,16 @@ class AllegroHandBaodingGraph(VecTask):
             if self.obs_touch:
                 touch_tensor = self.net_cf[:, self.sensors_handles, 2]
                 touch_tensor = touch_tensor.abs()
-                touch_tensor[touch_tensor<0.0001] = 0
+                touch_tensor[touch_tensor<0.0005] = 0
                 ## touch = 0 when first step
                 touch_tensor[self.progress_buf==1, :] = 0
                 tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+                if self.warmstart == True:
+                    self.warmstart_buffer[self.successes>0] = 1
+                object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos, self.progress_buf)
 
-                object_predict = self.model.step(touch_tensor,tactile_pose,self.object_pos,self.progress_buf)
+                self.obs_buf[self.warmstart_buffer>0, obj_obs_start:obj_obs_start + 6] = object_predict[self.warmstart_buffer>0,:]
 
-                self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
                 self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
 
                 obs_end = touch_sensor_obs_start  #66

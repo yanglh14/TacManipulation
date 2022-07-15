@@ -494,10 +494,10 @@
                             <!-- finger tip -->
                             <body name="link_11.0_tip" pos="0.002 0 0.0157">
                                 <geom  class="robot0:Pad" pos="0 0 0" rgba="0.9 0.9 0.9 1" type="mesh" mesh="link_3.0_tip"  euler="0 0 0"/>
-<!--                                <geom  class="robot0:D_Contact" pos="0 0 0" rgba="0.9 0.9 0.9 1" type="mesh" mesh="link_3.0_tip"  euler="0 0 0"/>-->
+                                <geom  class="robot0:D_Contact" pos="0 0 0" rgba="0.9 0.9 0.9 1" type="mesh" mesh="link_3.0_tip"  euler="0 0 0"/>
 
                                 <!--tactile sensor for link 11.0 -->
-                                <body name="link_11.0_tactile" pos="0.000 0 0.0">
+                                <body name="link_11.0_tactile" pos="0.001 0 0.0">
 
                                      <body name="touch_6_1_1" pos="0.012822958678324826 0.010000551357946415 0.0015" quat="0.961223561872417 0.0 0.0 0.2757703104057863"> <inertial mass="0.0000" />
                                     <geom name="touch_6_1_1" class="robot0:Tactile" friction="0.5 0.5 0.005" mesh="tactile_sphere1" pos="-0.0005 0 0" quat="0.707107 0 0.707107 0" />
