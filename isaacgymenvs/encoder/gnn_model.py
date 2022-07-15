@@ -12,14 +12,25 @@ import matplotlib.pyplot as plt # plotting library
 
 class gnn_model():
 
-    def __init__(self,device,num_envs):
+    def __init__(self,device,num_envs, touchmodedir, touchmodelexist, test):
         ### Set the random seed for reproducible results
         torch.manual_seed(43)
 
+        self.training_episode_num = 0
+        self.touchmodedir, self.touchmodelexist,self.test = touchmodedir, touchmodelexist, test
+        self.save_dir = 'runs/'+self.touchmodedir+'/touchmodel'
+
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()
+        self.diz_loss = {'train_loss': [], 'val_loss': []}
 
-        self.model = PointNet(device=device)
+        if self.touchmodelexist:
+            self.diz_loss['train_loss'] = list(np.load(self.save_dir+'/train_loss.npy'))
+            self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
+
+            self.model = torch.load(self.save_dir+'/model.pt')
+        else:
+            self.model = PointNet(device=device)
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
@@ -38,8 +49,9 @@ class gnn_model():
         self.y_buf = torch.zeros(
             (self.num_envs*self.horizon_length, 6), device=self.device, dtype=torch.float)
 
-        self.diz_loss = {'train_loss': [], 'val_loss': []}
-    def step(self,obs,pos,y,progress):
+
+
+    def step(self,obs,pos,y):
 
         pos = pos*100
         y = y *100
@@ -48,10 +60,12 @@ class gnn_model():
         self.y_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:] = y
 
         self.step_n += 1
-        if self.step_n == self.horizon_length:
-            self.data_process()
-            self.step_n = 0
-            self.train()
+        if not self.test:
+
+            if self.step_n == self.horizon_length:
+                self.data_process()
+                self.step_n = 0
+                self.train()
 
         return self.forward(obs.view(self.num_envs,-1,1),pos)
 
@@ -82,10 +96,10 @@ class gnn_model():
 
     def train(self):
 
-        print('Start Training Encoder! Training data set {} \t Validation data set {}'.format(self.train_loader.dataset.__len__(),self.valid_loader.dataset.__len__()))
+        print('Start Training Encoder! Episode Num {} \t Training data set {} \t Validation data set {}'.format(self.training_episode_num,self.train_loader.dataset.__len__(),self.valid_loader.dataset.__len__()))
 
+        self.training_episode_num +=1
         for epoch in range(self.epoch_num):
-
             train_loss = self.train_epoch()
         val_loss = self.test_epoch()
 
@@ -94,10 +108,14 @@ class gnn_model():
         self.diz_loss['train_loss'].append(train_loss)
         self.diz_loss['val_loss'].append(val_loss)
 
-        os.makedirs('runs/gnn_training',exist_ok =True)
-        torch.save(self.model, os.path.join('runs/gnn_training', 'model.pt'))
-        np.save(os.path.join('runs/gnn_training', 'train_loss'), np.array(self.diz_loss['train_loss']))
-        np.save(os.path.join('runs/gnn_training', 'val_loss'), np.array(self.diz_loss['val_loss']))
+        os.makedirs(self.save_dir,exist_ok =True)
+        if not self.training_episode_num ==1:
+            if self.diz_loss['val_loss'][-1] > self.diz_loss['val_loss'][-2]:
+                torch.save(self.model, os.path.join(self.save_dir, 'model.pt'))
+
+        torch.save(self.model, os.path.join(self.save_dir, 'model_%d_%f.pt'%(self.training_episode_num,self.diz_loss['val_loss'][-1])))
+        np.save(os.path.join(self.save_dir, 'train_loss'), np.array(self.diz_loss['train_loss']))
+        np.save(os.path.join(self.save_dir, 'val_loss'), np.array(self.diz_loss['val_loss']))
 
     def data_process(self):
 

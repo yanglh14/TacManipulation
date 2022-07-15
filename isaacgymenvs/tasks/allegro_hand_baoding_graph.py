@@ -93,7 +93,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         num_states = 0
         if self.asymmetric_obs:
-            num_states = 735 if self.obs_touch else 82
+            num_states = 82 if self.obs_touch else 82
 
         self.cfg["env"]["numObservations"] = self.num_obs_dict[self.obs_type]
         self.cfg["env"]["numStates"] = num_states
@@ -177,14 +177,16 @@ class AllegroHandBaodingGraph(VecTask):
             self.create_goal()
 
         self.model_type = self.cfg["env"]["touchmodel"]
-        self.warmstart  = self.cfg["env"]["warmstart"]
+        self.touchmodedir = self.cfg["env"]["touchmodedir"]
+        self.touchmodelexist = self.cfg["env"]["touchmodelexist"]
+        self.test = self.cfg["env"]["touchtest"]
 
         if self.model_type == "gnn":
-            self.model = gnn_model(self.device,self.num_envs)
+            self.model = gnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
         else:
-            self.model = gnn_lstm_model(self.device,self.num_envs)
+            self.model = gnn_lstm_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
 
-        self.warmstart_buffer = torch.zeros((self.num_envs), dtype=torch.long, device=self.device)
+        self.step_num = 0
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -289,7 +291,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        pose_dx, pose_dy, pose_dz = 0.032, 0.0, 0.07
+        pose_dx, pose_dy, pose_dz = 0.032, 0.0, 0.05
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -298,7 +300,7 @@ class AllegroHandBaodingGraph(VecTask):
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
             object_start_pose_2.p = gymapi.Vec3()
-            pose_dx, pose_dy, pose_dz = -0.032, 0.0, 0.07
+            pose_dx, pose_dy, pose_dz = -0.032, 0.0, 0.05
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -574,11 +576,11 @@ class AllegroHandBaodingGraph(VecTask):
                 ## touch = 0 when first step
                 touch_tensor[self.progress_buf==1, :] = 0
                 tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
-                if self.warmstart == True:
-                    self.warmstart_buffer[self.successes>0] = 1
-                object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos, self.progress_buf)
 
-                self.obs_buf[self.warmstart_buffer>0, obj_obs_start:obj_obs_start + 6] = object_predict[self.warmstart_buffer>0,:]
+                object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
+
+                if self.step_num > 5000000:
+                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
 
                 self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
 
@@ -718,6 +720,8 @@ class AllegroHandBaodingGraph(VecTask):
         self.successes[env_ids] = 0
 
     def pre_physics_step(self, actions):
+
+        self.step_num += 1
         # progress goal position
         if self.object_type == 'baoding':
             for env_index in range(self.num_envs):
@@ -876,7 +880,7 @@ def compute_hand_reward(
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
     # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
-    reward = dist_rew + action_penalty * action_penalty_scale
+    reward = dist_rew + action_penalty * action_penalty_scale +0.5
 
     # Find out which envs hit the goal and update successes count
     goal_resets_index = (torch.abs(goal_dist) <= success_tolerance) * (progress_buf >100)

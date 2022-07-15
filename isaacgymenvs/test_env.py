@@ -69,13 +69,13 @@ def launch_rlg_hydra(cfg: DictConfig):
 
     while True:
         env.step(actions)
-
-        env.gym.refresh_net_contact_force_tensor(env.sim)
-
-        touch_sensor = env.net_cf[:,env.sensors_handles,:]
-        tactile = touch_sensor[0,:,2]
-        tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
-        plot_tactile(tactile,tactile_pose)
+        print(env.progress_buf[0],env.rew_buf[0])
+        # env.gym.refresh_net_contact_force_tensor(env.sim)
+        #
+        # touch_sensor = env.net_cf[:,env.sensors_handles,:]
+        # tactile = touch_sensor[0,:,2]
+        # tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
+        # plot_tactile(tactile,tactile_pose)
 
         # contacts = env.gym.get_env_rigid_contacts(env.envs[0])
         #
