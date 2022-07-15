@@ -57,7 +57,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.train_graph_lstm">
+  <component name="RunManager" selected="Python.train_graph">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -79,7 +79,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Fig4" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="Fig4" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -239,7 +239,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=1 experiment=baoding_graph_lstm headless=False checkpoint=runs/baoding_graph_lstm/nn/baoding_graph_lstm.pth" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/Baoding_fullstate/nn/Baoding_fullstate.pth" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -260,7 +260,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/test_env.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=16 experiment=Baoding_test headless=False" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=2 experiment=Baoding_test headless=True" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -302,7 +302,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:0' rl_device='cuda:2'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=512 experiment=baoding_graph max_iterations=100000 headless=True train.params.config.minibatch_size=4096 sim_device='cuda:0' rl_device='cuda:0'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -323,7 +323,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=128 experiment=baoding_graph_lstm max_iterations=100000 headless=True train.params.config.minibatch_size=1024 sim_device='cuda:1' rl_device='cuda:3' task.env.touchmodel='gnn_lstm'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph_lstm max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:1' rl_device='cuda:1' task.env.touchmodel='gnn_lstm'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -375,6 +375,7 @@
       <list>
         <item itemvalue="Python.gnn" />
         <item itemvalue="Python.Fig4.2" />
+        <item itemvalue="Python.Fig4" />
         <item itemvalue="Python.gnn_classifer" />
         <item itemvalue="Python.lstm_classifer" />
       </list>
@@ -401,6 +402,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -429,21 +431,6 @@
           <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py</url>
           <line>140</line>
           <option name="timeStamp" value="157" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/anaconda3/envs/rlgpu/lib/python3.7/site-packages/rl_games/common/a2c_common.py</url>
-          <line>594</line>
-          <option name="timeStamp" value="169" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/anaconda3/envs/rlgpu/lib/python3.7/site-packages/rl_games/common/a2c_common.py</url>
-          <line>1039</line>
-          <option name="timeStamp" value="170" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/anaconda3/envs/rlgpu/lib/python3.7/site-packages/rl_games/common/datasets.py</url>
-          <line>66</line>
-          <option name="timeStamp" value="171" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
