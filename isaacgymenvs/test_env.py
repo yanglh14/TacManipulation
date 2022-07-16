@@ -59,17 +59,39 @@ def launch_rlg_hydra(cfg: DictConfig):
         multi_gpu=cfg.multi_gpu,
     )
 
-    env = create_rlgpu_env(_sim_device='cpu', _rl_device='cpu')
+    env = create_rlgpu_env(_sim_device='cuda:0', _rl_device='cuda:0')
 
     actions = torch.as_tensor(np.ones([1,16])*(0),dtype=torch.float32,device='cuda:0')
 
-    # actions = unscale(actions,env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
+    actions = unscale(actions,env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
     _net_cf = env.gym.acquire_net_contact_force_tensor(env.sim)
     net_cf = gymtorch.wrap_tensor(_net_cf)
 
-    while True:
+    for i in range(50):
         env.step(actions)
-        print(env.progress_buf[0],env.rew_buf[0])
+
+    while True:
+
+        for index in range(16):
+            if index % 4 == 0:
+                angle_list = [0, 15, 30, 15, 0, -15, -30, -15, 0]
+            else:
+                angle_list = [0, 15, 30, 45, 60, 45, 30, 15, 0]
+
+            angle_obs = []
+
+            for angle in angle_list:
+                print(angle)
+                actions[:] = 0
+                actions[0,index] = angle * np.pi /180
+                actions = unscale(actions, env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
+
+                for i in range(50):
+                    env.step(actions)
+                    angle_obs.append(env.shadow_hand_dof_pos[0,:].cpu().detach().tolist())
+            np.save('runs/joint_%d_sim'%index,np.array(angle_obs))
+
+        break
         # env.gym.refresh_net_contact_force_tensor(env.sim)
         #
         # touch_sensor = env.net_cf[:,env.sensors_handles,:]
