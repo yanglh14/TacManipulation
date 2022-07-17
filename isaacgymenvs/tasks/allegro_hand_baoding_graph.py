@@ -263,7 +263,7 @@ class AllegroHandBaodingGraph(VecTask):
 
             print("Max effort: ", shadow_hand_dof_props['effort'][i])
             shadow_hand_dof_props['effort'][i] = 0.5
-            shadow_hand_dof_props['stiffness'][i] = 3
+            shadow_hand_dof_props['stiffness'][i] = 10
             shadow_hand_dof_props['damping'][i] = 0.1
             shadow_hand_dof_props['friction'][i] = 0.01
             shadow_hand_dof_props['armature'][i] = 0.001
@@ -276,6 +276,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         # load manipulated object and goal assets
         object_asset_options = gymapi.AssetOptions()
+        object_asset_options.disable_gravity = True
 
         object_asset = self.gym.load_asset(self.sim, asset_root, object_asset_file, object_asset_options)
 
@@ -295,7 +296,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
-        object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
+        object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz + 0.05
 
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
@@ -304,7 +305,7 @@ class AllegroHandBaodingGraph(VecTask):
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
-            object_start_pose_2.p.z = shadow_hand_start_pose.p.z + pose_dz
+            object_start_pose_2.p.z = shadow_hand_start_pose.p.z + pose_dz + 0.05
 
         self.goal_displacement = gymapi.Vec3(0, -0.01, 0.1)
         self.goal_displacement_tensor = to_torch(
@@ -726,7 +727,7 @@ class AllegroHandBaodingGraph(VecTask):
         if self.object_type == 'baoding':
             for env_index in range(self.num_envs):
                 self.goal_states[env_index, 0:3] = self.goal[env_index,self.progress_buf[env_index],0:3]
-                self.goal_states[env_index, 13:16] = self.goal[env_index,self.progress_buf[env_index],3:6]
+                self.goal_states[env_index, 13:13+3] = self.goal[env_index,self.progress_buf[env_index],3:6]
 
             env_ids = np.array(range(self.num_envs))
             self.root_state_tensor[self.goal_object_indices[env_ids*2], 0:3] = self.goal_states[env_ids, 0:3] + self.goal_displacement_tensor

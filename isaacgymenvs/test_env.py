@@ -72,9 +72,9 @@ def launch_rlg_hydra(cfg: DictConfig):
 
     while True:
 
-        for index in range(16):
+        for index in range(1):
             if index % 4 == 0:
-                angle_list = [0, 15, 30, 15, 0, -15, -30, -15, 0]
+                angle_list = [0, 15, 25, 15, 0, -15, -25, -15, 0]
             else:
                 angle_list = [0, 15, 30, 45, 60, 45, 30, 15, 0]
 
@@ -89,7 +89,7 @@ def launch_rlg_hydra(cfg: DictConfig):
                 for i in range(50):
                     env.step(actions)
                     angle_obs.append(env.shadow_hand_dof_pos[0,:].cpu().detach().tolist())
-            np.save('runs/joint_%d_sim'%index,np.array(angle_obs))
+            np.save('runs/test_%d_sim_4'%index,np.array(angle_obs))
 
         break
         # env.gym.refresh_net_contact_force_tensor(env.sim)
@@ -125,4 +125,24 @@ def plot_tactile(tactile,tactile_pose):
 
     plt.show()
 if __name__ == "__main__":
-    launch_rlg_hydra()
+    # launch_rlg_hydra()
+
+    joint_pos_1 = np.load('runs/test_0_sim_1.npy')
+    joint_pos_2 = np.load('runs/test_0_sim_2.npy')
+    joint_pos_3 = np.load('runs/test_0_sim_3.npy')
+    joint_pos_4 = np.load('runs/test_0_sim_4.npy')
+
+    joint_pos_target = np.concatenate([np.zeros(50),np.ones(50)*np.pi*15/180,np.ones(50)*np.pi*25/180,np.ones(50)*np.pi*15/180
+                                       ,np.ones(50)*np.pi*0/180,np.ones(50)*np.pi*(-15)/180,np.ones(50)*np.pi*(-25)/180,np.ones(50)*np.pi*(-15)/180
+                                       ,np.ones(50)*np.pi*0/180])
+
+    fig, axs = plt.subplots(1)
+    axs.plot(joint_pos_1[:,0], label='joint_pos_1')
+    axs.plot(joint_pos_2[:,0], label='joint_pos_2')
+    axs.plot(joint_pos_3[:,0], label='joint_pos_3')
+    axs.plot(joint_pos_4[:,0], label='joint_pos_4')
+
+    axs.plot(joint_pos_target[:], label='joint_pos_target')
+
+    axs.legend()
+    plt.show()
