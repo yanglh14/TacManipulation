@@ -263,11 +263,12 @@ class AllegroHandBaodingGraph(VecTask):
 
             print("Max effort: ", shadow_hand_dof_props['effort'][i])
             shadow_hand_dof_props['effort'][i] = 0.5
-            shadow_hand_dof_props['stiffness'][i] = 10
+            shadow_hand_dof_props['stiffness'][i] = 3
             shadow_hand_dof_props['damping'][i] = 0.1
             shadow_hand_dof_props['friction'][i] = 0.01
             shadow_hand_dof_props['armature'][i] = 0.001
 
+        self.shadow_hand_dof_props = shadow_hand_dof_props
         self.actuated_dof_indices = to_torch(self.actuated_dof_indices, dtype=torch.long, device=self.device)
         self.shadow_hand_dof_lower_limits = to_torch(self.shadow_hand_dof_lower_limits, device=self.device)
         self.shadow_hand_dof_upper_limits = to_torch(self.shadow_hand_dof_upper_limits, device=self.device)
@@ -580,7 +581,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
 
-                if self.step_num > 5000000:
+                if self.step_num > 10000000:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
 
                 self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
@@ -838,11 +839,11 @@ class AllegroHandBaodingGraph(VecTask):
 
         # creat a goal for the object position.
 
-        self.goal = torch.zeros((self.num_envs,1000,6), dtype=torch.float, device=self.device)
+        self.goal = torch.zeros((self.num_envs,self.max_episode_length,6), dtype=torch.float, device=self.device)
         self.center_pose = (self.object_init_state[:,:3] + self.object_init_state[:,13:13+3])/2
         self.y_radius = (self.object_init_state[:,0:1] - self.object_init_state[:,13:14])/2
         self.x_radius = self.y_radius
-        for i in range(1000):
+        for i in range(self.max_episode_length):
             if i <= 100:
                 angle = i * np.pi / 100
             else:
@@ -881,7 +882,7 @@ def compute_hand_reward(
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
     # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
-    reward = dist_rew + action_penalty * action_penalty_scale +0.5
+    reward = dist_rew + action_penalty * action_penalty_scale + 1
 
     # Find out which envs hit the goal and update successes count
     goal_resets_index = (torch.abs(goal_dist) <= success_tolerance) * (progress_buf >100)

@@ -61,37 +61,55 @@ def launch_rlg_hydra(cfg: DictConfig):
 
     env = create_rlgpu_env(_sim_device='cuda:0', _rl_device='cuda:0')
 
-    actions = torch.as_tensor(np.ones([1,16])*(0),dtype=torch.float32,device='cuda:0')
-
-    actions = unscale(actions,env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
     _net_cf = env.gym.acquire_net_contact_force_tensor(env.sim)
     net_cf = gymtorch.wrap_tensor(_net_cf)
 
-    for i in range(50):
-        env.step(actions)
-
     while True:
+        stiffness_list = [1,3,5]
+        damping_list = [0,0.1,0.5]
 
-        for index in range(1):
-            if index % 4 == 0:
-                angle_list = [0, 15, 25, 15, 0, -15, -25, -15, 0]
-            else:
-                angle_list = [0, 15, 30, 45, 60, 45, 30, 15, 0]
+        for index in range(0,16):
 
-            angle_obs = []
-
-            for angle in angle_list:
-                print(angle)
-                actions[:] = 0
-                actions[0,index] = angle * np.pi /180
+            for j in range(9):
+                actions = torch.as_tensor(np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 20 * np.pi / 180, 0, 20 * np.pi / 180, 0]]),dtype=torch.float32, device='cuda:0')
                 actions = unscale(actions, env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
 
                 for i in range(50):
                     env.step(actions)
-                    angle_obs.append(env.shadow_hand_dof_pos[0,:].cpu().detach().tolist())
-            np.save('runs/test_%d_sim_4'%index,np.array(angle_obs))
+
+                stiffness = stiffness_list[int(j/3)]
+                damping = damping_list[int(j%3)]
+
+                env.shadow_hand_dof_props['stiffness'][index] = stiffness
+                env.shadow_hand_dof_props['damping'][index] = damping
+                env.gym.set_actor_dof_properties(env.envs[0], 1, env.shadow_hand_dof_props[0:4])
+                env.gym.set_actor_dof_properties(env.envs[0], 2, env.shadow_hand_dof_props[4:8])
+                env.gym.set_actor_dof_properties(env.envs[0], 3, env.shadow_hand_dof_props[8:12])
+                env.gym.set_actor_dof_properties(env.envs[0], 4, env.shadow_hand_dof_props[12:16])
+
+                if index == 12 or index == 14:
+                    angle_list = [20, 30, 45, 60, 75, 60, 45, 30, 20]
+                else:
+                    if index%4 == 0:
+                        angle_list = [0,15,25,15,0,-15,-25,-15,0]
+                    else:
+                        angle_list = [0,15,30,45,60,45,30,15,0]
+
+                angle_obs = []
+
+                for angle in angle_list:
+                    print(angle)
+                    actions = torch.as_tensor(np.array([[0, 0, 0, 0, 0.,0, 0, 0, 0., 0, 0, 0, 20*np.pi/180, 0, 20*np.pi/180, 0]]),dtype=torch.float32,device='cuda:0')
+                    actions[0,index] = angle * np.pi /180
+                    actions = unscale(actions, env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
+
+                    for i in range(50):
+                        env.step(actions)
+                        angle_obs.append(env.shadow_hand_dof_pos[0,:].cpu().detach().tolist())
+                np.save('runs/sim2real/joint_{}_stiffness{}_damping{}'.format(index,stiffness,damping),np.array(angle_obs))
 
         break
+
         # env.gym.refresh_net_contact_force_tensor(env.sim)
         #
         # touch_sensor = env.net_cf[:,env.sensors_handles,:]
@@ -125,24 +143,24 @@ def plot_tactile(tactile,tactile_pose):
 
     plt.show()
 if __name__ == "__main__":
-    # launch_rlg_hydra()
+    launch_rlg_hydra()
 
-    joint_pos_1 = np.load('runs/test_0_sim_1.npy')
-    joint_pos_2 = np.load('runs/test_0_sim_2.npy')
-    joint_pos_3 = np.load('runs/test_0_sim_3.npy')
-    joint_pos_4 = np.load('runs/test_0_sim_4.npy')
-
-    joint_pos_target = np.concatenate([np.zeros(50),np.ones(50)*np.pi*15/180,np.ones(50)*np.pi*25/180,np.ones(50)*np.pi*15/180
-                                       ,np.ones(50)*np.pi*0/180,np.ones(50)*np.pi*(-15)/180,np.ones(50)*np.pi*(-25)/180,np.ones(50)*np.pi*(-15)/180
-                                       ,np.ones(50)*np.pi*0/180])
-
-    fig, axs = plt.subplots(1)
-    axs.plot(joint_pos_1[:,0], label='joint_pos_1')
-    axs.plot(joint_pos_2[:,0], label='joint_pos_2')
-    axs.plot(joint_pos_3[:,0], label='joint_pos_3')
-    axs.plot(joint_pos_4[:,0], label='joint_pos_4')
-
-    axs.plot(joint_pos_target[:], label='joint_pos_target')
-
-    axs.legend()
-    plt.show()
+    # joint_pos_1 = np.load('runs/test_0_sim_1.npy')
+    # joint_pos_2 = np.load('runs/test_0_sim_2.npy')
+    # joint_pos_3 = np.load('runs/test_0_sim_3.npy')
+    # joint_pos_4 = np.load('runs/test_0_sim_4.npy')
+    #
+    # joint_pos_target = np.concatenate([np.zeros(50),np.ones(50)*np.pi*15/180,np.ones(50)*np.pi*25/180,np.ones(50)*np.pi*15/180
+    #                                    ,np.ones(50)*np.pi*0/180,np.ones(50)*np.pi*(-15)/180,np.ones(50)*np.pi*(-25)/180,np.ones(50)*np.pi*(-15)/180
+    #                                    ,np.ones(50)*np.pi*0/180])
+    #
+    # fig, axs = plt.subplots(1)
+    # axs.plot(joint_pos_1[:,0], label='joint_pos_1')
+    # axs.plot(joint_pos_2[:,0], label='joint_pos_2')
+    # axs.plot(joint_pos_3[:,0], label='joint_pos_3')
+    # axs.plot(joint_pos_4[:,0], label='joint_pos_4')
+    #
+    # axs.plot(joint_pos_target[:], label='joint_pos_target')
+    #
+    # axs.legend()
+    # plt.show()
