@@ -29,6 +29,6 @@ plt.plot(loss_lstm, label='Dynamic')
 plt.ylim([0,2])
 plt.legend(loc=0)
 # plt.title('loss')
-plt.savefig('../Pictures/'+task_name)
+plt.savefig('../figures/'+task_name)
 plt.show()
 

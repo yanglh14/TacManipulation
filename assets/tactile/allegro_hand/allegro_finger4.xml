@@ -17,15 +17,15 @@
     </worldbody>
 
     <!--ACTUATORS-->
-    <actuator>
+<!--    <actuator>-->
 
-        <!--gripper-->
+<!--        &lt;!&ndash;gripper&ndash;&gt;-->
 
-        <position name='finger_12_0' ctrllimited="true" kp="50" ctrlrange="0.263 1.396" joint='joint_12.0'/>
-        <position name='finger_13_0' ctrllimited="true" kp="50" ctrlrange="-0.105 1.163" joint='joint_13.0'/>
-        <position name='finger_14_0' ctrllimited="true" kp="50" ctrlrange="-0.189 1.25" joint='joint_14.0'/>
-        <position name='finger_15_0' ctrllimited="true" kp="50" ctrlrange="0 1" joint='joint_15.0'/>
+<!--        <position name='finger_12_0' ctrllimited="true" kp="50" ctrlrange="0.263 1.396" joint='joint_12.0'/>-->
+<!--        <position name='finger_13_0' ctrllimited="true" kp="50" ctrlrange="-0.105 1.163" joint='joint_13.0'/>-->
+<!--        <position name='finger_14_0' ctrllimited="true" kp="50" ctrlrange="-0.189 1.25" joint='joint_14.0'/>-->
+<!--        <position name='finger_15_0' ctrllimited="true" kp="50" ctrlrange="0 1" joint='joint_15.0'/>-->
 
-    </actuator>
+<!--    </actuator>-->
 
 </mujoco>

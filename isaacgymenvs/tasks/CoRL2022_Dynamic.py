@@ -200,7 +200,7 @@ def plot_tactile_heatmap(tactile,tactile_pose,object_name=None):
 
         fig.colorbar(im)
         if object_name != None:
-            plt.savefig(os.path.abspath(os.path.join(os.getcwd(),'../..')) + "/Pictures/"+object_name+".png")
+            plt.savefig(os.path.abspath(os.path.join(os.getcwd(),'../..')) + "/figures/"+object_name+".png")
             plt.close(fig)
         plt.show()
 

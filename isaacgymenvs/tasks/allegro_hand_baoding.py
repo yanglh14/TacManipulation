@@ -549,7 +549,7 @@ class AllegroHandBaoding(VecTask):
 
             obj_obs_start = 3*self.num_shadow_hand_dofs  # 48
             self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos
-            self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel
+            self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
 
             goal_obs_start = obj_obs_start + 12  # 60
             self.obs_buf[:, goal_obs_start:goal_obs_start + 6] = self.goal_pos
@@ -564,7 +564,6 @@ class AllegroHandBaoding(VecTask):
                 # obs_total = obs_end + num_actions = 719 + 16 = 735
 
                 self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos *0
-                self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
             else:
 
                 obs_end = touch_sensor_obs_start  #66
@@ -858,7 +857,7 @@ def compute_hand_reward(
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
     # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
-    reward = dist_rew + action_penalty * action_penalty_scale
+    reward = dist_rew + action_penalty * action_penalty_scale +1
 
     # Find out which envs hit the goal and update successes count
     goal_resets_index = (torch.abs(goal_dist) <= success_tolerance) * (progress_buf >100)
