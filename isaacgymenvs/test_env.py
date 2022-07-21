@@ -65,50 +65,13 @@ def launch_rlg_hydra(cfg: DictConfig):
     net_cf = gymtorch.wrap_tensor(_net_cf)
 
     while True:
-        stiffness_list = [1,3,5]
-        damping_list = [0,0.1,0.5]
 
-        for index in range(0,16):
+        actions = torch.as_tensor(
+            np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0]]),
+            dtype=torch.float32, device='cuda:0')
 
-            for j in range(9):
-                actions = torch.as_tensor(np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 20 * np.pi / 180, 0, 20 * np.pi / 180, 0]]),dtype=torch.float32, device='cuda:0')
-                actions = unscale(actions, env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
-
-                for i in range(50):
-                    env.step(actions)
-
-                stiffness = stiffness_list[int(j/3)]
-                damping = damping_list[int(j%3)]
-
-                env.shadow_hand_dof_props['stiffness'][index] = stiffness
-                env.shadow_hand_dof_props['damping'][index] = damping
-                env.gym.set_actor_dof_properties(env.envs[0], 1, env.shadow_hand_dof_props[0:4])
-                env.gym.set_actor_dof_properties(env.envs[0], 2, env.shadow_hand_dof_props[4:8])
-                env.gym.set_actor_dof_properties(env.envs[0], 3, env.shadow_hand_dof_props[8:12])
-                env.gym.set_actor_dof_properties(env.envs[0], 4, env.shadow_hand_dof_props[12:16])
-
-                if index == 12 or index == 14:
-                    angle_list = [20, 30, 45, 60, 75, 60, 45, 30, 20]
-                else:
-                    if index%4 == 0:
-                        angle_list = [0,15,25,15,0,-15,-25,-15,0]
-                    else:
-                        angle_list = [0,15,30,45,60,45,30,15,0]
-
-                angle_obs = []
-
-                for angle in angle_list:
-                    print(angle)
-                    actions = torch.as_tensor(np.array([[0, 0, 0, 0, 0.,0, 0, 0, 0., 0, 0, 0, 20*np.pi/180, 0, 20*np.pi/180, 0]]),dtype=torch.float32,device='cuda:0')
-                    actions[0,index] = angle * np.pi /180
-                    actions = unscale(actions, env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
-
-                    for i in range(50):
-                        env.step(actions)
-                        angle_obs.append(env.shadow_hand_dof_pos[0,:].cpu().detach().tolist())
-                np.save('runs/sim2real/joint_{}_stiffness{}_damping{}'.format(index,stiffness,damping),np.array(angle_obs))
-
-        break
+        env.step(actions)
+        # sim2rel(env)
 
         # env.gym.refresh_net_contact_force_tensor(env.sim)
         #
@@ -142,6 +105,57 @@ def plot_tactile(tactile,tactile_pose):
     # ax.scatter(x,y,s=(tac) * 1000 )
 
     plt.show()
+
+def sim2real(env):
+
+    stiffness_list = [1, 3, 5]
+    damping_list = [0, 0.1, 0.5]
+
+    for index in range(0, 16):
+
+        for j in range(9):
+            actions = torch.as_tensor(
+                np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 20 * np.pi / 180, 0, 20 * np.pi / 180, 0]]),
+                dtype=torch.float32, device='cuda:0')
+            actions = unscale(actions, env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
+
+            for i in range(50):
+                env.step(actions)
+
+            stiffness = stiffness_list[int(j / 3)]
+            damping = damping_list[int(j % 3)]
+
+            env.shadow_hand_dof_props['stiffness'][index] = stiffness
+            env.shadow_hand_dof_props['damping'][index] = damping
+            env.gym.set_actor_dof_properties(env.envs[0], 1, env.shadow_hand_dof_props[0:4])
+            env.gym.set_actor_dof_properties(env.envs[0], 2, env.shadow_hand_dof_props[4:8])
+            env.gym.set_actor_dof_properties(env.envs[0], 3, env.shadow_hand_dof_props[8:12])
+            env.gym.set_actor_dof_properties(env.envs[0], 4, env.shadow_hand_dof_props[12:16])
+
+            if index == 12 or index == 14:
+                angle_list = [20, 30, 45, 60, 75, 60, 45, 30, 20]
+            else:
+                if index % 4 == 0:
+                    angle_list = [0, 15, 25, 15, 0, -15, -25, -15, 0]
+                else:
+                    angle_list = [0, 15, 30, 45, 60, 45, 30, 15, 0]
+
+            angle_obs = []
+
+            for angle in angle_list:
+                print(angle)
+                actions = torch.as_tensor(
+                    np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 20 * np.pi / 180, 0, 20 * np.pi / 180, 0]]),
+                    dtype=torch.float32, device='cuda:0')
+                actions[0, index] = angle * np.pi / 180
+                actions = unscale(actions, env.shadow_hand_dof_lower_limits, env.shadow_hand_dof_upper_limits)
+
+                for i in range(50):
+                    env.step(actions)
+                    angle_obs.append(env.shadow_hand_dof_pos[0, :].cpu().detach().tolist())
+            np.save('runs/sim2real/joint_{}_stiffness{}_damping{}'.format(index, stiffness, damping),
+                    np.array(angle_obs))
+
 if __name__ == "__main__":
     launch_rlg_hydra()
 

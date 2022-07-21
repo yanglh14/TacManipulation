@@ -2,13 +2,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-for i in range(1):
+for i in range(16):
     index = "%d"%i
     print(index)
     stiffness_list = [1, 3, 5]
     damping_list = [0, 0.1, 0.5]
 
     error_list = []
+    fig, axs = plt.subplots(3,3)
+
     for j in range(9):
 
         stiffness = stiffness_list[int(j / 3)]
@@ -45,12 +47,11 @@ for i in range(1):
              np.ones(50) * np.pi * angle_list[8] / 180,
              ])
 
-        print(stiffness,damping,error)
-        fig, axs = plt.subplots(1)
-        axs.plot(joint_pos_real[:], label='real')
-        axs.plot(joint_pos_sim[:], label='sim')
-        axs.plot(joint_pos_target[:], label='target')
-        axs.legend()
-        plt.show()
+        print(i,stiffness,damping,error)
+        axs[int(j/3),j%3].plot(joint_pos_real[:], label='real')
+        axs[int(j/3),j%3].plot(joint_pos_sim[:], label='sim')
+        axs[int(j/3),j%3].plot(joint_pos_target[:], label='target')
+        axs[int(j/3),j%3].legend()
+        axs[int(j/3),j%3].set(title = "joint{},stiffness{},damping{},error{}".format(i,stiffness,damping,error))
 
-    print(error_list)
+    plt.show()

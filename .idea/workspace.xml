@@ -5,59 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/Tac_sensor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/controller_real.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_1.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_10.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_11.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_12.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_13.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_14.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_15.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_2.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_3.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_4.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_5.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_6.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_7.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_8.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/joint_pos_9.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_0.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_1.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_10.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_11.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_12.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_13.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_14.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_15.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_2.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_3.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_4.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_5.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_6.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_7.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_8.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/real/time_stamp_9.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_0_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_10_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_11_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_12_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_13_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_14_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_15_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_1_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_2_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_3_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_4_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_5_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_6_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_7_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_8_sim.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim/joint_9_sim.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_lstm_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_lstm_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/.ipynb_checkpoints/Data_acquisition_Nx3x3-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/.ipynb_checkpoints/Data_acquisition_Nx3x3-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/Data_acquisition_Nx3x3.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/Data_acquisition_Nx3x3.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/test_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/test_env.py" afterDir="false" />
     </list>
@@ -94,7 +49,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/scripts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -110,7 +65,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.sim2real">
+  <component name="RunManager" selected="Python.test_graph">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -124,27 +79,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/tasks/Calibration_tac.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Fig4.2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TacManipulation" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/encoder" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -216,6 +150,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="controller_real" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/scripts/controller_real.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="gnn" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -279,7 +234,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="test_baoding" type="PythonConfigurationType" factoryName="Python">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -292,7 +247,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/Baoding_fullstate/nn/Baoding_fullstate.pth" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=Baoding_touch headless=False checkpoint=runs_20220718/Baoding_touch/nn/Baoding_touch.pth task.env.observationTouch=True" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -313,7 +268,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/test_env.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=1 experiment=Baoding_test headless=True test=True" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=1 experiment=Baoding_test headless=False test=True" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_graph" type="PythonConfigurationType" factoryName="Python">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/rlgpu/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=1 experiment=baoding_graph headless=False checkpoint=runs_20220719/baoding_graph/nn/baoding_graph.pth" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -411,7 +387,8 @@
       <item itemvalue="Python.train_touch" />
       <item itemvalue="Python.train_graph" />
       <item itemvalue="Python.train_graph_lstm" />
-      <item itemvalue="Python.test" />
+      <item itemvalue="Python.test_graph" />
+      <item itemvalue="Python.test_baoding" />
       <item itemvalue="Python.Calibration_tac" />
       <item itemvalue="Python.cnn_encoder_sample" />
       <item itemvalue="Python.cnn_encoder" />
@@ -419,18 +396,18 @@
       <item itemvalue="Python.CoRL2022_Dynamic" />
       <item itemvalue="Python.CoRL2022_Multi" />
       <item itemvalue="Python.plot" />
-      <item itemvalue="Python.Fig4.2" />
       <item itemvalue="Python.gnn" />
       <item itemvalue="Python.Tac_sensor" />
       <item itemvalue="Python.sim2real" />
+      <item itemvalue="Python.controller_real" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.sim2real" />
+        <item itemvalue="Python.controller_real" />
         <item itemvalue="Python.plot" />
         <item itemvalue="Python.Tac_sensor" />
         <item itemvalue="Python.gnn" />
-        <item itemvalue="Python.Fig4.2" />
       </list>
     </recent_temporary>
   </component>
@@ -485,9 +462,9 @@
           <option name="timeStamp" value="157" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/scripts/Tac_sensor.py</url>
-          <line>110</line>
-          <option name="timeStamp" value="159" />
+          <url>file://$USER_HOME$/anaconda3/envs/rlgpu/lib/python3.7/site-packages/rl_games/torch_runner.py</url>
+          <line>143</line>
+          <option name="timeStamp" value="169" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

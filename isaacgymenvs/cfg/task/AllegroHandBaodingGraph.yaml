@@ -7,7 +7,7 @@ physics_engine: ${..physics_engine}
 env: 
   numEnvs: ${resolve_default:16384,${...num_envs}}
   envSpacing: 0.75
-  episodeLength: 600000
+  episodeLength: 200
   enableDebugVis: False
   aggregateMode: 1
 
@@ -42,7 +42,7 @@ env:
   rotEps: 0.1
   actionPenaltyScale: -0.0002
   reachGoalBonus: 250
-  fallDistance: 10.12
+  fallDistance: 0.12
   fallPenalty: -100.0
 
   # something added in baoding task
@@ -51,7 +51,7 @@ env:
   observationTouch: True
   touchmodel: "gnn" #can be "gnn" or "gnn_lstm"
   touchmodedir: ${experiment}
-  touchmodelexist: False
+  touchmodelexist: True
   touchtest: ${test}
 
   asymmetric_observations: False

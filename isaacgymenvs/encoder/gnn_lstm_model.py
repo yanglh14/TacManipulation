@@ -18,7 +18,7 @@ class gnn_lstm_model():
         torch.manual_seed(43)
         self.training_episode_num = 0
         self.touchmodedir, self.touchmodelexist, self.test = touchmodedir, touchmodelexist, test
-        self.save_dir = 'runs/'+self.touchmodedir+'/touchmodel'
+        self.save_dir = 'runs_20220718/'+self.touchmodedir+'/touchmodel'
 
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()

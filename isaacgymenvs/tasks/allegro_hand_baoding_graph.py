@@ -277,7 +277,6 @@ class AllegroHandBaodingGraph(VecTask):
 
         # load manipulated object and goal assets
         object_asset_options = gymapi.AssetOptions()
-        object_asset_options.disable_gravity = True
 
         object_asset = self.gym.load_asset(self.sim, asset_root, object_asset_file, object_asset_options)
 
@@ -297,7 +296,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
-        object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz + 0.05
+        object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
 
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
@@ -306,7 +305,7 @@ class AllegroHandBaodingGraph(VecTask):
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
-            object_start_pose_2.p.z = shadow_hand_start_pose.p.z + pose_dz + 0.05
+            object_start_pose_2.p.z = shadow_hand_start_pose.p.z + pose_dz
 
         self.goal_displacement = gymapi.Vec3(0, -0.01, 0.1)
         self.goal_displacement_tensor = to_torch(
@@ -581,7 +580,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
 
-                if self.step_num > 10000000:
+                if self.step_num > 10000000 :
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
 
                 self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
@@ -839,11 +838,11 @@ class AllegroHandBaodingGraph(VecTask):
 
         # creat a goal for the object position.
 
-        self.goal = torch.zeros((self.num_envs,self.max_episode_length,6), dtype=torch.float, device=self.device)
+        self.goal = torch.zeros((self.num_envs,self.max_episode_length+1,6), dtype=torch.float, device=self.device)
         self.center_pose = (self.object_init_state[:,:3] + self.object_init_state[:,13:13+3])/2
         self.y_radius = (self.object_init_state[:,0:1] - self.object_init_state[:,13:14])/2
         self.x_radius = self.y_radius
-        for i in range(self.max_episode_length):
+        for i in range(self.max_episode_length+1):
             if i <= 100:
                 angle = i * np.pi / 100
             else:
@@ -857,6 +856,15 @@ class AllegroHandBaodingGraph(VecTask):
 
             self.goal[:,i,:] = goal_position
         return self.goal
+
+    def object_pre(self,joint_pos, touch_tensor):
+
+        tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+
+        object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
+
+        return object_predict
+
 #####################################################################
 ###=========================jit functions=========================###
 #####################################################################
