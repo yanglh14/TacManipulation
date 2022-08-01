@@ -6,42 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/allegro_finger2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/allegro_finger2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/allegro_finger3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/allegro_finger3.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/allegro_finger4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/allegro_finger4.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/allegro_hand/assets/shared.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/objects/ball1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/ball_small.urdf" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/objects/ball_small.urdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/010_potted_meat_can.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/010_potted_meat_can.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/011_banana.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/011_banana.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/025_mug.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/025_mug.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/061_foam_brick.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/061_foam_brick.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/accuracy.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/accuracy.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/ball_big.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/ball_big.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/ball_small.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/ball_small.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/cube_big.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/cube_big.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/cube_small.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/cube_small.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/cylinder_big.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/cylinder_big.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/cylinder_small.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/cylinder_small.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_0.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_5.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_6.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_8.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/pro_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/pro_9.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/train_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/train_loss.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/Pictures/val_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/figures/val_loss.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig1.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Dynamic.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/CoRL2022_Dynamic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
     </list>
@@ -94,7 +60,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_env">
+  <component name="RunManager" selected="Python.train">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -494,6 +460,11 @@
           <url>file://$USER_HOME$/anaconda3/envs/rlgpu/lib/python3.7/site-packages/rl_games/torch_runner.py</url>
           <line>143</line>
           <option name="timeStamp" value="169" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="171" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

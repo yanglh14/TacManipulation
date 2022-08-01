@@ -267,6 +267,9 @@ class AllegroHandBaodingGraph(VecTask):
             shadow_hand_dof_props['damping'][i] = 0.1
             shadow_hand_dof_props['friction'][i] = 0.01
             shadow_hand_dof_props['armature'][i] = 0.001
+        data = np.load('scripts/joint_sim2real.npy')
+        shadow_hand_dof_props['stiffness'] = data[0]
+        shadow_hand_dof_props['damping'] = data[1]
 
         self.shadow_hand_dof_props = shadow_hand_dof_props
         self.actuated_dof_indices = to_torch(self.actuated_dof_indices, dtype=torch.long, device=self.device)
@@ -292,7 +295,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        pose_dx, pose_dy, pose_dz = 0.032, 0.0, 0.05
+        pose_dx, pose_dy, pose_dz = 0.028, -0.01, 0.07
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -301,7 +304,7 @@ class AllegroHandBaodingGraph(VecTask):
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
             object_start_pose_2.p = gymapi.Vec3()
-            pose_dx, pose_dy, pose_dz = -0.032, 0.0, 0.05
+            pose_dx, pose_dy, pose_dz = -0.028, -0.01, 0.07
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy

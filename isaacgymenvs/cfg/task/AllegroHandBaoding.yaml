@@ -42,7 +42,7 @@ env:
   rotEps: 0.1
   actionPenaltyScale: -0.0002
   reachGoalBonus: 250
-  fallDistance: 0.12
+  fallDistance: 10.12
   fallPenalty: -100.0
 
   objectType: "baoding" # can be block, egg, pen or baoding

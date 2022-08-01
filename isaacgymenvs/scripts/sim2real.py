@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+stiffness_min = []
+damping_min = []
+real_joint_offset = []
 
 for i in range(16):
     index = "%d"%i
@@ -23,6 +26,8 @@ for i in range(16):
         joint_pos_real = joint_pos_real [:,i]
         joint_pos_sim = joint_pos_sim[:,i]
 
+        if j == 0:
+            real_joint_offset.append(joint_pos_real[0])
         joint_pos_real[:] = joint_pos_real[:] - joint_pos_real[0]
         if i == 12 or i == 14:
             joint_pos_real[:] += 20 * np.pi / 180
@@ -54,4 +59,9 @@ for i in range(16):
         axs[int(j/3),j%3].legend()
         axs[int(j/3),j%3].set(title = "joint{},stiffness{},damping{},error{}".format(i,stiffness,damping,error))
 
-    plt.show()
+    stiffness_min.append(stiffness_list[int(np.argmin(error_list)/3)])
+    damping_min.append(damping_list[int(np.argmin(error_list)%3)])
+
+    # plt.show()
+
+np.save()
