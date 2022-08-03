@@ -583,7 +583,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
 
-                if self.step_num%1 == 0 :
+                if self.step_num%1 == 0:
                     print('step num:',self.step_num)
                 if self.step_num > 10000000 :
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
