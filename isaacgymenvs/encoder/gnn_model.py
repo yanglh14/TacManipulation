@@ -36,7 +36,7 @@ class gnn_model():
 
         self.horizon_length = 100
         self.num_envs = num_envs
-        self.epoch_num = 30
+        self.epoch_num = 10
         self.device = device
         self.step_n = 0
 

@@ -46,7 +46,7 @@ class gnn_lstm_model():
         self.horizon_length = 10
         self.buf_size = 100
         self.num_envs = num_envs
-        self.epoch_num = 30
+        self.epoch_num = 10
         self.device = device
         self.step_n = 0
         self.batch_size = 16

@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_lstm_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_lstm_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,7 +59,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.train_touch">
+  <component name="RunManager" selected="Python.train_graph">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
