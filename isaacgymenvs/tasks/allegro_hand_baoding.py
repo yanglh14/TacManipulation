@@ -564,6 +564,7 @@ class AllegroHandBaoding(VecTask):
                 touch_tensor = touch_tensor.abs()
                 touch_tensor[touch_tensor<0.0005] = 0
                 touch_tensor[self.progress_buf == 1, :] = 0
+
                 self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] = self.force_torque_obs_scale * touch_tensor
                 obs_end = touch_sensor_obs_start+653  #719
                 # obs_total = obs_end + num_actions = 719 + 16 = 735
@@ -819,11 +820,11 @@ class AllegroHandBaoding(VecTask):
 
         # creat a goal for the object position.
 
-        self.goal = torch.zeros((self.num_envs,1000,6), dtype=torch.float, device=self.device)
+        self.goal = torch.zeros((self.num_envs,self.max_episode_length+1,6), dtype=torch.float, device=self.device)
         self.center_pose = (self.object_init_state[:,:3] + self.object_init_state[:,13:13+3])/2
         self.y_radius = (self.object_init_state[:,0:1] - self.object_init_state[:,13:14])/2
         self.x_radius = self.y_radius
-        for i in range(1000):
+        for i in range(self.max_episode_length+1):
             if i <= 100:
                 angle = i * np.pi / 100
             else:

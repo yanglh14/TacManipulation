@@ -18,7 +18,7 @@ class gnn_lstm_model():
         torch.manual_seed(43)
         self.training_episode_num = 0
         self.touchmodedir, self.touchmodelexist, self.test = touchmodedir, touchmodelexist, test
-        self.save_dir = 'runs_20220718/'+self.touchmodedir+'/touchmodel'
+        self.save_dir = 'runs/'+self.touchmodedir+'/touchmodel'
 
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()
@@ -33,7 +33,7 @@ class gnn_lstm_model():
 
         else:
             self.gnn = PointNet(device=device,output_dim=16)
-            input_dim,hidden_dim,layer_dim,output_dim = 16,32,3,6
+            input_dim,hidden_dim,layer_dim,output_dim = 16,16,3,6
             self.lstm = LSTMModel(input_dim, hidden_dim, layer_dim, output_dim,device)
 
         params_to_optimize = [
@@ -130,7 +130,6 @@ class gnn_lstm_model():
 
         print('Start Training Encoder! Episode Num {} \t Training data set {} \t Validation data set {}'.format(self.training_episode_num,self.train_loader.dataset.__len__(),self.valid_loader.dataset.__len__()))
         self.training_episode_num +=1
-
         for epoch in range(self.epoch_num):
             train_loss = self.train_epoch()
         val_loss = self.test_epoch()

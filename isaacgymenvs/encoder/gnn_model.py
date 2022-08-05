@@ -97,7 +97,6 @@ class gnn_model():
     def train(self):
 
         print('Start Training Encoder! Episode Num {} \t Training data set {} \t Validation data set {}'.format(self.training_episode_num,self.train_loader.dataset.__len__(),self.valid_loader.dataset.__len__()))
-
         self.training_episode_num +=1
         for epoch in range(self.epoch_num):
             train_loss = self.train_epoch()

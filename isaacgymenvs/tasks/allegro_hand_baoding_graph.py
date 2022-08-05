@@ -565,8 +565,8 @@ class AllegroHandBaodingGraph(VecTask):
             self.obs_buf[:, 2*self.num_shadow_hand_dofs:3*self.num_shadow_hand_dofs] = self.force_torque_obs_scale * self.dof_force_tensor
 
             obj_obs_start = 3*self.num_shadow_hand_dofs  # 48
-            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos *100
-            self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel
+            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos
+            self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
 
             goal_obs_start = obj_obs_start + 12  # 60
             self.obs_buf[:, goal_obs_start:goal_obs_start + 6] = self.goal_pos
@@ -577,8 +577,8 @@ class AllegroHandBaodingGraph(VecTask):
                 touch_tensor = self.net_cf[:, self.sensors_handles, 2]
                 touch_tensor = touch_tensor.abs()
                 touch_tensor[touch_tensor<0.0005] = 0
-                ## touch = 0 when first step
                 touch_tensor[self.progress_buf==1, :] = 0
+
                 tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
                 object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
@@ -586,9 +586,7 @@ class AllegroHandBaodingGraph(VecTask):
                 if self.step_num%100 == 0:
                     print('step num:',self.step_num)
                 if self.step_num > 100000:
-                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict
-
-                self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
+                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict/100
 
                 obs_end = touch_sensor_obs_start  #66
             else:
