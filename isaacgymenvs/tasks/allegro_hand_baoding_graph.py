@@ -136,6 +136,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.shadow_hand_default_dof_pos = torch.zeros(self.num_shadow_hand_dofs, dtype=torch.float, device=self.device)
         self.dof_state = gymtorch.wrap_tensor(dof_state_tensor)
         self.dof_state_init = self.dof_state.clone()
+        self.dof_state_target = self.dof_state.clone()
         self.shadow_hand_dof_state = self.dof_state.view(self.num_envs, -1, 2)[:, :self.num_shadow_hand_dofs]
         self.shadow_hand_dof_pos = self.shadow_hand_dof_state[..., 0]
         self.shadow_hand_dof_vel = self.shadow_hand_dof_state[..., 1]
@@ -585,7 +586,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 if self.step_num%100 == 0:
                     print('step num:',self.step_num)
-                if self.step_num > 100000:
+                if self.step_num > 0:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict/100
 
                 obs_end = touch_sensor_obs_start  #66
@@ -859,14 +860,32 @@ class AllegroHandBaodingGraph(VecTask):
 
             self.goal[:,i,:] = goal_position
         return self.goal
+    def sim2real(self,act, tac):
 
-    def object_pre(self,joint_pos, touch_tensor):
+        self.dof_state_target[:,0] = act
+        self.dof_state_target[:, 1] = 0
+        hand_indices = torch.tensor([1,2,3,4], dtype=torch.int32, device =self.device)
+        self.gym.set_dof_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self.dof_state_target),
+                                                gymtorch.unwrap_tensor(hand_indices), len(hand_indices))
 
-        tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+        # step the physics
+        self.gym.simulate(self.sim)
+        self.gym.fetch_results(self.sim, True)
 
-        object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
+        # update the viewer
+        if self.headless == False:
+            self.gym.step_graphics(self.sim);
+            self.gym.draw_viewer(self.viewer, self.sim, True)
 
-        return object_predict
+        self.gym.refresh_rigid_body_state_tensor(self.sim)
+
+        self.sensor_pos = self.rigid_body_states[:,self.sensors_handles,:3]
+
+        assert self.test == True,'Should be test mode!'
+
+        object_predict = self.model.step(torch.tensor(tac,dtype=torch.float32,device=self.device), self.sensor_pos, self.object_pos)
+
+        return object_predict/100, self.sensor_pos
 
 #####################################################################
 ###=========================jit functions=========================###

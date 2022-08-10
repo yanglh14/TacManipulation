@@ -51,7 +51,7 @@ env:
   observationTouch: True
   touchmodel: "gnn" #can be "gnn" or "gnn_lstm"
   touchmodedir: ${experiment}
-  touchmodelexist: False
+  touchmodelexist: ${test}
   touchtest: ${test}
 
   asymmetric_observations: False
