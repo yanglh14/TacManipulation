@@ -583,10 +583,24 @@ class AllegroHandBaodingGraph(VecTask):
                 tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
                 object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
+                a = np.array((self.object_pos*100).tolist()[0])
+                b = np.array(object_predict.tolist()[0])
+                print(self.progress_buf[0],a,b, np.linalg.norm(a-b,ord=1)/6)
+
+                import matplotlib.pyplot as plt
+
+                fig = plt.figure(figsize=(8, 8))
+                ax = fig.add_subplot(111, projection='3d')
+                ax.scatter(tactile_pose.cpu()[0,:,0], tactile_pose.cpu()[0,:,1], tactile_pose.cpu()[0,:,2], s=(touch_tensor.cpu()[0]) * 1000)
+
+                # ax = fig.add_subplot(111)
+                # ax.scatter(x,y,s=(tac) * 1000 )
+
+                plt.show()
 
                 if self.step_num%100 == 0:
                     print('step num:',self.step_num)
-                if self.step_num > 0:
+                if self.step_num > 100000:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict/100
 
                 obs_end = touch_sensor_obs_start  #66

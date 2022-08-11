@@ -25,17 +25,14 @@ for i in range(200):
     y = tactile_pos_log[i,:,1]
     z = tactile_pos_log[i,:,2]
     tac = tactile_log[i,:]
-    cal_table_ = cal_table.copy()
-    cal_table_[:113] = cal_table[540:]
-    cal_table_[113:] = cal_table[:540]
 
-    tac[tac < cal_table_[:, 1]] = 0
-    tac[tac > cal_table_[:, 2]] = cal_table_[tac > cal_table_[:, 2], 2]
-    tac *= cal_table_[:, 0]
+    tac[tac < cal_table[:, 1]] = 0
+    tac[tac > cal_table[:, 2]] = cal_table[tac > cal_table[:, 2], 2]
+    tac *= cal_table[:, 0]
 
 
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x, y, z, s=(tac) * 1000+1)
+    ax.scatter(x, y, z, s=(tac) * 1000+0.1)
 
     plt.show()

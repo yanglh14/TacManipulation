@@ -5,15 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/controller_real.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/controller_real_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_notask.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/controller_real.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/msg/tactile_msgs.msg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/calibration_table.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/calibration_table.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/test_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/test_env.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +35,15 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/controller_real.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/train.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/test.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/test_env.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -48,7 +54,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs" />
+    <property name="last_opened_file_path" value="$USER_HOME$/catkin_ws" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" />
   </component>
@@ -65,7 +71,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test">
+  <component name="RunManager" selected="Python.test_graph">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -462,19 +468,9 @@
           <option name="timeStamp" value="157" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py</url>
-          <line>66</line>
-          <option name="timeStamp" value="171" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/controller_real_test.py</url>
           <line>148</line>
           <option name="timeStamp" value="207" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py</url>
-          <line>275</line>
-          <option name="timeStamp" value="209" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
