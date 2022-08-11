@@ -84,7 +84,7 @@ class AllegroHandBaoding(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 713 if self.obs_touch else 60
+            "full_state": 735 if self.obs_touch else 82
         }
 
         self.up_axis = 'z'
@@ -548,21 +548,16 @@ class AllegroHandBaoding(VecTask):
             self.obs_buf[:, 0:self.num_shadow_hand_dofs] = unscale(self.shadow_hand_dof_pos,
                                                                       self.shadow_hand_dof_lower_limits, self.shadow_hand_dof_upper_limits)
             self.obs_buf[:, self.num_shadow_hand_dofs:2*self.num_shadow_hand_dofs] = self.vel_obs_scale * self.shadow_hand_dof_vel
-            # self.obs_buf[:, 2*self.num_shadow_hand_dofs:3*self.num_shadow_hand_dofs] = self.force_torque_obs_scale * self.dof_force_tensor
+            self.obs_buf[:, 2*self.num_shadow_hand_dofs:3*self.num_shadow_hand_dofs] = self.force_torque_obs_scale * self.dof_force_tensor
 
-            # obj_obs_start = 3*self.num_shadow_hand_dofs  # 48
-            obj_obs_start = 2*self.num_shadow_hand_dofs  # 32
-
+            obj_obs_start = 3*self.num_shadow_hand_dofs  # 48
             self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos
-            # self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
+            self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
 
-            # goal_obs_start = obj_obs_start + 12  # 60
-            goal_obs_start = obj_obs_start + 6  # 38
-
+            goal_obs_start = obj_obs_start + 12  # 60
             self.obs_buf[:, goal_obs_start:goal_obs_start + 6] = self.goal_pos
 
-            # touch_sensor_obs_start = goal_obs_start + 6  # 66
-            touch_sensor_obs_start = goal_obs_start + 6  # 44
+            touch_sensor_obs_start = goal_obs_start + 6  # 66
 
             if self.obs_touch:
                 touch_tensor = self.net_cf[:, self.sensors_handles, 2]
@@ -577,10 +572,8 @@ class AllegroHandBaoding(VecTask):
                 self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos *0
             else:
 
-                # obs_end = touch_sensor_obs_start  #66
-                # # obs_total = obs_end + num_actions = 66 + 16 = 82
-                obs_end = touch_sensor_obs_start  #44
-                # obs_total = obs_end + num_actions = 44 + 16 = 60
+                obs_end = touch_sensor_obs_start  #66
+                # obs_total = obs_end + num_actions = 66 + 16 = 82
 
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
@@ -832,10 +825,10 @@ class AllegroHandBaoding(VecTask):
         self.y_radius = (self.object_init_state[:,0:1] - self.object_init_state[:,13:14])/2
         self.x_radius = self.y_radius
         for i in range(self.max_episode_length+1):
-            if i <= 500:
-                angle = i * np.pi / 500
+            if i <= 100:
+                angle = i * np.pi / 100
             else:
-                angle = 500 * np.pi / 500
+                angle = 100 * np.pi / 100
 
             angle = angle
             goal_position = torch.cat([self.x_radius * np.cos(angle) + self.center_pose[:,0:1],

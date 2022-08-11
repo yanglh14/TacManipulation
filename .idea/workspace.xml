@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/msg/tactile_msgs.msg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/calibration_table.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/calibration_table.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/test_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/test_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,14 +52,14 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$USER_HOME$/catkin_ws" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/tasks" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/isaacgymenvs" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
+      <recent name="$PROJECT_DIR$/isaacgymenvs" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/scripts" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/encoder" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/cfg/train" />
@@ -71,7 +69,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_graph">
+  <component name="RunManager" selected="Python.test_baoding">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -471,6 +469,11 @@
           <url>file://$PROJECT_DIR$/isaacgymenvs/controller_real_test.py</url>
           <line>148</line>
           <option name="timeStamp" value="207" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py</url>
+          <line>708</line>
+          <option name="timeStamp" value="215" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
