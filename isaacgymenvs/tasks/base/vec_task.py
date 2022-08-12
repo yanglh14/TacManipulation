@@ -249,7 +249,7 @@ class VecTask(Env):
             self.num_envs, device=self.device, dtype=torch.long)
         self.extras = {}
 
-    #
+
     def set_sim_params_up_axis(self, sim_params: gymapi.SimParams, axis: str) -> int:
         """Set gravity based on up axis and return axis index.
 
