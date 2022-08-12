@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/test_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/test_env.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,13 +34,10 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/controller_real.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/train.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/test.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/test_env.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/sim2real.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/test_env.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/train.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -272,7 +269,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/test_env.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=1 experiment=Baoding_test headless=False test=True" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=2 experiment=Baoding_test headless=False test=True" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -425,6 +422,17 @@
       <updated>1652067967993</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

@@ -175,6 +175,12 @@ class AllegroHandBaoding(VecTask):
         if self.object_type == 'baoding':
             self.create_goal()
 
+        self.shadow_hand_init_dof_pos = scale(torch.zeros([self.num_envs, self.num_shadow_hand_dofs], dtype=torch.float, device=self.device),
+              self.shadow_hand_dof_lower_limits[self.actuated_dof_indices],
+              self.shadow_hand_dof_upper_limits[self.actuated_dof_indices])
+        self.dof_state_init.view(self.num_envs,-1,2)[:,:,0] = self.shadow_hand_init_dof_pos
+        self.shadow_hand_default_dof_pos = self.shadow_hand_init_dof_pos[0,:]
+
     def create_sim(self):
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
@@ -690,7 +696,8 @@ class AllegroHandBaoding(VecTask):
         delta_min = self.shadow_hand_dof_lower_limits - self.shadow_hand_dof_default_pos
         rand_delta = delta_min + (delta_max - delta_min) * rand_floats[:, 5:5+self.num_shadow_hand_dofs]
 
-        pos = self.shadow_hand_default_dof_pos + self.reset_dof_pos_noise * rand_delta
+        pos = self.shadow_hand_default_dof_pos + self.reset_dof_pos_noise * rand_delta *0
+
         self.shadow_hand_dof_pos[env_ids, :] = pos
         self.shadow_hand_dof_vel[env_ids, :] = self.shadow_hand_dof_default_vel + \
             self.reset_dof_vel_noise * rand_floats[:, 5+self.num_shadow_hand_dofs:5+self.num_shadow_hand_dofs*2]
@@ -832,10 +839,10 @@ class AllegroHandBaoding(VecTask):
         self.y_radius = (self.object_init_state[:,0:1] - self.object_init_state[:,13:14])/2
         self.x_radius = self.y_radius
         for i in range(self.max_episode_length+1):
-            if i <= 500:
-                angle = i * np.pi / 500
+            if i <= 300:
+                angle = i * np.pi / 300
             else:
-                angle = 500 * np.pi / 500
+                angle = 300 * np.pi / 300
 
             angle = angle
             goal_position = torch.cat([self.x_radius * np.cos(angle) + self.center_pose[:,0:1],
@@ -873,7 +880,7 @@ def compute_hand_reward(
     reward = dist_rew + action_penalty * action_penalty_scale +1
 
     # Find out which envs hit the goal and update successes count
-    goal_resets_index = (torch.abs(goal_dist) <= success_tolerance) * (progress_buf >100)
+    goal_resets_index = (torch.abs(goal_dist) <= success_tolerance) * (progress_buf >300)
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 

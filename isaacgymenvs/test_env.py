@@ -67,7 +67,7 @@ def launch_rlg_hydra(cfg: DictConfig):
     while True:
 
         actions = torch.as_tensor(
-            np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0]]),
+            np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0]]),
             dtype=torch.float32, device='cuda:0')
 
         env.step(actions)
