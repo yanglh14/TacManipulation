@@ -452,7 +452,7 @@ class AllegroHandBaoding(VecTask):
             self.max_consecutive_successes, self.av_factor, (self.object_type == "pen"), self.object_angle,self.object_angle_pre
         )
         self.extras['consecutive_successes'] = self.consecutive_successes.mean()
-        # print(self.rew_buf[0],dist_rew,goal_dist,goal_resets_index,goal_resets)
+        print(self.rew_buf[0],dist_rew,goal_dist)
 
         if self.print_success_stat:
             self.total_resets = self.total_resets + self.reset_buf.sum()
@@ -502,7 +502,7 @@ class AllegroHandBaoding(VecTask):
 
             obj_obs_start = 2*self.num_shadow_hand_dofs  # 32
 
-            self.obs_buf[:, obj_obs_start:obj_obs_start + 1] = self.object_angle.view(2,1)
+            self.obs_buf[:, obj_obs_start:obj_obs_start + 1] = self.object_angle.view(self.num_envs,1)
 
             goal_obs_start = obj_obs_start + 1  # 33
 
@@ -810,7 +810,7 @@ def compute_hand_reward(
     if ignore_z_rot:
         success_tolerance = 2.0 * success_tolerance
 
-    dist_rew = angle_dist * 0.01
+    dist_rew = angle_dist * 0.1
 
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
@@ -818,7 +818,7 @@ def compute_hand_reward(
     reward = dist_rew + action_penalty * action_penalty_scale
 
     # Find out which envs hit the goal and update successes count
-    goal_resets_index = object_angle > 180
+    goal_resets_index = object_angle > 170
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 

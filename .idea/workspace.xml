@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/base/vec_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/base/vec_task.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,11 +46,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "last_opened_file_path": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;last_opened_file_path&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
@@ -311,7 +309,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=512 sim_device='cuda:0' rl_device='cuda:1' experiment=Baoding_fullstate max_iterations=100000 headless=True train.params.config.minibatch_size=4096" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=64 sim_device='cuda:0' rl_device='cuda:0' experiment=baoding_fullstate max_iterations=100000 headless=True train.params.config.minibatch_size=512" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -482,6 +480,11 @@
           <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_1.py</url>
           <line>708</line>
           <option name="timeStamp" value="215" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py</url>
+          <line>456</line>
+          <option name="timeStamp" value="218" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
