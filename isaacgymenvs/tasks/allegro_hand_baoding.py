@@ -269,6 +269,7 @@ class AllegroHandBaoding(VecTask):
         shadow_hand_dof_props['stiffness'] = data[0]
         shadow_hand_dof_props['damping'] = data[1]
 
+        self.shadow_hand_dof_props = shadow_hand_dof_props
         self.actuated_dof_indices = to_torch(self.actuated_dof_indices, dtype=torch.long, device=self.device)
         self.shadow_hand_dof_lower_limits = to_torch(self.shadow_hand_dof_lower_limits, device=self.device)
         self.shadow_hand_dof_upper_limits = to_torch(self.shadow_hand_dof_upper_limits, device=self.device)
@@ -292,7 +293,7 @@ class AllegroHandBaoding(VecTask):
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        pose_dx, pose_dy, pose_dz = 0.028, -0.01, 0.07
+        pose_dx, pose_dy, pose_dz = 0.028, -0.01, 0.05
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -301,7 +302,7 @@ class AllegroHandBaoding(VecTask):
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
             object_start_pose_2.p = gymapi.Vec3()
-            pose_dx, pose_dy, pose_dz = -0.028, -0.01, 0.07
+            pose_dx, pose_dy, pose_dz = -0.028, -0.01, 0.05
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -607,14 +608,14 @@ class AllegroHandBaoding(VecTask):
         # reset object
         self.root_state_tensor[self.object_indices[env_ids*2]] = self.object_init_state[env_ids,:13].clone()
 
-        self.root_state_tensor[self.object_indices[env_ids*2], :7] = self.object_init_state[env_ids, :7] + \
-            self.reset_position_noise * rand_floats[:, :7]
+        self.root_state_tensor[self.object_indices[env_ids*2], :2] = self.object_init_state[env_ids, :2] + \
+            self.reset_position_noise * rand_floats[:, :2]
 
 
         self.root_state_tensor[self.object_indices[env_ids*2+1]] = self.object_init_state[env_ids,13:26].clone()
 
-        self.root_state_tensor[self.object_indices[env_ids*2+1], :7] = self.object_init_state[env_ids,13:13+7] + \
-            self.reset_position_noise * rand_floats[:, 13:13+7]
+        self.root_state_tensor[self.object_indices[env_ids*2+1], :2] = self.object_init_state[env_ids,13:13+2] + \
+            self.reset_position_noise * rand_floats[:, 13:13+2]
 
 
         object_indices = torch.unique(torch.cat([self.object_indices[env_ids*2],self.object_indices[env_ids*2+1],

@@ -85,7 +85,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 82 if self.obs_touch else 82
+            "full_state": 54 if self.obs_touch else 54
         }
 
         self.up_axis = 'z'
@@ -93,7 +93,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         num_states = 0
         if self.asymmetric_obs:
-            num_states = 82 if self.obs_touch else 82
+            num_states = 54 if self.obs_touch else 54
 
         self.cfg["env"]["numObservations"] = self.num_obs_dict[self.obs_type]
         self.cfg["env"]["numStates"] = num_states
@@ -188,6 +188,17 @@ class AllegroHandBaodingGraph(VecTask):
             self.model = gnn_lstm_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
 
         self.step_num = 0
+
+        self.shadow_hand_init_dof_pos = scale(torch.zeros([self.num_envs, self.num_shadow_hand_dofs], dtype=torch.float, device=self.device),
+              self.shadow_hand_dof_lower_limits[self.actuated_dof_indices],
+              self.shadow_hand_dof_upper_limits[self.actuated_dof_indices])
+        self.dof_state_init.view(self.num_envs,-1,2)[:,:,0] = self.shadow_hand_init_dof_pos
+        self.shadow_hand_default_dof_pos = self.shadow_hand_init_dof_pos[0,:]
+
+        self.object_angle = torch.zeros(
+            (self.num_envs), device=self.device, dtype=torch.float)
+        self.object_angle_pre = torch.zeros(
+            (self.num_envs), device=self.device, dtype=torch.float)
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -296,7 +307,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
-        pose_dx, pose_dy, pose_dz = 0.028, -0.01, 0.07
+        pose_dx, pose_dy, pose_dz = 0.028, -0.01, 0.05
 
         object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -305,7 +316,7 @@ class AllegroHandBaodingGraph(VecTask):
         if self.object_type == "baoding":
             object_start_pose_2 = gymapi.Transform()
             object_start_pose_2.p = gymapi.Vec3()
-            pose_dx, pose_dy, pose_dz = -0.028, -0.01, 0.07
+            pose_dx, pose_dy, pose_dz = -0.028, -0.01, 0.05
 
             object_start_pose_2.p.x = shadow_hand_start_pose.p.x + pose_dx
             object_start_pose_2.p.y = shadow_hand_start_pose.p.y + pose_dy
@@ -453,10 +464,10 @@ class AllegroHandBaodingGraph(VecTask):
             self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot,
             self.dist_reward_scale, self.rot_reward_scale, self.rot_eps, self.actions, self.action_penalty_scale,
             self.success_tolerance, self.reach_goal_bonus, self.fall_dist, self.fall_penalty,
-            self.max_consecutive_successes, self.av_factor, (self.object_type == "pen")
+            self.max_consecutive_successes, self.av_factor, (self.object_type == "pen"), self.object_angle,self.object_angle_pre
         )
         self.extras['consecutive_successes'] = self.consecutive_successes.mean()
-        # print(self.rew_buf[0],dist_rew,goal_dist,goal_resets_index,goal_resets)
+        # print(self.rew_buf[0],dist_rew[0])
 
         if self.print_success_stat:
             self.total_resets = self.total_resets + self.reset_buf.sum()
@@ -479,15 +490,17 @@ class AllegroHandBaodingGraph(VecTask):
             self.gym.refresh_net_contact_force_tensor(self.sim)
 
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
+        self.object_1 = self.object_pos[:,:2]
+        self.object_2 = self.object_pos[:,3:5]
+        self.object_vector = self.object_1 - self.object_2
+        self.object_angle = torch.arccos(self.object_vector[:,0]/torch.linalg.norm(self.object_vector,dim=1)) * (180/torch.pi)
+        self.object_angle[self.object_vector[:,1]<0] *= -1
+
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)
         self.object_rot, self.goal_rot = torch.tensor([0]), torch.tensor([0])
         self.goal_pos = torch.cat((self.goal_states[:, 0:3],self.goal_states[:, 13:13+3]),1)
 
-        if self.obs_type == "full_no_vel":
-            self.compute_full_observations(True)
-        elif self.obs_type == "full":
-            self.compute_full_observations()
-        elif self.obs_type == "full_state":
+        if self.obs_type == "full_state":
              self.compute_full_state()
         else:
             print("Unkown observations type!")
@@ -495,119 +508,52 @@ class AllegroHandBaodingGraph(VecTask):
         if self.asymmetric_obs:
             self.compute_full_state(True)
 
-    def compute_full_observations(self, no_vel=False):
-        if no_vel:
-            self.obs_buf[:, 0:self.num_shadow_hand_dofs] = unscale(self.shadow_hand_dof_pos,
-                                                                   self.shadow_hand_dof_lower_limits, self.shadow_hand_dof_upper_limits)
-
-            self.obs_buf[:, 16:23] = self.object_pose
-            self.obs_buf[:, 23:30] = self.goal_pose
-            self.obs_buf[:, 30:34] = quat_mul(self.object_rot, quat_conjugate(self.goal_rot))
-
-            # 3*self.num_fingertips = 15
-            #self.obs_buf[:, 42:57] = self.fingertip_pos.reshape(self.num_envs, 15)
-
-            self.obs_buf[:, 34:50] = self.actions
-        else:
-            self.obs_buf[:, 0:self.num_shadow_hand_dofs] = unscale(self.shadow_hand_dof_pos,
-                                                                   self.shadow_hand_dof_lower_limits, self.shadow_hand_dof_upper_limits)
-            self.obs_buf[:, self.num_shadow_hand_dofs:2*self.num_shadow_hand_dofs] = self.vel_obs_scale * self.shadow_hand_dof_vel
-
-            # 2*16 = 32
-            self.obs_buf[:, 32:39] = self.object_pose
-            self.obs_buf[:, 39:42] = self.object_linvel
-            self.obs_buf[:, 42:45] = self.vel_obs_scale * self.object_angvel
-
-            self.obs_buf[:, 45:52] = self.goal_pose
-            self.obs_buf[:, 52:56] = quat_mul(self.object_rot, quat_conjugate(self.goal_rot))
-
-            # 13*self.num_fingertips = 65 4*13 = 52
-            # self.obs_buf[:, 72:137] = self.fingertip_state.reshape(self.num_envs, 65)
-
-            self.obs_buf[:, 56:72] = self.actions
-
     def compute_full_state(self, asymm_obs=False):
         if asymm_obs:
-            self.states_buf[:, 0:self.num_shadow_hand_dofs] = unscale(self.shadow_hand_dof_pos,
-                                                                      self.shadow_hand_dof_lower_limits, self.shadow_hand_dof_upper_limits)
-            self.states_buf[:, self.num_shadow_hand_dofs:2*self.num_shadow_hand_dofs] = self.vel_obs_scale * self.shadow_hand_dof_vel
-            self.states_buf[:, 2*self.num_shadow_hand_dofs:3*self.num_shadow_hand_dofs] = self.force_torque_obs_scale * self.dof_force_tensor
-
-            obj_obs_start = 3*self.num_shadow_hand_dofs  # 48
-            self.states_buf[:, obj_obs_start:obj_obs_start + 7] = self.object_pose
-            self.states_buf[:, obj_obs_start + 7:obj_obs_start + 10] = self.object_linvel
-            self.states_buf[:, obj_obs_start + 10:obj_obs_start + 13] = self.vel_obs_scale * self.object_angvel
-
-            goal_obs_start = obj_obs_start + 13  # 61
-            self.states_buf[:, goal_obs_start:goal_obs_start + 7] = self.goal_pose
-            self.states_buf[:, goal_obs_start + 7:goal_obs_start + 11] = quat_mul(self.object_rot, quat_conjugate(self.goal_rot))
-
-            # fingertip observations, state(pose and vel) + force-torque sensors
-            # todo - add later
-            # num_ft_states = 13 * self.num_fingertips  # 65
-            # num_ft_force_torques = 6 * self.num_fingertips  # 30
-
-            fingertip_obs_start = goal_obs_start + 11  # 72
-            # self.states_buf[:, fingertip_obs_start:fingertip_obs_start + num_ft_states] = self.fingertip_state.reshape(self.num_envs, num_ft_states)
-            # self.states_buf[:, fingertip_obs_start + num_ft_states:fingertip_obs_start + num_ft_states +
-            #                 num_ft_force_torques] = self.force_torque_obs_scale * self.vec_sensor_tensor
-
-            force_obs_start = fingertip_obs_start
-            # self.states_buf[:, force_obs_start:force_obs_start + 12*6] = self.force_torque_obs_scale * self.vec_sensor_tensor
-
-            # obs_end = 96 + 65 + 30 = 191
-            # obs_total = obs_end + num_actions = 72 + 16 = 88
-            obs_end = force_obs_start #+ num_ft_states + num_ft_force_torques
-            self.states_buf[:, obs_end:obs_end + self.num_actions] = self.actions
+            pass
         else:
             self.obs_buf[:, 0:self.num_shadow_hand_dofs] = unscale(self.shadow_hand_dof_pos,
                                                                       self.shadow_hand_dof_lower_limits, self.shadow_hand_dof_upper_limits)
             self.obs_buf[:, self.num_shadow_hand_dofs:2*self.num_shadow_hand_dofs] = self.vel_obs_scale * self.shadow_hand_dof_vel
-            self.obs_buf[:, 2*self.num_shadow_hand_dofs:3*self.num_shadow_hand_dofs] = self.force_torque_obs_scale * self.dof_force_tensor
 
-            obj_obs_start = 3*self.num_shadow_hand_dofs  # 48
+            obj_obs_start = 2*self.num_shadow_hand_dofs  # 32
+
             self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos
-            self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = self.object_linvel *0
 
-            goal_obs_start = obj_obs_start + 12  # 60
-            self.obs_buf[:, goal_obs_start:goal_obs_start + 6] = self.goal_pos
+            goal_obs_start = obj_obs_start + 6  # 38
 
-            touch_sensor_obs_start = goal_obs_start + 6  # 66
+            touch_sensor_obs_start = goal_obs_start  # 38
 
             if self.obs_touch:
                 touch_tensor = self.net_cf[:, self.sensors_handles, 2]
                 touch_tensor = touch_tensor.abs()
                 touch_tensor[touch_tensor<0.0005] = 0
-                touch_tensor[self.progress_buf==1, :] = 0
+                touch_tensor[self.progress_buf == 1, :] = 0
 
                 tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
                 object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
-                a = np.array((self.object_pos*100).tolist()[0])
-                b = np.array(object_predict.tolist()[0])
-                print(self.progress_buf[0],a,b, np.linalg.norm(a-b,ord=1)/6)
-
-                import matplotlib.pyplot as plt
-
-                fig = plt.figure(figsize=(8, 8))
-                ax = fig.add_subplot(111, projection='3d')
-                ax.scatter(tactile_pose.cpu()[0,:,0], tactile_pose.cpu()[0,:,1], tactile_pose.cpu()[0,:,2], s=(touch_tensor.cpu()[0]) * 1000)
-
-                # ax = fig.add_subplot(111)
-                # ax.scatter(x,y,s=(tac) * 1000 )
-
-                plt.show()
+                # a = np.array((self.object_pos*100).tolist()[0])
+                # b = np.array(object_predict.tolist()[0])
+                # print(self.progress_buf[0],a,b, np.linalg.norm(a-b,ord=1)/6)
+                #
+                # import matplotlib.pyplot as plt
+                #
+                # fig = plt.figure(figsize=(8, 8))
+                # ax = fig.add_subplot(111, projection='3d')
+                # ax.scatter(tactile_pose.cpu()[0,:,0], tactile_pose.cpu()[0,:,1], tactile_pose.cpu()[0,:,2], s=(touch_tensor.cpu()[0]) * 1000)
+                # plt.show()
 
                 if self.step_num%100 == 0:
                     print('step num:',self.step_num)
                 if self.step_num > 100000:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict/100
 
-                obs_end = touch_sensor_obs_start  #66
+                obs_end = touch_sensor_obs_start  #38
             else:
 
-                obs_end = touch_sensor_obs_start  #66
-                # obs_total = obs_end + num_actions = 66 + 16 = 82
+                obs_end = touch_sensor_obs_start  #38
+                # obs_total = obs_end + num_actions = 38 + 16 = 54
 
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
@@ -691,14 +637,14 @@ class AllegroHandBaodingGraph(VecTask):
         # reset object
         self.root_state_tensor[self.object_indices[env_ids*2]] = self.object_init_state[env_ids,:13].clone()
 
-        self.root_state_tensor[self.object_indices[env_ids*2], :7] = self.object_init_state[env_ids, :7] + \
-            self.reset_position_noise * rand_floats[:, :7]
+        self.root_state_tensor[self.object_indices[env_ids*2], :2] = self.object_init_state[env_ids, :7] + \
+            self.reset_position_noise * rand_floats[:, :2]
 
 
         self.root_state_tensor[self.object_indices[env_ids*2+1]] = self.object_init_state[env_ids,13:26].clone()
 
-        self.root_state_tensor[self.object_indices[env_ids*2+1], :7] = self.object_init_state[env_ids,13:13+7] + \
-            self.reset_position_noise * rand_floats[:, 13:13+7]
+        self.root_state_tensor[self.object_indices[env_ids*2+1], :2] = self.object_init_state[env_ids,13:13+7] + \
+            self.reset_position_noise * rand_floats[:, 13:13+2]
 
 
         object_indices = torch.unique(torch.cat([self.object_indices[env_ids*2],self.object_indices[env_ids*2+1],
@@ -717,7 +663,7 @@ class AllegroHandBaodingGraph(VecTask):
         delta_min = self.shadow_hand_dof_lower_limits - self.shadow_hand_dof_default_pos
         rand_delta = delta_min + (delta_max - delta_min) * rand_floats[:, 5:5+self.num_shadow_hand_dofs]
 
-        pos = self.shadow_hand_default_dof_pos + self.reset_dof_pos_noise * rand_delta
+        pos = self.shadow_hand_default_dof_pos + self.reset_dof_pos_noise * rand_delta * 0
         self.shadow_hand_dof_pos[env_ids, :] = pos
         self.shadow_hand_dof_vel[env_ids, :] = self.shadow_hand_dof_default_vel + \
             self.reset_dof_vel_noise * rand_floats[:, 5+self.num_shadow_hand_dofs:5+self.num_shadow_hand_dofs*2]
@@ -745,7 +691,7 @@ class AllegroHandBaodingGraph(VecTask):
         if self.object_type == 'baoding':
             for env_index in range(self.num_envs):
                 self.goal_states[env_index, 0:3] = self.goal[env_index,self.progress_buf[env_index],0:3]
-                self.goal_states[env_index, 13:13+3] = self.goal[env_index,self.progress_buf[env_index],3:6]
+                self.goal_states[env_index, 13:16] = self.goal[env_index,self.progress_buf[env_index],3:6]
 
             env_ids = np.array(range(self.num_envs))
             self.root_state_tensor[self.goal_object_indices[env_ids*2], 0:3] = self.goal_states[env_ids, 0:3] + self.goal_displacement_tensor
@@ -807,6 +753,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.compute_observations()
         self.compute_reward(self.actions)
 
+        self.object_angle_pre = self.object_angle.clone()
         if self.viewer and self.debug_viz:
             # draw axes on target object
             self.gym.clear_lines(self.viewer)
@@ -861,10 +808,10 @@ class AllegroHandBaodingGraph(VecTask):
         self.y_radius = (self.object_init_state[:,0:1] - self.object_init_state[:,13:14])/2
         self.x_radius = self.y_radius
         for i in range(self.max_episode_length+1):
-            if i <= 100:
-                angle = i * np.pi / 100
+            if i <= 300:
+                angle = i * np.pi / 300
             else:
-                angle = 100 * np.pi / 100
+                angle = 300 * np.pi / 300
 
             angle = angle
             goal_position = torch.cat([self.x_radius * np.cos(angle) + self.center_pose[:,0:1],
@@ -913,23 +860,24 @@ def compute_hand_reward(
     dist_reward_scale: float, rot_reward_scale: float, rot_eps: float,
     actions, action_penalty_scale: float,
     success_tolerance: float, reach_goal_bonus: float, fall_dist: float,
-    fall_penalty: float, max_consecutive_successes: int, av_factor: float, ignore_z_rot: bool
+    fall_penalty: float, max_consecutive_successes: int, av_factor: float, ignore_z_rot: bool, object_angle, object_angle_pre
 ):
     # Distance from the hand to the object
+    angle_dist = object_angle - object_angle_pre
     goal_dist = torch.norm(object_pos[:,:2] - target_pos[:,:2], p=2, dim=-1) + torch.norm(object_pos[:,3:5] - target_pos[:,3:5], p=2, dim=-1)
 
     if ignore_z_rot:
         success_tolerance = 2.0 * success_tolerance
 
-    dist_rew = goal_dist * dist_reward_scale
+    dist_rew = angle_dist * 0.1
 
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
     # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
-    reward = dist_rew + action_penalty * action_penalty_scale + 1
+    reward = dist_rew + action_penalty * action_penalty_scale
 
     # Find out which envs hit the goal and update successes count
-    goal_resets_index = (torch.abs(goal_dist) <= success_tolerance) * (progress_buf >100)
+    goal_resets_index = object_angle > 170
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
