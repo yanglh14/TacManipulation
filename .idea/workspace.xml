@@ -481,11 +481,6 @@
           <line>708</line>
           <option name="timeStamp" value="215" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py</url>
-          <line>456</line>
-          <option name="timeStamp" value="218" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">

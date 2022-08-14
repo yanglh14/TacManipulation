@@ -84,7 +84,7 @@ class AllegroHandBaoding(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 702 if self.obs_touch else 49
+            "full_state": 707 if self.obs_touch else 54
         }
 
         self.up_axis = 'z'
@@ -452,7 +452,7 @@ class AllegroHandBaoding(VecTask):
             self.max_consecutive_successes, self.av_factor, (self.object_type == "pen"), self.object_angle,self.object_angle_pre
         )
         self.extras['consecutive_successes'] = self.consecutive_successes.mean()
-        print(self.rew_buf[0],dist_rew,goal_dist)
+        # print(self.rew_buf[0],dist_rew[0])
 
         if self.print_success_stat:
             self.total_resets = self.total_resets + self.reset_buf.sum()
@@ -479,6 +479,7 @@ class AllegroHandBaoding(VecTask):
         self.object_2 = self.object_pos[:,3:5]
         self.object_vector = self.object_1 - self.object_2
         self.object_angle = torch.arccos(self.object_vector[:,0]/torch.linalg.norm(self.object_vector,dim=1)) * (180/torch.pi)
+        self.object_angle[self.object_vector[:,1]<0] *= -1
 
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)
         self.object_rot, self.goal_rot = torch.tensor([0]), torch.tensor([0])
@@ -502,11 +503,11 @@ class AllegroHandBaoding(VecTask):
 
             obj_obs_start = 2*self.num_shadow_hand_dofs  # 32
 
-            self.obs_buf[:, obj_obs_start:obj_obs_start + 1] = self.object_angle.view(self.num_envs,1)
+            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos
 
-            goal_obs_start = obj_obs_start + 1  # 33
+            goal_obs_start = obj_obs_start + 6  # 38
 
-            touch_sensor_obs_start = goal_obs_start  # 33
+            touch_sensor_obs_start = goal_obs_start  # 38
 
             if self.obs_touch:
                 touch_tensor = self.net_cf[:, self.sensors_handles, 2]
@@ -515,14 +516,14 @@ class AllegroHandBaoding(VecTask):
                 touch_tensor[self.progress_buf == 1, :] = 0
 
                 self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] = self.force_torque_obs_scale * touch_tensor
-                obs_end = touch_sensor_obs_start+653  #686
-                # obs_total = obs_end + num_actions = 686 + 16 = 702
+                obs_end = touch_sensor_obs_start+653  #691
+                # obs_total = obs_end + num_actions = 691 + 16 = 707
 
                 self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos *0
             else:
 
-                obs_end = touch_sensor_obs_start  #33
-                # obs_total = obs_end + num_actions = 33 + 16 = 49
+                obs_end = touch_sensor_obs_start  #38
+                # obs_total = obs_end + num_actions = 38 + 16 = 54
 
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
