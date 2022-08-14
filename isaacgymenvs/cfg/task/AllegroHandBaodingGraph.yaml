@@ -7,7 +7,7 @@ physics_engine: ${..physics_engine}
 env: 
   numEnvs: ${resolve_default:16384,${...num_envs}}
   envSpacing: 0.75
-  episodeLength: 200
+  episodeLength: 1000
   enableDebugVis: False
   aggregateMode: 1
 
@@ -19,7 +19,7 @@ env:
 
   useRelativeControl: False
   dofSpeedScale: 20.0
-  actionsMovingAverage: 1.0
+  actionsMovingAverage: 0.3
   controlFrequencyInv: 1 # 50 Hz
 
   startPositionNoise: 0.01

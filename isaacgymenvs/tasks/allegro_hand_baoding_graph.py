@@ -637,13 +637,13 @@ class AllegroHandBaodingGraph(VecTask):
         # reset object
         self.root_state_tensor[self.object_indices[env_ids*2]] = self.object_init_state[env_ids,:13].clone()
 
-        self.root_state_tensor[self.object_indices[env_ids*2], :2] = self.object_init_state[env_ids, :7] + \
+        self.root_state_tensor[self.object_indices[env_ids*2], :2] = self.object_init_state[env_ids, :2] + \
             self.reset_position_noise * rand_floats[:, :2]
 
 
         self.root_state_tensor[self.object_indices[env_ids*2+1]] = self.object_init_state[env_ids,13:26].clone()
 
-        self.root_state_tensor[self.object_indices[env_ids*2+1], :2] = self.object_init_state[env_ids,13:13+7] + \
+        self.root_state_tensor[self.object_indices[env_ids*2+1], :2] = self.object_init_state[env_ids,13:13+2] + \
             self.reset_position_noise * rand_floats[:, 13:13+2]
 
 
