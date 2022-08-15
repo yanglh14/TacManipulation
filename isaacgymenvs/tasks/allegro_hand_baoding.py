@@ -797,7 +797,7 @@ class AllegroHandBaoding(VecTask):
 #####################################################################
 
 
-# @torch.jit.script
+@torch.jit.script
 def compute_hand_reward(
     rew_buf, reset_buf, reset_goal_buf, progress_buf, successes, consecutive_successes,
     max_episode_length: float, object_pos, object_rot, target_pos, target_rot,
@@ -810,7 +810,7 @@ def compute_hand_reward(
     angle_dist = object_angle - object_angle_pre
     angle_dist[abs(angle_dist)>90] = 0
     # goal_dist = torch.norm(object_pos[:,:2] - target_pos[:,:2], p=2, dim=-1) + torch.norm(object_pos[:,3:5] - target_pos[:,3:5], p=2, dim=-1)
-    fall_reset = (object_pos[:,2]-0.5) <0 or (object_pos[:,5]-0.5) <0
+    fall_reset = (((object_pos[:,2]-0.5) <0) + ((object_pos[:,5]-0.5) <0)) > 0
     center_dist = torch.norm(object_pos[:,:1] + object_pos[:,3:4],p=2,dim=-1)
 
     if ignore_z_rot:
@@ -827,7 +827,7 @@ def compute_hand_reward(
     # Find out which envs hit the goal and update successes count
     angle_success[object_angle > 170] = True
 
-    goal_resets_index = angle_success and center_dist < 0.03
+    goal_resets_index = angle_success * (center_dist < 0.03)
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
