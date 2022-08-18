@@ -39,11 +39,11 @@ class AllegroHand():
         self.env = self.player.env
         self.max_steps = 200
         self.is_determenistic = True
-        self.num_obs = 82
+        self.num_obs = 54
         self.device = 'cuda:0'
         self.num_shadow_hand_dofs = 16
         self.num_actions = 16
-        self.goal = self.env.create_goal()
+        self.num_dofs = 16
 
         self.obs_buf = torch.zeros(
             (1, self.num_obs), device=self.device, dtype=torch.float)
@@ -58,6 +58,10 @@ class AllegroHand():
             (1, 16), device=self.device, dtype=torch.float)
         self.actions = torch.zeros(
             (1, 16), device=self.device, dtype=torch.float)
+
+        self.prev_targets = torch.zeros((1, self.num_dofs), dtype=torch.float, device=self.device)
+        self.cur_targets = torch.zeros((1, self.num_dofs), dtype=torch.float, device=self.device)
+
 
         self.cal_table = np.load('scripts/calibration_table.npy')
 
@@ -77,19 +81,14 @@ class AllegroHand():
                                                                self.env.shadow_hand_dof_lower_limits,
                                                                self.env.shadow_hand_dof_upper_limits)
         self.obs_buf[:,self.num_shadow_hand_dofs:2 * self.num_shadow_hand_dofs] = self.env.vel_obs_scale * self.finger_jnt_vel
-        self.obs_buf[:,2 * self.num_shadow_hand_dofs:3 * self.num_shadow_hand_dofs] = self.env.force_torque_obs_scale * self.finger_jnt_force
 
-        obj_obs_start = 3 * self.num_shadow_hand_dofs  # 48
+        obj_obs_start = 2 * self.num_shadow_hand_dofs  # 32
         self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pre()
-        self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = 0
 
-        goal_obs_start = obj_obs_start + 12  # 60
-        self.obs_buf[:, goal_obs_start:goal_obs_start + 6] = self.goal[:,self.step_num]
+        goal_obs_start = obj_obs_start + 6  # 38
 
-        touch_sensor_obs_start = goal_obs_start + 6  # 66
-
-        obs_end = touch_sensor_obs_start  # 66
-        # obs_total = obs_end + num_actions = 66 + 16 = 82
+        obs_end = goal_obs_start  # 38
+        # obs_total = obs_end + num_actions = 38 + 16 = 54
 
         self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
@@ -146,7 +145,7 @@ class AllegroHand():
         self.tac[113+432:113+432+72] = self.tac_buf_[113+432:113+432+72]
         self.tac[113+432+72:113+432+108] = self.tac_buf_[113+432+72:113+432+108].reshape(6,6).transpose().reshape(36)
 
-        pos = self.env.sim2real(self.finger_jnt_pos,self.tac)
+        pos, self.sensor_pos = self.env.sim2real(self.finger_jnt_pos,self.tac)
 
         return pos
 

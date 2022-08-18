@@ -28,7 +28,7 @@ class gnn_model():
             self.diz_loss['train_loss'] = list(np.load(self.save_dir+'/train_loss.npy'))
             self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
 
-            self.model = torch.load(self.save_dir+'/model.pt')
+            self.model = torch.load(self.save_dir+'/model.pt',map_location='cuda:0')
         else:
             self.model = PointNet(device=device)
 
@@ -53,8 +53,8 @@ class gnn_model():
 
     def step(self,obs,pos,y):
 
-        pos = pos*100
-        y = y *100
+        pos = pos * 100
+        y = y * 100
         self.obs_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:,:] = obs.view(self.num_envs,-1,1)
         self.pos_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:,:] = pos
         self.y_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:] = y

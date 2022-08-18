@@ -40,13 +40,13 @@ class AllegroHand():
         self.player = self.runner.sim2real()
 
         self.env = self.player.env
-        self.max_steps = 200
+        self.max_steps = 1000
         self.is_determenistic = True
-        self.num_obs = 82
+        self.num_obs = 54
         self.device = 'cuda:0'
         self.num_shadow_hand_dofs = 16
         self.num_actions = 16
-        self.goal = self.env.create_goal()
+        self.num_dofs = 16
 
         self.obs_buf = torch.zeros(
             (1, self.num_obs), device=self.device, dtype=torch.float)
@@ -62,26 +62,35 @@ class AllegroHand():
         self.actions = torch.zeros(
             (1, 16), device=self.device, dtype=torch.float)
 
+        self.prev_targets = torch.zeros((1, self.num_dofs), dtype=torch.float, device=self.device)
+        self.cur_targets = torch.zeros((1, self.num_dofs), dtype=torch.float, device=self.device)
+
+        self.cur_targets[:, self.env.actuated_dof_indices] = scale(self.actions, self.env.shadow_hand_dof_lower_limits[
+            self.env.actuated_dof_indices], self.env.shadow_hand_dof_upper_limits[self.env.actuated_dof_indices])
+        self.prev_targets[:, self.env.actuated_dof_indices] = scale(self.actions, self.env.shadow_hand_dof_lower_limits[
+            self.env.actuated_dof_indices], self.env.shadow_hand_dof_upper_limits[self.env.actuated_dof_indices])
+
         self.cal_table = np.load('scripts/calibration_table.npy')
 
         self.pub = rospy.Publisher('/allegroHand_0/joint_cmd', JointState, queue_size=10)
-        # self.sub_states = rospy.Subscriber("/allegroHand_0/joint_states", JointState,self.joint_state_callback)
-        self.sub_tactile = rospy.Subscriber('allegro_tactile', tactile_msgs, self.allegro_tactile_callback)
+        self.sub_states = rospy.Subscriber("/allegroHand_0/joint_states", JointState,self.joint_state_callback)
+        # self.sub_tactile = rospy.Subscriber('allegro_tactile', tactile_msgs, self.allegro_tactile_callback)
 
         rospy.init_node('allegro_hand', anonymous=True)
         self.rate = rospy.Rate(50)
 
-        self.log = {}
-        self.time_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log = [],[],[],[],[]
+        self.log_ = True
+        if self.log_:
+            self.log = {}
+            self.time_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log = [],[],[],[],[]
     def player_run(self):
 
         self.step_num = 0
 
         obses = self.player.env_reset(self.env)
 
-        self.actions = torch.as_tensor([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], device=self.device,
-                                       dtype=torch.float)
         self.init = True
+        self.initialize()
         self.step()
         self.init = False
         print("Start playing!")
@@ -91,21 +100,29 @@ class AllegroHand():
 
             self.get_obs()
             self.actions = self.player.get_action(self.obs_buf, self.is_determenistic)
-            # self.actions = torch.as_tensor([0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0],device=self.device, dtype=torch.float)
+            # self.actions = torch.as_tensor([[0, 0, 0, 0,  0, (n/self.max_steps)*np.pi/4, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0]],device=self.device, dtype=torch.float)
             self.step()
 
-        self.log['time_log'] = self.time_log
-        self.log['actions_log'] = self.actions_log
-        self.log['joints_log'] = self.joints_log
-        self.log['tactile_log'] = self.tactile_log
-        self.log['tactile_pos_log'] = self.tactile_pos_log
+        if self.log_:
+            self.log['time_log'] = self.time_log
+            self.log['actions_log'] = self.actions_log
+            self.log['joints_log'] = self.joints_log
+            self.log['tactile_log'] = self.tactile_log
+            self.log['tactile_pos_log'] = self.tactile_pos_log
 
-        np.save('real_controller',self.log)
+            np.save('runs/real_log',self.log)
+
+    def initialize(self):
+        self.tac_init = []
+        for i in range(5):
+            self.tac_init.append(self.tac_buf)
+            time.sleep(0.1)
+        self.tac_init = np.average(np.array(self.tac_init),axis=0)
+        print('tactile initialize success!')
 
     def joint_state_callback(self, msg):
         self.finger_jnt_pos[0,:] = torch.tensor(np.asarray(msg.position),device=self.device, dtype=torch.float)
         self.finger_jnt_vel[0,:] = torch.tensor(np.asarray(msg.velocity),device=self.device, dtype=torch.float)
-        self.finger_jnt_force[0,:] = torch.tensor(np.asarray(msg.effort),device=self.device, dtype=torch.float)
 
     def allegro_tactile_callback(self, msg):
         self.tac_buf[:113] = np.asarray(msg.palm_Value)
@@ -130,19 +147,14 @@ class AllegroHand():
                                                                self.env.shadow_hand_dof_lower_limits,
                                                                self.env.shadow_hand_dof_upper_limits)
         self.obs_buf[:,self.num_shadow_hand_dofs:2 * self.num_shadow_hand_dofs] = self.env.vel_obs_scale * self.finger_jnt_vel
-        self.obs_buf[:,2 * self.num_shadow_hand_dofs:3 * self.num_shadow_hand_dofs] = self.env.force_torque_obs_scale * self.finger_jnt_force
 
-        obj_obs_start = 3 * self.num_shadow_hand_dofs  # 48
+        obj_obs_start = 2 * self.num_shadow_hand_dofs  # 32
         self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pre()
-        self.obs_buf[:, obj_obs_start + 6:obj_obs_start + 12] = 0
 
-        goal_obs_start = obj_obs_start + 12  # 60
-        self.obs_buf[:, goal_obs_start:goal_obs_start + 6] = self.goal[:,self.step_num]
+        goal_obs_start = obj_obs_start + 6  # 38
 
-        touch_sensor_obs_start = goal_obs_start + 6  # 66
-
-        obs_end = touch_sensor_obs_start  # 66
-        # obs_total = obs_end + num_actions = 66 + 16 = 82
+        obs_end = goal_obs_start  # 38
+        # obs_total = obs_end + num_actions = 38 + 16 = 54
 
         self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
@@ -150,20 +162,25 @@ class AllegroHand():
     def step(self):
 
         self.step_num += 1
-        act = scale(self.actions,self.env.shadow_hand_dof_lower_limits,self.env.shadow_hand_dof_upper_limits)
-        joint_command = JointState()
+        self.cur_targets[:, self.env.actuated_dof_indices] = scale(self.actions,self.env.shadow_hand_dof_lower_limits[self.env.actuated_dof_indices],self.env.shadow_hand_dof_upper_limits[self.env.actuated_dof_indices])
 
+        self.cur_targets[:, self.env.actuated_dof_indices] = self.env.act_moving_average * self.cur_targets[:,self.env.actuated_dof_indices] + (1.0 - self.env.act_moving_average) * self.prev_targets[:,self.env.actuated_dof_indices]
+        self.cur_targets[:, self.env.actuated_dof_indices] = tensor_clamp(self.cur_targets[:, self.env.actuated_dof_indices],self.env.shadow_hand_dof_lower_limits[self.env.actuated_dof_indices],
+                                                                      self.env.shadow_hand_dof_upper_limits[self.env.actuated_dof_indices])
+        self.prev_targets[:, self.env.actuated_dof_indices] = self.cur_targets[:, self.env.actuated_dof_indices]
+
+        joint_command = JointState()
         joint_command.header = Header()
         joint_command.header.stamp = rospy.Time.now()
         joint_command.name = ['joint_0.0', 'joint_1.0', 'joint_2.0', 'joint_3.0','joint_4.0', 'joint_5.0', 'joint_6.0', 'joint_7.0','joint_8.0', 'joint_9.0', 'joint_10.0', 'joint_11.0','joint_12.0', 'joint_13.0', 'joint_14.0', 'joint_15.0']
-        joint_command.position = act.tolist()
+        joint_command.position = self.cur_targets[0].tolist()
         joint_command.velocity = []
         joint_command.effort = []
         for i in range(1):
-            if not self.init:
+            if not self.init and self.log_:
 
                 self.time_log.append(time.time())
-                self.actions_log.append(act.tolist())
+                self.actions_log.append(self.cur_targets[0].tolist())
                 self.joints_log.append(self.finger_jnt_pos[0,:].tolist())
                 self.tactile_log.append(self.tac_buf)
                 self.tactile_pos_log.append(self.sensor_pos[0,:].tolist())
@@ -173,9 +190,9 @@ class AllegroHand():
 
     def object_pre(self):
 
-        self.tac_buf_ = self.tac_buf.copy()
+        self.tac_buf_ = self.tac_buf - self.tac_init
         self.tac_buf_[self.tac_buf_<self.cal_table[:,1]] = 0
-        self.tac_buf_[self.tac_buf_ > self.cal_table[:, 2]] = self.cal_table[ self.tac_buf_ > self.cal_table[:, 2] , 2]
+        # self.tac_buf_[self.tac_buf_ > self.cal_table[:, 2]] = self.cal_table[ self.tac_buf_ > self.cal_table[:, 2] , 2]
         self.tac_buf_ *= self.cal_table[:, 0]
 
         self.tac[:15] = [self.tac_buf_[109],self.tac_buf_[105],self.tac_buf_[100],self.tac_buf_[95],self.tac_buf_[90],self.tac_buf_[85],self.tac_buf_[80],self.tac_buf_[75],self.tac_buf_[69],self.tac_buf_[59],self.tac_buf_[48],self.tac_buf_[36],self.tac_buf_[24],self.tac_buf_[12],self.tac_buf_[0]]

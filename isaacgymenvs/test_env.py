@@ -69,16 +69,16 @@ def launch_rlg_hydra(cfg: DictConfig):
         actions = torch.as_tensor(
             np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0]]),
             dtype=torch.float32, device='cuda:0')
-
+        actions = unscale(actions,env.shadow_hand_dof_lower_limits,env.shadow_hand_dof_upper_limits)
         env.step(actions)
         # sim2rel(env)
 
         # env.gym.refresh_net_contact_force_tensor(env.sim)
         #
-        # touch_sensor = env.net_cf[:,env.sensors_handles,:]
-        # tactile = touch_sensor[0,:,2]
-        # tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
-        # plot_tactile(tactile,tactile_pose)
+        touch_sensor = env.net_cf[:,env.sensors_handles,:]
+        tactile = touch_sensor[0,:,2]
+        tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
+        plot_tactile(tactile,tactile_pose)
 
         # contacts = env.gym.get_env_rigid_contacts(env.envs[0])
         #
@@ -99,7 +99,7 @@ def plot_tactile(tactile,tactile_pose):
 
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x,y,z,s=(tac) * 1000)
+    ax.scatter(x,y,z,s=(tac) * 1000+1)
 
     # ax = fig.add_subplot(111)
     # ax.scatter(x,y,s=(tac) * 1000 )

@@ -19,7 +19,7 @@ env:
 
   useRelativeControl: False
   dofSpeedScale: 20.0
-  actionsMovingAverage: 0.3
+  actionsMovingAverage: 0.1
   controlFrequencyInv: 1 # 50 Hz
 
   startPositionNoise: 0.01

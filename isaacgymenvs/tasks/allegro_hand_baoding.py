@@ -186,7 +186,7 @@ class AllegroHandBaoding(VecTask):
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
         self.angle_success = torch.zeros(
-            (self.num_envs), device=self.device, dtype=torch.bool)
+            (self.num_envs), device=self.device, dtype=torch.int32)
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -825,12 +825,13 @@ def compute_hand_reward(
 
     reward[angle_success == 1] = 0
     # Find out which envs hit the goal and update successes count
-    angle_success[object_angle > 170] = True
+    angle_success[object_angle > 170] += 1
 
-    goal_resets_index = angle_success * (center_dist < 0.03)
+    goal_resets_index = angle_success > 5
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
+    reward = torch.where(angle_success > 1, reward + reach_goal_bonus/100, reward)
     # Success bonus: orientation is within `success_tolerance` of goal orientation
     reward = torch.where(goal_resets == 1, reward + reach_goal_bonus, reward)
 

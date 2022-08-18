@@ -35,3 +35,9 @@ for i in range(12,16):
     axs.plot(joint_pos_target[:],label='target')
     axs.legend()
     plt.show()
+
+fig, axs = plt.subplots(1)
+axs.plot(train_loss,label='train')
+axs.plot(val_loss,label='val')
+axs.legend()
+plt.show()
