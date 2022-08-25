@@ -173,8 +173,8 @@ def vel_plot(data):
         # axs[int(i / 4), i % 4].legend()
     plt.show()
 if __name__ == '__main__':
-    data = np.load('../runs/real_log_1661287478.000000.npy', allow_pickle=True)
+    data = np.load('../runs/real_log_s1.npy', allow_pickle=True)
     data = data.item()
-    data_2 = np.load('../runs/sim_log_2.npy', allow_pickle=True)
+    data_2 = np.load('../runs/sim_log.npy', allow_pickle=True)
     data_2 = data_2.item()
-    joint_plot(data)
+    joint_plot(data,data_2)

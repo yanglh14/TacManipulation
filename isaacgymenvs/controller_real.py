@@ -108,8 +108,6 @@ class AllegroHand():
             self.actions = self.player.get_action(self.obs_buf, self.is_determenistic)
             # self.actions = torch.as_tensor([[0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0]],device=self.device, dtype=torch.float)
             self.actions[:] = torch.as_tensor(actions_list[n],device=self.device, dtype=torch.float)
-            # self.actions[12] += 0.5
-            print(self.actions[12])
             self.step()
 
         if self.log_:

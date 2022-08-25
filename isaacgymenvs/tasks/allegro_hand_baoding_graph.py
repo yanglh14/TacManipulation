@@ -202,7 +202,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.angle_success = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.int32)
 
-        self.log_ = False
+        self.log_ = True
         if self.log_:
             self.log = {}
             self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
@@ -502,7 +502,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_vector = self.object_1 - self.object_2
         self.object_angle = torch.arccos(self.object_vector[:,0]/torch.linalg.norm(self.object_vector,dim=1)) * (180/torch.pi)
         self.object_angle[self.object_vector[:,1]<0] *= -1
-
+        print(self.object_angle[0])
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)
         self.object_rot, self.goal_rot = torch.tensor([0]), torch.tensor([0])
         self.goal_pos = torch.cat((self.goal_states[:, 0:3],self.goal_states[:, 13:13+3]),1)
@@ -782,8 +782,9 @@ class AllegroHandBaodingGraph(VecTask):
                 self.log['object_pos_log'] = self.object_pos_log
                 self.log['object_pre_log'] = self.object_pre_log
                 self.log['obs_log'] = self.obs_log
-
-                np.save('runs/sim_log_2',self.log)
+                # np.save('runs/sim_log_10',self.log)
+                self.log = {}
+                self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [], []
 
         if self.viewer and self.debug_viz:
             # draw axes on target object
