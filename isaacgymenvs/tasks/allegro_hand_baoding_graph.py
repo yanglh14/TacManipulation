@@ -202,6 +202,11 @@ class AllegroHandBaodingGraph(VecTask):
         self.angle_success = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.int32)
 
+        self.log_ = False
+        if self.log_:
+            self.log = {}
+            self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
+
     def create_sim(self):
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
@@ -527,14 +532,14 @@ class AllegroHandBaodingGraph(VecTask):
             touch_sensor_obs_start = goal_obs_start  # 38
 
             if self.obs_touch:
-                touch_tensor = self.net_cf[:, self.sensors_handles, 2]
-                touch_tensor = touch_tensor.abs()
-                touch_tensor[touch_tensor<0.0005] = 0
-                touch_tensor[self.progress_buf == 1, :] = 0
+                self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+                self.touch_tensor = self.touch_tensor.abs()
+                self.touch_tensor[self.touch_tensor<0.0005] = 0
+                self.touch_tensor[self.progress_buf == 1, :] = 0
 
-                tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+                self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
-                object_predict = self.model.step(touch_tensor, tactile_pose, self.object_pos)
+                self.object_predict = self.model.step(self.touch_tensor, self.tactile_pose, self.object_pos)
                 # a = np.array((self.object_pos*100).tolist()[0])
                 # b = np.array(object_predict.tolist()[0])
                 # print(self.progress_buf[0],a,b, np.linalg.norm(a-b,ord=1)/6)
@@ -549,7 +554,7 @@ class AllegroHandBaodingGraph(VecTask):
                 if self.step_num%100 == 0:
                     print('step num:',self.step_num)
                 if self.step_num > 0:
-                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = object_predict/100
+                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
 
                 obs_end = touch_sensor_obs_start  #38
             else:
@@ -756,6 +761,30 @@ class AllegroHandBaodingGraph(VecTask):
         self.compute_reward(self.actions)
 
         self.object_angle_pre = self.object_angle.clone()
+
+        if self.log_:
+            self.actions_log.append(scale(self.actions,self.shadow_hand_dof_lower_limits[self.actuated_dof_indices], self.shadow_hand_dof_upper_limits[self.actuated_dof_indices])[0].tolist())
+            self.targets_log.append(self.cur_targets[0].tolist())
+            self.joints_log.append(self.shadow_hand_dof_pos[0, :].tolist())
+            self.tactile_log.append(self.touch_tensor[0, :].tolist())
+            self.tactile_pos_log.append(self.tactile_pose[0, :].tolist())
+            self.object_pos_log.append(self.object_pos[0, :].tolist())
+            self.object_pre_log.append(self.object_predict[0, :].tolist())
+            self.obs_log.append(self.obs_buf[0, :].tolist())
+
+            if self.reset_buf[0] == 1 :
+
+                self.log['actions_log'] = self.actions_log
+                self.log['targets_log'] = self.targets_log
+                self.log['joints_log'] = self.joints_log
+                self.log['tactile_log'] = self.tactile_log
+                self.log['tactile_pos_log'] = self.tactile_pos_log
+                self.log['object_pos_log'] = self.object_pos_log
+                self.log['object_pre_log'] = self.object_pre_log
+                self.log['obs_log'] = self.obs_log
+
+                np.save('runs/sim_log_2',self.log)
+
         if self.viewer and self.debug_viz:
             # draw axes on target object
             self.gym.clear_lines(self.viewer)
@@ -881,15 +910,15 @@ def compute_hand_reward(
     # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
     reward = dist_rew + action_penalty * action_penalty_scale
 
-    reward[angle_success == 1] = 0
+    # reward[angle_success == 1] = 0
     # Find out which envs hit the goal and update successes count
     angle_success[object_angle > 170] += 1
 
-    goal_resets_index = angle_success > 5
+    goal_resets_index = object_angle > 170
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
-    reward = torch.where(angle_success > 1, reward + reach_goal_bonus/100, reward)
+    # reward = torch.where(angle_success > 1, reward + reach_goal_bonus/100, reward)
     # Success bonus: orientation is within `success_tolerance` of goal orientation
     reward = torch.where(goal_resets == 1, reward + reach_goal_bonus, reward)
 

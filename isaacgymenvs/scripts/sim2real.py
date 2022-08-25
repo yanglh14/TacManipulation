@@ -62,6 +62,4 @@ for i in range(16):
     stiffness_min.append(stiffness_list[int(np.argmin(error_list)/3)])
     damping_min.append(damping_list[int(np.argmin(error_list)%3)])
 
-    # plt.show()
-
-np.save()
+    plt.show()

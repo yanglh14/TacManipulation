@@ -11,19 +11,23 @@
 
                     <body name="link_13.0" pos="-0.027 0.005 0.0399">
                         <inertial pos="0 0 0" quat="-0.0269589 0.880876 0.334036 0.334292" mass="0.0119" diaginertia="4.33621e-06 4.33621e-06 4.33621e-06" />
-                        <joint name="joint_13.0" pos="0 0 0" axis="0 0 1" limited="true" range="-0.105 1.163" damping="3" frictionloss="5" />
+<!--                        <joint name="joint_13.0" pos="0 0 0" axis="0 0 1" limited="true" range="-0.105 1.163" damping="3" frictionloss="5" />-->
+                        <joint name="joint_13.0" pos="0 0 0" axis="0 0 1" limited="true" range="0.1 0.2" damping="3" frictionloss="5" />
                         <geom class="robot0:Finger" type="mesh" mesh="link_13.0" rgba="0.2 0.2 0.2 1"/>
                         <geom class="robot0:D_Contact" type="mesh" mesh="link_13.0" rgba="0.2 0.2 0.2 1"/>
 
                         <body name="link_14.0" pos="0 0 0.0177">
                             <inertial pos="0 0 0" quat="0.70472 0.55555 -0.174905 0.405146" mass="0.038" diaginertia="3.35111e-05 3.35111e-05 3.35111e-05" />
-                            <joint name="joint_14.0" pos="0 0 0" axis="0 1 0" limited="true" range="-0.189 1.644" damping="3" frictionloss="10" />
+<!--                            <joint name="joint_14.0" pos="0 0 0" axis="0 1 0" limited="true" range="-0.189 1.644" damping="3" frictionloss="10" />-->
+                            <joint name="joint_14.0" pos="0 0 0" axis="0 1 0" limited="true" range="1.0 1.1" damping="3" frictionloss="10" />
                             <geom class="robot0:Finger" type="mesh" mesh="link_14.0" rgba="0.2 0.2 0.2 1" />
                             <geom class="robot0:D_Contact" type="mesh" mesh="link_14.0" rgba="0.2 0.2 0.2 1" />
 
                             <body name="link_15.0" pos="0 0 0.0514">
                                 <inertial pos="0 0 0.0127813" quat="0.707107 0 0 0.707107" mass="0.0556" diaginertia="4.88098e-05 4.88098e-05 2.78326e-05" />
-                                <joint name="joint_15.0" pos="0 0 0" axis="0 1 0" limited="true" range="-0.162 1.719" damping="3" frictionloss="12" />
+<!--                                <joint name="joint_15.0" pos="0 0 0" axis="0 1 0" limited="true" range="-0.162 1.719" damping="3" frictionloss="12" />-->
+                                <joint name="joint_15.0" pos="0 0 0" axis="0 1 0" limited="true" range="0.4 0.8" damping="3" frictionloss="12" />
+
                                 <geom class="robot0:Finger" type="mesh" mesh="link_15.0" rgba="0.2 0.2 0.2 1"/>
                                 <geom class="robot0:D_Contact" type="mesh" mesh="link_15.0" rgba="0.2 0.2 0.2 1"/>
 

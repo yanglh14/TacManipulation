@@ -827,7 +827,7 @@ def compute_hand_reward(
     # Find out which envs hit the goal and update successes count
     angle_success[object_angle > 170] += 1
 
-    goal_resets_index = angle_success > 5
+    goal_resets_index = angle_success > 1
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
