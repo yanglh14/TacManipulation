@@ -553,7 +553,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 if self.step_num%100 == 0:
                     print('step num:',self.step_num)
-                if self.step_num > 0:
+                if self.step_num > 10000:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
 
                 obs_end = touch_sensor_obs_start  #38
@@ -913,9 +913,9 @@ def compute_hand_reward(
 
     # reward[angle_success == 1] = 0
     # Find out which envs hit the goal and update successes count
-    angle_success[object_angle > 170] += 1
+    angle_success[object_angle > 160] += 1
 
-    goal_resets_index = object_angle > 170
+    goal_resets_index = object_angle > 160
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 

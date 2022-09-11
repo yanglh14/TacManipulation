@@ -478,6 +478,9 @@ class AllegroHandBaoding(VecTask):
             self.gym.refresh_net_contact_force_tensor(self.sim)
 
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
+        self.obs_noise_range = 0.05
+        noise = torch_rand_float(1.0-self.obs_noise_range, 1.0+self.obs_noise_range, (self.num_envs,6), device=self.device)
+
         self.object_1 = self.object_pos[:,:2]
         self.object_2 = self.object_pos[:,3:5]
         self.object_vector = self.object_1 - self.object_2
@@ -823,15 +826,15 @@ def compute_hand_reward(
     # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
     reward = dist_rew + action_penalty * action_penalty_scale
 
-    reward[angle_success == 1] = 0
+    # reward[angle_success == 1] = 0
     # Find out which envs hit the goal and update successes count
-    angle_success[object_angle > 170] += 1
+    angle_success[object_angle > 160] += 1
 
-    goal_resets_index = angle_success > 1
+    goal_resets_index = object_angle > 160
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
-    reward = torch.where(angle_success > 1, reward + reach_goal_bonus/100, reward)
+    # reward = torch.where(angle_success > 1, reward + reach_goal_bonus/100, reward)
     # Success bonus: orientation is within `success_tolerance` of goal orientation
     reward = torch.where(goal_resets == 1, reward + reach_goal_bonus, reward)
 
