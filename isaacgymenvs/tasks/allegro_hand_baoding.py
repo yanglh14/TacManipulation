@@ -185,8 +185,6 @@ class AllegroHandBaoding(VecTask):
             (self.num_envs), device=self.device, dtype=torch.float)
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
-        self.angle_success = torch.zeros(
-            (self.num_envs), device=self.device, dtype=torch.int32)
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -447,12 +445,12 @@ class AllegroHandBaoding(VecTask):
         self.goal_object_indices = to_torch(self.goal_object_indices, dtype=torch.long, device=self.device)
 
     def compute_reward(self, actions):
-        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:], self.angle_success[:] = compute_hand_reward(
+        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:] = compute_hand_reward(
             self.rew_buf, self.reset_buf, self.reset_goal_buf, self.progress_buf, self.successes, self.consecutive_successes,
             self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot,
             self.dist_reward_scale, self.rot_reward_scale, self.rot_eps, self.actions, self.action_penalty_scale,
             self.success_tolerance, self.reach_goal_bonus, self.fall_dist, self.fall_penalty,
-            self.max_consecutive_successes, self.av_factor, (self.object_type == "pen"), self.object_angle,self.object_angle_pre, self.angle_success
+            self.max_consecutive_successes, self.av_factor, (self.object_type == "pen"), self.object_angle,self.object_angle_pre
         )
         self.extras['consecutive_successes'] = self.consecutive_successes.mean()
         # print(self.rew_buf[0],dist_rew[0])
@@ -479,7 +477,7 @@ class AllegroHandBaoding(VecTask):
 
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
         self.obs_noise_range = 0.05
-        noise = torch_rand_float(1.0-self.obs_noise_range, 1.0+self.obs_noise_range, (self.num_envs,6), device=self.device)
+        self.noise = torch_rand_float(1.0-self.obs_noise_range, 1.0+self.obs_noise_range, (self.num_envs,6), device=self.device)
 
         self.object_1 = self.object_pos[:,:2]
         self.object_2 = self.object_pos[:,3:5]
@@ -509,7 +507,7 @@ class AllegroHandBaoding(VecTask):
 
             obj_obs_start = 2*self.num_shadow_hand_dofs  # 32
 
-            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos
+            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos * self.noise
 
             goal_obs_start = obj_obs_start + 6  # 38
 
@@ -807,7 +805,7 @@ def compute_hand_reward(
     dist_reward_scale: float, rot_reward_scale: float, rot_eps: float,
     actions, action_penalty_scale: float,
     success_tolerance: float, reach_goal_bonus: float, fall_dist: float,
-    fall_penalty: float, max_consecutive_successes: int, av_factor: float, ignore_z_rot: bool, object_angle, object_angle_pre, angle_success
+    fall_penalty: float, max_consecutive_successes: int, av_factor: float, ignore_z_rot: bool, object_angle, object_angle_pre
 ):
     # Distance from the hand to the object
     angle_dist = object_angle - object_angle_pre
@@ -826,15 +824,12 @@ def compute_hand_reward(
     # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
     reward = dist_rew + action_penalty * action_penalty_scale
 
-    # reward[angle_success == 1] = 0
     # Find out which envs hit the goal and update successes count
-    angle_success[object_angle > 160] += 1
 
     goal_resets_index = object_angle > 160
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
 
-    # reward = torch.where(angle_success > 1, reward + reach_goal_bonus/100, reward)
     # Success bonus: orientation is within `success_tolerance` of goal orientation
     reward = torch.where(goal_resets == 1, reward + reach_goal_bonus, reward)
 
@@ -858,8 +853,7 @@ def compute_hand_reward(
 
     cons_successes = torch.where(num_resets > 0, av_factor*finished_cons_successes/num_resets + (1.0 - av_factor)*consecutive_successes, consecutive_successes)
 
-    angle_success[resets == 1] = 0
-    return reward, resets, goal_resets, progress_buf, successes, cons_successes, angle_success
+    return reward, resets, goal_resets, progress_buf, successes, cons_successes
 
 
 @torch.jit.script
