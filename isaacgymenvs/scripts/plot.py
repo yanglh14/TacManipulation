@@ -15,7 +15,37 @@ def time_plot(data):
     fig, axs = plt.subplots(1)
     axs.plot(control_freq)
     plt.show()
+def tactile_plot_sim(data):
 
+    tactile_log = np.array(data['tactile_log'])
+    tactile_pos_log = np.array(data['tactile_pos_log'])
+    object_pre_log = np.array(data['object_pre_log'])/100
+    object_pos_log = np.array(data['object_pos_log'])
+
+
+    for i in range(tactile_log.shape[0]):
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        i= i
+        print(i)
+        x = tactile_pos_log[i,:,0]
+        y = tactile_pos_log[i,:,1]
+        z = tactile_pos_log[i,:,2]
+        tac = tactile_log[i]
+
+        ax.clear()
+        ax.scatter(x, y, z, s=(tac) * 100+1)
+        ax.scatter(x, y, z, c='r', s=(tac) * 100)
+        ax.scatter(object_pre_log[i,0], object_pre_log[i,1], object_pre_log[i,2], c='g', s=6000)
+        ax.scatter(object_pre_log[i,3], object_pre_log[i,4], object_pre_log[i,5], c='g', s=6000)
+        ax.scatter(object_pos_log[i,0], object_pos_log[i,1], object_pos_log[i,2], c='orange', s=6000)
+        ax.scatter(object_pos_log[i,3], object_pos_log[i,4], object_pos_log[i,5], c='orange', s=6000)
+        ax.view_init(elev=45, azim=45)
+        ax.set(xlim=[-0.1, 0.1], ylim=[-0.1, 0.1], zlim=[0.5, 0.6])
+
+        display.clear_output(wait=True)
+        plt.pause(0.00000001)
+        plt.show()
 def tactile_plot(data):
     cal_table = np.load('calibration_table.npy')
 
@@ -23,8 +53,13 @@ def tactile_plot(data):
     tactile_pos_log = np.array(data['tactile_pos_log'])
     tac_init = np.array(data['tac_init'])
     tac = np.zeros(653)
-    for i in range(50):
-        i= i*5
+    object_pre_log = np.array(data['object_pre_log'])
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+
+    for i in range(tactile_pos_log.shape[0]):
+        i= i
         print(i)
         x = tactile_pos_log[i,:,0]
         y = tactile_pos_log[i,:,1]
@@ -62,12 +97,17 @@ def tactile_plot(data):
         tac[113+432:113+432+72] =   tac_[113+432:113+432+72]
         tac[113+432+72:113+432+108] =   tac_[113+432+72:113+432+108].reshape(6,6).transpose().reshape(36)
 
+        ax.clear()
 
-        fig = plt.figure(figsize=(8, 8))
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(x, y, z, s=(tac) * 100+0.1)
+        ax.scatter(x, y, z, s=(tac) * 100+1)
+        ax.scatter(x, y, z, c='r', s=(tac) * 100)
+        ax.scatter(object_pre_log[i,0], object_pre_log[i,1], object_pre_log[i,2], c='g', s=6000)
+        ax.scatter(object_pre_log[i,3], object_pre_log[i,4], object_pre_log[i,5], c='g', s=6000)
+        ax.view_init(elev=45, azim=45)
+        ax.set(xlim=[-0.1, 0.1], ylim=[-0.1, 0.1], zlim=[0.5, 0.6])
 
-        plt.show()
+        display.clear_output(wait=True)
+        plt.pause(0.00000001)
 
 def object_plot(data):
     object_pos_log = np.array(data['object_pos_log'])*100
@@ -95,11 +135,18 @@ def object_plot_2(data):
         axs[0].set_ylim(-8,5)
         axs[1].set_ylim(-8,5)
 
-        # axs[0].scatter(np.array(object_pos_log)[:i,0],np.array(object_pos_log)[:i,1], label='object1_pos')
-        # axs[1].scatter(np.array(object_pos_log)[:i,3],np.array(object_pos_log)[:i,4], label='object2_pos')
+        if i < 20:
+            # axs[0].scatter(np.array(object_pos_log)[:i,0],np.array(object_pos_log)[:i,1], label='object1_pos')
+            # axs[1].scatter(np.array(object_pos_log)[:i,3],np.array(object_pos_log)[:i,4], label='object2_pos')
 
-        axs[0].scatter(np.array(object_pre_log)[:i,0],np.array(object_pre_log)[:i,1], label='object1_pre')
-        axs[1].scatter(np.array(object_pre_log)[:i,3],np.array(object_pre_log)[:i,4], label='object2_pre')
+            axs[0].scatter(np.array(object_pre_log)[:i,0],np.array(object_pre_log)[:i,1], label='object1_pre')
+            axs[1].scatter(np.array(object_pre_log)[:i,3],np.array(object_pre_log)[:i,4], label='object2_pre')
+        else:
+            # axs[0].scatter(np.array(object_pos_log)[i-20:i,0],np.array(object_pos_log)[i-20:i,1], label='object1_pos')
+            # axs[1].scatter(np.array(object_pos_log)[i-20:i,3],np.array(object_pos_log)[i-20:i,4], label='object2_pos')
+
+            axs[0].scatter(np.array(object_pre_log)[i-20:i,0],np.array(object_pre_log)[i-20:i,1], label='object1_pre')
+            axs[1].scatter(np.array(object_pre_log)[i-20:i,3],np.array(object_pre_log)[i-20:i,4], label='object2_pre')
 
         axs[0].legend()
         axs[1].legend()
@@ -117,16 +164,16 @@ def joint_plot(data,data_2=None):
         targets_log_2 = np.array(data_2['targets_log'])
         actions_log_2 = np.array(data_2['actions_log'])
 
-    fig, axs = plt.subplots(8,4)
-    for i in range(16):
-        axs[int(i / 4), i % 4].plot(np.array(joint_pos)[:,i], label='joint')
+    fig, axs = plt.subplots(3,4)
+    for i in range(12):
+        axs[int(i / 4), i % 4].plot(np.array(joint_pos)[:,i], label='joint_sim')
         # axs[int(i / 4), i % 4].plot(np.array(actions_log)[:,i], label='action')
         axs[int(i / 4), i % 4].plot(np.array(targets_log)[:,i], label='target')
 
         if data_2 != None:
-            axs[int(i / 4)+4, i % 4].plot(np.array(joint_pos_2)[:, i], label='joint_2')
+            axs[int(i / 4), i % 4].plot(np.array(joint_pos_2)[:, i], label='joint_real')
             # axs[int(i / 4)+4, i % 4].plot(np.array(actions_log_2)[:,i], label='action_2')
-            axs[int(i / 4)+4, i % 4].plot(np.array(targets_log_2)[:, i], label='target_2')
+            # axs[int(i / 4)+4, i % 4].plot(np.array(targets_log_2)[:, i], label='target_2')
 
         axs[int(i / 4), i % 4].legend()
     plt.show()
@@ -173,8 +220,8 @@ def vel_plot(data):
         # axs[int(i / 4), i % 4].legend()
     plt.show()
 if __name__ == '__main__':
-    data = np.load('../runs/real_log_s1.npy', allow_pickle=True)
+    data = np.load('../runs/sim_log.npy', allow_pickle=True)
     data = data.item()
-    data_2 = np.load('../runs/sim_log.npy', allow_pickle=True)
-    data_2 = data_2.item()
-    joint_plot(data,data_2)
+    # data_2 = np.load('../runs/real_log_1661807304.662783.npy', allow_pickle=True)
+    # data_2 = data_2.item()
+    tactile_plot_sim(data)

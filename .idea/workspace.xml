@@ -8,6 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
     </list>
@@ -35,10 +37,10 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/train.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/isaacgymenvs/test_env.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/isaacgymenvs/train.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -49,10 +51,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py",
+    "two.files.diff.last.used.file": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />

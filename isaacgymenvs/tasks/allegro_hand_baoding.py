@@ -186,6 +186,11 @@ class AllegroHandBaoding(VecTask):
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
 
+        self.log_ = False
+        if self.log_:
+            self.log = {}
+            self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
+
     def create_sim(self):
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
@@ -484,7 +489,6 @@ class AllegroHandBaoding(VecTask):
         self.object_vector = self.object_1 - self.object_2
         self.object_angle = torch.arccos(self.object_vector[:,0]/torch.linalg.norm(self.object_vector,dim=1)) * (180/torch.pi)
         self.object_angle[self.object_vector[:,1]<0] *= -1
-
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)
         self.object_rot, self.goal_rot = torch.tensor([0]), torch.tensor([0])
         self.goal_pos = torch.cat((self.goal_states[:, 0:3],self.goal_states[:, 13:13+3]),1)
@@ -506,8 +510,8 @@ class AllegroHandBaoding(VecTask):
             self.obs_buf[:, self.num_shadow_hand_dofs:2*self.num_shadow_hand_dofs] = self.vel_obs_scale * self.shadow_hand_dof_vel
 
             obj_obs_start = 2*self.num_shadow_hand_dofs  # 32
-
-            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos * self.noise
+            self.object_noise = self.object_pos * self.noise
+            self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_noise
 
             goal_obs_start = obj_obs_start + 6  # 38
 
@@ -726,6 +730,37 @@ class AllegroHandBaoding(VecTask):
         self.compute_reward(self.actions)
 
         self.object_angle_pre = self.object_angle.clone()
+
+        if self.log_:
+            self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+            self.touch_tensor = self.touch_tensor.abs()
+            self.touch_tensor[self.touch_tensor < 0.0005] = 0
+            self.touch_tensor[self.progress_buf == 1, :] = 0
+
+            self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+            self.actions_log.append(scale(self.actions,self.shadow_hand_dof_lower_limits[self.actuated_dof_indices], self.shadow_hand_dof_upper_limits[self.actuated_dof_indices])[0].tolist())
+            self.targets_log.append(self.cur_targets[0].tolist())
+            self.joints_log.append(self.shadow_hand_dof_pos[0, :].tolist())
+            self.tactile_log.append(self.touch_tensor[0, :].tolist())
+            self.tactile_pos_log.append(self.tactile_pose[0, :].tolist())
+            self.object_pos_log.append(self.object_pos[0, :].tolist())
+            self.object_pre_log.append((self.object_noise[0, :]*100).tolist())
+            self.obs_log.append(self.obs_buf[0, :].tolist())
+
+            if self.reset_buf[0] == 1 :
+
+                self.log['actions_log'] = self.actions_log
+                self.log['targets_log'] = self.targets_log
+                self.log['joints_log'] = self.joints_log
+                self.log['tactile_log'] = self.tactile_log
+                self.log['tactile_pos_log'] = self.tactile_pos_log
+                self.log['object_pos_log'] = self.object_pos_log
+                self.log['object_pre_log'] = self.object_pre_log
+                self.log['obs_log'] = self.obs_log
+                # np.save('runs/sim_log_2',self.log)
+                self.log = {}
+                self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [], []
+
         if self.viewer and self.debug_viz:
             # draw axes on target object
             self.gym.clear_lines(self.viewer)
@@ -809,7 +844,6 @@ def compute_hand_reward(
 ):
     # Distance from the hand to the object
     angle_dist = object_angle - object_angle_pre
-    angle_dist[abs(angle_dist)>90] = 0
     # goal_dist = torch.norm(object_pos[:,:2] - target_pos[:,:2], p=2, dim=-1) + torch.norm(object_pos[:,3:5] - target_pos[:,3:5], p=2, dim=-1)
     fall_reset = (((object_pos[:,2]-0.5) <0) + ((object_pos[:,5]-0.5) <0)) > 0
     center_dist = torch.norm(object_pos[:,:1] + object_pos[:,3:4],p=2,dim=-1)
@@ -817,7 +851,7 @@ def compute_hand_reward(
     if ignore_z_rot:
         success_tolerance = 2.0 * success_tolerance
 
-    dist_rew = angle_dist * 0.1
+    dist_rew = angle_dist * 0.5
 
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
@@ -854,7 +888,6 @@ def compute_hand_reward(
     cons_successes = torch.where(num_resets > 0, av_factor*finished_cons_successes/num_resets + (1.0 - av_factor)*consecutive_successes, consecutive_successes)
 
     return reward, resets, goal_resets, progress_buf, successes, cons_successes
-
 
 @torch.jit.script
 def randomize_rotation(rand0, rand1, x_unit_tensor, y_unit_tensor):

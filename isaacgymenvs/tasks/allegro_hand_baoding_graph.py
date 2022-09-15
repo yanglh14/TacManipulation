@@ -200,7 +200,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
 
-        self.log_ = True
+        self.log_ = False
         if self.log_:
             self.log = {}
             self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
@@ -500,7 +500,6 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_vector = self.object_1 - self.object_2
         self.object_angle = torch.arccos(self.object_vector[:,0]/torch.linalg.norm(self.object_vector,dim=1)) * (180/torch.pi)
         self.object_angle[self.object_vector[:,1]<0] *= -1
-        # print(self.object_angle[0])
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)
         self.object_rot, self.goal_rot = torch.tensor([0]), torch.tensor([0])
         self.goal_pos = torch.cat((self.goal_states[:, 0:3],self.goal_states[:, 13:13+3]),1)
@@ -538,6 +537,7 @@ class AllegroHandBaodingGraph(VecTask):
                 self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
                 self.object_predict = self.model.step(self.touch_tensor, self.tactile_pose, self.object_pos)
+                print(self.object_predict[0] - self.object_pos[0])
                 # a = np.array((self.object_pos*100).tolist()[0])
                 # b = np.array(object_predict.tolist()[0])
                 # print(self.progress_buf[0],a,b, np.linalg.norm(a-b,ord=1)/6)
@@ -549,18 +549,19 @@ class AllegroHandBaodingGraph(VecTask):
                 # ax.scatter(tactile_pose.cpu()[0,:,0], tactile_pose.cpu()[0,:,1], tactile_pose.cpu()[0,:,2], s=(touch_tensor.cpu()[0]) * 1000)
                 # plt.show()
 
-                if self.step_num%1000 == 0:
-                    print('step num:',self.step_num)
+                # if self.step_num%1000 == 0:
+                #     print('step num:',self.step_num)
 
-                if self.step_num < 10000:
-                    seq = 10 - self.step_num//1000
+                if self.step_num < 30000:
+                    seq = 10 - self.step_num//3000
                 else:
-                    seq = 2
+                    seq = 1
+
                 if self.step_num%seq == 0:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict / 100
 
-                if self.step_num > 15000:
-                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
+                # if self.step_num > 30000:
+                #     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
 
                 obs_end = touch_sensor_obs_start  #38
             else:
@@ -769,6 +770,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_angle_pre = self.object_angle.clone()
 
         if self.log_:
+
             self.actions_log.append(scale(self.actions,self.shadow_hand_dof_lower_limits[self.actuated_dof_indices], self.shadow_hand_dof_upper_limits[self.actuated_dof_indices])[0].tolist())
             self.targets_log.append(self.cur_targets[0].tolist())
             self.joints_log.append(self.shadow_hand_dof_pos[0, :].tolist())
@@ -788,7 +790,7 @@ class AllegroHandBaodingGraph(VecTask):
                 self.log['object_pos_log'] = self.object_pos_log
                 self.log['object_pre_log'] = self.object_pre_log
                 self.log['obs_log'] = self.obs_log
-                # np.save('runs/sim_log_10',self.log)
+                # np.save('runs/sim_log',self.log)
                 self.log = {}
                 self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [], []
 
@@ -902,7 +904,6 @@ def compute_hand_reward(
 ):
     # Distance from the hand to the object
     angle_dist = object_angle - object_angle_pre
-    angle_dist[abs(angle_dist)>90] = 0
     # goal_dist = torch.norm(object_pos[:,:2] - target_pos[:,:2], p=2, dim=-1) + torch.norm(object_pos[:,3:5] - target_pos[:,3:5], p=2, dim=-1)
     fall_reset = (((object_pos[:,2]-0.5) <0) + ((object_pos[:,5]-0.5) <0)) > 0
     center_dist = torch.norm(object_pos[:,:1] + object_pos[:,3:4],p=2,dim=-1)
@@ -910,7 +911,7 @@ def compute_hand_reward(
     if ignore_z_rot:
         success_tolerance = 2.0 * success_tolerance
 
-    dist_rew = angle_dist * 0.1
+    dist_rew = angle_dist * 0.5
 
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
