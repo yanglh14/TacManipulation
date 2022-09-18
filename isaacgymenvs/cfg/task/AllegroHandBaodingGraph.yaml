@@ -41,9 +41,9 @@ env:
   rotRewardScale: 1.0
   rotEps: 0.1
   actionPenaltyScale: -0.0002
-  reachGoalBonus: 250
+  reachGoalBonus: 100
   fallDistance: 0.12
-  fallPenalty: -250.0
+  fallPenalty: -100.0
 
   # something added in baoding task
   objectType: "baoding" # can be block, egg, pen or baoding

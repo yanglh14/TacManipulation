@@ -27,10 +27,10 @@ class gnn_model():
         if self.touchmodelexist:
             self.diz_loss['train_loss'] = list(np.load(self.save_dir+'/train_loss.npy'))
             self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
-            self.model = torch.load(self.save_dir+'/model.pt',map_location='cuda:0')
+            self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
             self.model = PointNet(device=device)
-
+        self.model = torch.load('model.pt', map_location='cuda:0')
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
         self.horizon_length = 1000

@@ -200,7 +200,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
 
-        self.log_ = False
+        self.log_ = True
         if self.log_:
             self.log = {}
             self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
@@ -537,7 +537,7 @@ class AllegroHandBaodingGraph(VecTask):
                 self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
                 self.object_predict = self.model.step(self.touch_tensor, self.tactile_pose, self.object_pos)
-                print(self.object_predict[0] - self.object_pos[0])
+                # print(self.object_predict[0] - self.object_pos[0])
                 # a = np.array((self.object_pos*100).tolist()[0])
                 # b = np.array(object_predict.tolist()[0])
                 # print(self.progress_buf[0],a,b, np.linalg.norm(a-b,ord=1)/6)
@@ -556,7 +556,7 @@ class AllegroHandBaodingGraph(VecTask):
                     seq = 10 - self.step_num//3000
                 else:
                     seq = 1
-
+                seq = 1
                 if self.step_num%seq == 0:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict / 100
 
@@ -780,7 +780,7 @@ class AllegroHandBaodingGraph(VecTask):
             self.object_pre_log.append(self.object_predict[0, :].tolist())
             self.obs_log.append(self.obs_buf[0, :].tolist())
 
-            if self.reset_buf[0] == 1 :
+            if self.reset_buf[0] == 1:
 
                 self.log['actions_log'] = self.actions_log
                 self.log['targets_log'] = self.targets_log

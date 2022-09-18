@@ -481,8 +481,8 @@ class AllegroHandBaoding(VecTask):
             self.gym.refresh_net_contact_force_tensor(self.sim)
 
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
-        self.obs_noise_range = 0.05
-        self.noise = torch_rand_float(1.0-self.obs_noise_range, 1.0+self.obs_noise_range, (self.num_envs,6), device=self.device)
+        self.obs_noise_range = 0.1
+        self.noise = torch.randn(self.num_envs,6)*0.01
 
         self.object_1 = self.object_pos[:,:2]
         self.object_2 = self.object_pos[:,3:5]
@@ -510,7 +510,8 @@ class AllegroHandBaoding(VecTask):
             self.obs_buf[:, self.num_shadow_hand_dofs:2*self.num_shadow_hand_dofs] = self.vel_obs_scale * self.shadow_hand_dof_vel
 
             obj_obs_start = 2*self.num_shadow_hand_dofs  # 32
-            self.object_noise = self.object_pos * self.noise
+            self.object_noise = self.object_pos + self.noise
+
             self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_noise
 
             goal_obs_start = obj_obs_start + 6  # 38

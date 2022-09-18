@@ -121,7 +121,7 @@ def object_plot(data):
     plt.show()
 
 def object_plot_2(data):
-    # object_pos_log = np.array(data['object_pos_log'])*100
+    object_pos_log = np.array(data['object_pos_log'])*100
     object_pre_log = np.array(data['object_pre_log'])*100
 
     fig, axs = plt.subplots(2)

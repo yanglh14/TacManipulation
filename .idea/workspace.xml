@@ -51,12 +51,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "last_opened_file_path": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py",
-    "two.files.diff.last.used.file": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;last_opened_file_path&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py&quot;,
+    &quot;two.files.diff.last.used.file&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
@@ -70,7 +70,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_graph">
+  <component name="RunManager" selected="Python.train_graph">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -315,7 +315,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=512 sim_device='cuda:0' rl_device='cuda:0' experiment=baoding_fullstate max_iterations=100000 headless=True train.params.config.minibatch_size=4096" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=512 sim_device='cuda:1' rl_device='cuda:1' experiment=baoding_fullstate max_iterations=100000 headless=True train.params.config.minibatch_size=4096" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -336,7 +336,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:0' rl_device='cuda:0'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:2' rl_device='cuda:2'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
