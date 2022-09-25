@@ -482,7 +482,7 @@ class AllegroHandBaoding(VecTask):
 
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
         self.obs_noise_range = 0.1
-        self.noise = torch.randn(self.num_envs,6)*0.01
+        self.noise = torch.randn(self.num_envs,6,device=self.device)*0.01
 
         self.object_1 = self.object_pos[:,:2]
         self.object_2 = self.object_pos[:,3:5]

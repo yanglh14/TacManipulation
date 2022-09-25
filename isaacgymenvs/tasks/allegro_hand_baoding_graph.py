@@ -8,6 +8,7 @@ from isaacgym.torch_utils import *
 
 from .base.vec_task import VecTask
 from isaacgymenvs.encoder.gnn_model import gnn_model
+from isaacgymenvs.encoder.gnn_model_binary import gnn_model_binary
 from isaacgymenvs.encoder.gnn_lstm_model import gnn_lstm_model
 
 class AllegroHandBaodingGraph(VecTask):
@@ -184,7 +185,10 @@ class AllegroHandBaodingGraph(VecTask):
 
         if self.model_type == "gnn":
             self.model = gnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
-        else:
+        elif self.model_type == "gnn_binary":
+            self.model = gnn_model_binary(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+
+        elif self.model_type == "gnn":
             self.model = gnn_lstm_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
 
         self.step_num = 0
@@ -536,7 +540,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
-                self.object_predict = self.model.step(self.touch_tensor, self.tactile_pose, self.object_pos)
+                self.object_predict = self.model.step(self.touch_tensor.copy(), self.tactile_pose, self.object_pos)
                 # print(self.object_predict[0] - self.object_pos[0])
                 # a = np.array((self.object_pos*100).tolist()[0])
                 # b = np.array(object_predict.tolist()[0])
@@ -791,7 +795,7 @@ class AllegroHandBaodingGraph(VecTask):
                 self.log['object_pre_log'] = self.object_pre_log
                 self.log['obs_log'] = self.obs_log
                 # np.save('runs/sim_log',self.log)
-                self.log = {}
+                # self.log = {}
                 self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [], []
 
         if self.viewer and self.debug_viz:

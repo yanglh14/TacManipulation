@@ -1,4 +1,4 @@
-from isaacgymenvs.encoder.gnn import *
+from isaacgymenvs.encoder.gnn_binary import *
 from torch_geometric.data import Data
 import os.path
 
@@ -10,7 +10,7 @@ from torch import nn
 import numpy as np
 import matplotlib.pyplot as plt # plotting library
 
-class gnn_model():
+class gnn_model_binary():
 
     def __init__(self,device,num_envs, touchmodedir, touchmodelexist, test):
         ### Set the random seed for reproducible results
@@ -30,7 +30,6 @@ class gnn_model():
             self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
             self.model = PointNet(device=device)
-        self.model = torch.load('model.pt', map_location=device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
         self.horizon_length = 100

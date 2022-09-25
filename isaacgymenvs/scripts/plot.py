@@ -22,6 +22,8 @@ def tactile_plot_sim(data):
     object_pre_log = np.array(data['object_pre_log'])/100
     object_pos_log = np.array(data['object_pos_log'])
 
+    # fig = plt.figure(figsize=(8, 8))
+    # ax = fig.add_subplot(111, projection='3d')
 
     for i in range(tactile_log.shape[0]):
         fig = plt.figure(figsize=(8, 8))

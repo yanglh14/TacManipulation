@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_binary.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model_binary.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaoding.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/scripts/plot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
@@ -51,18 +51,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;last_opened_file_path&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py&quot;,
-    &quot;two.files.diff.last.used.file&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "last_opened_file_path": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/encoder",
+    "two.files.diff.last.used.file": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding.py"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/isaacgymenvs/encoder" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
       <recent name="$PROJECT_DIR$/isaacgymenvs" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/scripts" />
-      <recent name="$PROJECT_DIR$/isaacgymenvs/encoder" />
       <recent name="$PROJECT_DIR$/isaacgymenvs/cfg/train" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -70,7 +70,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.train_graph">
+  <component name="RunManager" selected="Python.train_graph_binary">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -252,7 +252,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/baoding_fullstate/nn/baoding_fullstate.pth task.env.observationTouch=False" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_nostate headless=False checkpoint=runs/baoding_nostate/nn/baoding_nostate.pth task.env.observationTouch=False" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_baoding_touch" type="PythonConfigurationType" factoryName="Python">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/rlgpu/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/baoding_touch/nn/last_baoding_touch_ep_18400_rew_95.94088.pth task.env.observationTouch=True" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -344,6 +365,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="train_graph_binary" type="PythonConfigurationType" factoryName="Python">
+      <module name="TacManipulation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/rlgpu/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/isaacgymenvs" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraphB num_envs=256 experiment=baoding_graph max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:3' rl_device='cuda:3' task.env.touchmodel='gnn_binary'" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="train_graph_lstm" type="PythonConfigurationType" factoryName="Python">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -391,9 +433,11 @@
       <item itemvalue="Python.train" />
       <item itemvalue="Python.train_touch" />
       <item itemvalue="Python.train_graph" />
+      <item itemvalue="Python.train_graph_binary" />
       <item itemvalue="Python.train_graph_lstm" />
       <item itemvalue="Python.test_graph" />
       <item itemvalue="Python.test_baoding" />
+      <item itemvalue="Python.test_baoding_touch" />
       <item itemvalue="Python.Calibration_tac" />
       <item itemvalue="Python.cnn_encoder_sample" />
       <item itemvalue="Python.cnn_encoder" />
@@ -481,6 +525,16 @@
           <url>file://$PROJECT_DIR$/isaacgymenvs/test_env.py</url>
           <line>80</line>
           <option name="timeStamp" value="220" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py</url>
+          <line>798</line>
+          <option name="timeStamp" value="223" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/scripts/plot.py</url>
+          <line>27</line>
+          <option name="timeStamp" value="228" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
