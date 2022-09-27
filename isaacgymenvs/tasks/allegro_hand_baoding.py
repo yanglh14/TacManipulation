@@ -186,11 +186,15 @@ class AllegroHandBaoding(VecTask):
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
 
+        self.dataset = True
+        if self.dataset:
+            self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log = [], [], [], [], [], [], [],[]
+            self.log = {}
         self.log_ = False
         if self.log_:
             self.log = {}
             self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
-
+        self.step_num = 0
     def create_sim(self):
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
@@ -481,8 +485,8 @@ class AllegroHandBaoding(VecTask):
             self.gym.refresh_net_contact_force_tensor(self.sim)
 
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6)
-        self.obs_noise_range = 0.1
-        self.noise = torch.randn(self.num_envs,6,device=self.device)*0.01
+        self.obs_noise_range = 0.
+        self.noise = torch.randn(self.num_envs,6,device=self.device)*self.obs_noise_range
 
         self.object_1 = self.object_pos[:,:2]
         self.object_2 = self.object_pos[:,3:5]
@@ -731,6 +735,32 @@ class AllegroHandBaoding(VecTask):
         self.compute_reward(self.actions)
 
         self.object_angle_pre = self.object_angle.clone()
+        self.step_num += 1
+
+        if self.dataset:
+
+            self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+            self.touch_tensor = self.touch_tensor.abs()
+            self.touch_tensor[self.touch_tensor < 0.0005] = 0
+            self.touch_tensor[self.progress_buf == 1, :] = 0
+
+            self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+
+            self.tactile_log.append(self.touch_tensor[:, :].tolist())
+            self.tactile_pos_log.append(self.tactile_pose[:, :].tolist())
+            self.object_pos_log.append(self.object_pos[:, :].tolist())
+            self.object_noise_log.append((self.object_noise[:, :]).tolist())
+
+            if self.step_num%1000 ==0:
+
+                self.log['tactile_log'] = self.tactile_log
+                self.log['tactile_pos_log'] = self.tactile_pos_log
+                self.log['object_pos_log'] = self.object_pos_log
+                self.log['object_noise_log'] = self.object_noise_log
+                np.save('runs/dataset_%d'%self.step_num, self.log)
+
+                self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log = [], [], [], [], [], [], [], []
+                self.log = {}
 
         if self.log_:
             self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]

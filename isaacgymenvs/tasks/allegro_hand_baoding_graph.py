@@ -540,7 +540,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
-                self.object_predict = self.model.step(self.touch_tensor.copy(), self.tactile_pose, self.object_pos)
+                self.object_predict = self.model.step(self.touch_tensor.clone(), self.tactile_pose, self.object_pos)
                 # print(self.object_predict[0] - self.object_pos[0])
                 # a = np.array((self.object_pos*100).tolist()[0])
                 # b = np.array(object_predict.tolist()[0])

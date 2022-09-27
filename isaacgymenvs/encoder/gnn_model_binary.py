@@ -37,7 +37,7 @@ class gnn_model_binary():
         self.epoch_num = 30
         self.device = device
         self.step_n = 0
-        self.train_bool = False
+        self.train_bool = True
 
         self.obs_buf = torch.zeros(
             (self.num_envs*self.horizon_length, 653, 1), device=self.device, dtype=torch.float)
