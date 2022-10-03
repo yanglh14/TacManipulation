@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import torch
-
+import pickle
 from isaacgym import gymtorch
 from isaacgym import gymapi
 from isaacgym.torch_utils import *
@@ -751,16 +751,22 @@ class AllegroHandBaoding(VecTask):
             self.object_pos_log.append(self.object_pos[:, :].tolist())
             self.object_noise_log.append((self.object_noise[:, :]).tolist())
 
-            if self.step_num%1000 ==0:
+            if self.step_num%100 ==0:
 
-                self.log['tactile_log'] = self.tactile_log
-                self.log['tactile_pos_log'] = self.tactile_pos_log
-                self.log['object_pos_log'] = self.object_pos_log
-                self.log['object_noise_log'] = self.object_noise_log
-                np.save('runs/dataset_%d'%self.step_num, self.log)
+                # self.log['tactile_log'] = np.array(self.tactile_log)
+                # self.log['tactile_pos_log'] = np.array(self.tactile_pos_log)
+                # self.log['object_pos_log'] = np.array(self.object_pos_log)
+                # self.log['object_noise_log'] = np.array(self.object_noise_log)
+                # np.save('runs_tac/dataset_%d'%self.step_num, self.log)
 
+                data = {'tactile': np.array(self.tactile_log),
+                        'tac_pose': np.array(self.tactile_pos_log),
+                        'object_pos': np.array(self.object_pos_log)
+                        }
+
+                with open('runs_tac/dataset_%d'%self.step_num + '.pkl', 'wb') as f:
+                    pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
                 self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log = [], [], [], [], [], [], [], []
-                self.log = {}
 
         if self.log_:
             self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]

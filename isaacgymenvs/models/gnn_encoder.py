@@ -1,164 +1,161 @@
-from isaacgymenvs.encoder.gnn import *
-from torch_geometric.data import Data
 import os.path
 
 import torch
 from torch.utils.data import random_split
+from torch_geometric.data import Data
 from torch_geometric.loader import DataLoader
 import pickle
+from model import *
 from torch import nn
 import numpy as np
 import matplotlib.pyplot as plt # plotting library
 
-class gnn_model():
+# Check if the GPU is available
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+print(f'Selected device: {device}')
 
-    def __init__(self,device,num_envs, touchmodedir, touchmodelexist, test):
-        ### Set the random seed for reproducible results
-        torch.manual_seed(43)
+model_dir = './checkpoint'
+if_model = True
+save_dir = '../runs_tac/'
 
-        self.training_episode_num = 0
-        self.touchmodedir, self.touchmodelexist,self.test = touchmodedir, touchmodelexist, test
-        self.save_dir = 'runs/'+self.touchmodedir+'/touchmodel'
+task_name = 'ball_gnn_binary_64channels'
+object_name = 'dataset'
 
-        ### Define the loss function
-        self.loss_fn = torch.nn.MSELoss()
-        self.diz_loss = {'train_loss': [], 'val_loss': []}
+plt.rcParams["font.family"] = 'Times New Roman'
+plt.rcParams["font.size"] = 30
 
-        # if self.touchmodelexist:
-        #     self.diz_loss['train_loss'] = list(np.load(self.save_dir+'/train_loss.npy'))
-        #     self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
-        #     self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
-        # else:
-        #     self.model = PointNet(device=device)
-        self.model = torch.load('model.pt', map_location=device)
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
+tac_list = []
+tactile_pos_list = []
+object_pos_list = []
 
-        self.horizon_length = 100
-        self.num_envs = num_envs
-        self.epoch_num = 30
-        self.device = device
-        self.step_n = 0
-        self.train_bool = False
+for i in range (61,67):
+    index = i *100
+    with open(save_dir+object_name+'_%d.pkl'%index,'rb') as f:
+        data = pickle.load(f)
+    tactile_log = np.array(data['tactile']).reshape(-1,653)
+    tactile_pos_log = np.array(data['tac_pose']).reshape(-1,653,3)
+    object_pos_log = np.array(data['object_pos']).reshape(-1,6)
+    for j in range(tactile_log.shape[0]):
+        tactile = tactile_log[j]
+        object_pos = object_pos_log[j]
+        tactile_pos = tactile_pos_log[j]
+        if tactile[tactile>0].shape[0] >5:
+            tac_list.append(tactile)
+            object_pos_list.append(object_pos)
+            tactile_pos_list.append(tactile_pos)
 
-        self.obs_buf = torch.zeros(
-            (self.num_envs*self.horizon_length, 653, 1), device=self.device, dtype=torch.float)
+tac = torch.tensor(np.array(tac_list), device=device, dtype=torch.float32)
+pos = torch.tensor(np.array(tactile_pos_list), device=device, dtype=torch.float32) *100
+y = torch.tensor(np.array(object_pos_list), device=device, dtype=torch.float32) *100
 
-        self.pos_buf = torch.zeros(
-            (self.num_envs*self.horizon_length, 653, 3), device=self.device, dtype=torch.float)
+# tac /= tac.max(1,keepdim=True)[0]
+tac = tac.view(-1,653,1)
 
-        self.y_buf = torch.zeros(
-            (self.num_envs*self.horizon_length, 6), device=self.device, dtype=torch.float)
+tactile_dataset = []
+for i in range(tac.shape[0]):
 
+    data = Data(x=tac[i,tac[i,:,0]!=0,:],pos=pos[i,tac[i,:,0]!=0,:],y=y[i].view(1,-1))
+    tactile_dataset.append(data)
 
+m=len(tactile_dataset)
 
-    def step(self,obs,pos,y):
+train_data, val_data = random_split(tactile_dataset, [int(m*0.8), m-int(m*0.8)])
 
-        pos = pos * 100
-        y = y * 100
+train_loader = DataLoader(train_data, batch_size=32)
+valid_loader = DataLoader(val_data, batch_size=32)
 
-        if not self.test and self.train_bool:
-            self.obs_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :, :] = obs.view(self.num_envs,
-                                                                                                         -1, 1)
-            self.pos_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :, :] = pos
-            self.y_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :] = y
+### Define the loss function
+loss_fn = torch.nn.MSELoss()
 
-            self.step_n += 1
-            if self.step_n == self.horizon_length and self.train_bool:
-                self.data_process()
-                self.step_n = 0
-                self.train()
+### Set the random seed for reproducible results
+torch.manual_seed(0)
 
-        return self.forward(obs.view(self.num_envs,-1,1),pos)
+### Initialize the network
 
-    @torch.no_grad()
-    def forward(self, obs, pos):
+if if_model:
+    classifier = torch.load(os.path.join(model_dir,task_name+'_encoder.pt'))
+else:
+    classifier = GNNEncoder(device=device)
 
-        self.model.eval()
-        tactile_dataset = []
-        for i in range(obs.shape[0]):
+optimizer = torch.optim.Adam(classifier.parameters(), lr=0.001, weight_decay=1e-05)
 
-            if obs.max() >0:
+# Move both the encoder and the decoder to the selected device
+classifier.to(device)
 
-                obs[i] /= obs[i].max(0, keepdim=True)[0]
+### Training function
+def train_epoch(classifier, dataloader, loss_fn, optimizer):
+    # Set train mode for both the encoder and the decoder
+    classifier.train()
 
-                data = Data(x=obs[i, obs[i, :, 0] != 0, :], pos=pos[i, obs[i, :, 0] != 0, :])
+    total_loss = 0
+    train_loss = []
+    for data in dataloader:
+        optimizer.zero_grad()  # Clear gradients.
+        logits = classifier(data.x, data.pos, data.batch)  # Forward pass.
+        loss = loss_fn(logits, data.y)  # Loss computation.
+        loss.backward()  # Backward pass.
+        optimizer.step()  # Update model parameters.
+        total_loss += loss.item() * data.num_graphs
+        train_loss.append(loss.detach().cpu().numpy())
 
-            else:
-                data = Data(x=obs[i, :, :], pos=pos[i, :, :])
+    return np.mean(train_loss)
 
-            tactile_dataset.append(data)
+@torch.no_grad()
+def test_epoch(classifier, dataloader, loss_fn):
+    # Set evaluation mode for encoder and decoder
+    classifier.eval()
+    total_loss = 0
+    test_loss= []
+    for data in dataloader:
+        logits = classifier(data.x, data.pos, data.batch)  # Forward pass.
+        loss = loss_fn(logits, data.y)  # Loss computation.
+        total_loss += loss.item() * data.num_graphs
+        test_loss.append(loss.detach().cpu().numpy())
+    return np.mean(test_loss)
 
-        data_loader = DataLoader(tactile_dataset, batch_size=tactile_dataset.__len__())
+if not if_model:
 
-        for data in data_loader:
-            logits = self.model(data.x, data.pos, data.batch)
+    num_epochs = 100
+    diz_loss = {'train_loss': [], 'val_loss': []}
+    Accuracy_list = []
 
-        return logits
+    for epoch in range(num_epochs):
+        train_loss = train_epoch(classifier, train_loader, loss_fn, optimizer)
+        val_loss = test_epoch(classifier, valid_loader, loss_fn)
+        print('\n EPOCH {}/{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs, train_loss, val_loss))
+        diz_loss['train_loss'].append(train_loss)
+        diz_loss['val_loss'].append(val_loss)
 
-    def train(self):
+    torch.save(classifier, os.path.join(model_dir, task_name + '_encoder.pt'))
 
-        print('Start Training Encoder! Episode Num {} \t Training data set {} \t Validation data set {}'.format(self.training_episode_num,self.train_loader.dataset.__len__(),self.valid_loader.dataset.__len__()))
-        self.training_episode_num +=1
-        for epoch in range(self.epoch_num):
-            train_loss = self.train_epoch()
-        val_loss = self.test_epoch()
+    np.save(os.path.join(model_dir, task_name + '_train_loss'),np.array(diz_loss['train_loss']))
+    np.save(os.path.join(model_dir, task_name + '_val_loss'),np.array(diz_loss['val_loss']))
 
-        print('\n train loss {} \t val loss {}'.format(train_loss, val_loss))
+    # # Plot losses
+    # plt.figure(figsize=(10,8))
+    # plt.semilogy(diz_loss['train_loss'], label='Train')
+    # plt.semilogy(diz_loss['val_loss'], label='Valid')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Average Loss')
+    # #plt.grid()
+    # plt.legend()
+    # #plt.title('loss')
+    # plt.show()
+    #
+    # # Plot Accuracy
+    # plt.figure(figsize=(10,8))
+    # plt.plot(Accuracy_list, label='Test')
+    # plt.xlabel('Epoch')
+    # plt.ylabel('Average Accuracy')
+    # #plt.grid()
+    # plt.legend()
+    # #plt.title('loss')
+    # plt.show()
+if if_model:
+    num_epochs = 1
+    diz_loss = {'train_loss': [], 'val_loss': []}
 
-        self.diz_loss['train_loss'].append(train_loss)
-        self.diz_loss['val_loss'].append(val_loss)
-
-        os.makedirs(self.save_dir,exist_ok =True)
-        if not self.training_episode_num ==1:
-            if self.diz_loss['val_loss'][-1] < self.diz_loss['val_loss'][-2]:
-                torch.save(self.model, os.path.join(self.save_dir, 'model.pt'))
-
-        torch.save(self.model, os.path.join(self.save_dir, 'model_%d_%f.pt'%(self.training_episode_num,self.diz_loss['val_loss'][-1])))
-        np.save(os.path.join(self.save_dir, 'train_loss'), np.array(self.diz_loss['train_loss']))
-        np.save(os.path.join(self.save_dir, 'val_loss'), np.array(self.diz_loss['val_loss']))
-
-    def data_process(self):
-
-        tactile_dataset = []
-        for i in range(self.obs_buf.shape[0]):
-
-            if self.obs_buf[i].max() >0:
-
-                self.obs_buf[i] /= self.obs_buf[i].max(0, keepdim=True)[0]
-
-                data = Data(x=self.obs_buf[i, self.obs_buf[i, :, 0] != 0, :], pos=self.pos_buf[i, self.obs_buf[i, :, 0] != 0, :], y=self.y_buf[i].view(1,-1))
-                tactile_dataset.append(data)
-
-        m = len(tactile_dataset)
-
-        train_data, val_data = random_split(tactile_dataset, [m - int(m * 0.2), int(m * 0.2)])
-
-        self.train_loader = DataLoader(train_data, batch_size=32)
-        self.valid_loader = DataLoader(val_data, batch_size=32)
-
-    def train_epoch(self):
-
-        self.model.train()
-
-        total_loss = 0
-        for data in self.train_loader:
-            self.optimizer.zero_grad()  # Clear gradients.
-            logits = self.model(data.x, data.pos, data.batch)  # Forward pass.
-            loss = self.loss_fn(logits, data.y)  # Loss computation.
-            loss.backward()  # Backward pass.
-            self.optimizer.step()  # Update model parameters.
-            total_loss += loss.item() * data.num_graphs
-
-        return total_loss / len(self.train_loader.dataset)
-
-    @torch.no_grad()
-    def test_epoch(self):
-        # Set evaluation mode for encoder and decoder
-        self.model.eval()
-        total_loss = 0
-        for data in self.valid_loader:
-            logits = self.model(data.x, data.pos, data.batch)  # Forward pass.
-            loss = self.loss_fn(logits, data.y)  # Loss computation.
-            total_loss += loss.item() * data.num_graphs
-
-        return total_loss / len(self.valid_loader.dataset)
+    for epoch in range(num_epochs):
+        val_loss = test_epoch(classifier, valid_loader, loss_fn)
+        print('\n EPOCH {}/{} \t val loss {}'.format(epoch + 1, num_epochs, val_loss))
+        diz_loss['val_loss'].append(val_loss)

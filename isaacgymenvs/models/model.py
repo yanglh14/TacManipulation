@@ -13,11 +13,11 @@ class MLPEncoder(nn.Module):
 
         ### Linear section
         self.encoder_lin = nn.Sequential(
-            nn.Linear(653, 256),
+            nn.Linear(653, 64),
             nn.ReLU(True),
-            nn.Linear(256, 128),
+            nn.Linear(64, 64),
             nn.ReLU(True),
-            nn.Linear(128, encoded_space_dim)
+            nn.Linear(64, encoded_space_dim)
         )
 
     def forward(self, x):
@@ -32,20 +32,20 @@ class CNNEncoder(nn.Module):
 
         ### Convolutional section
         self.encoder_cnn = nn.Sequential(
-            nn.Conv2d(1, 8, 3, stride=1, padding=0),
+            nn.Conv2d(1, 32, 3, stride=1, padding=0),
             nn.ReLU(True),
-            nn.Conv2d(8, 16, 3, stride=1, padding=0),
+            nn.MaxPool2d(2, 2),
+            nn.Conv2d(32, 16, 3, stride=1, padding=0),
             nn.BatchNorm2d(16),
             nn.ReLU(True),
-            nn.Conv2d(16, 32, 3, stride=1, padding=0),
-            nn.ReLU(True)
+            nn.MaxPool2d(2, 2),
         )
 
         ### Flatten layer
         self.flatten = nn.Flatten(start_dim=1)
         ### Linear section
         self.encoder_lin = nn.Sequential(
-            nn.Linear(19 * 19 * 32, 128),
+            nn.Linear(7 * 7 * 16, 128),
             nn.ReLU(True),
             nn.Linear(128, encoded_space_dim)
         )
@@ -90,14 +90,15 @@ class GNNEncoder(torch.nn.Module):
     def __init__(self,device,output_dim=6):
         super().__init__()
 
+        channels = 64
         torch.manual_seed(12345)
-        self.conv1 = PointNetLayer(3, 32,device=device)
-        self.conv2 = PointNetLayer(32, 32,device=device)
-        self.conv3 = PointNetLayer(32, 32,device=device)
+        self.conv1 = PointNetLayer(3, channels,device=device)
+        self.conv2 = PointNetLayer(channels, channels,device=device)
+        self.conv3 = PointNetLayer(channels, channels,device=device)
 
-        self.regression = Linear(32, output_dim,device=device)
+        self.regression = Linear(channels, output_dim,device=device)
 
-    def forward(self, pos, batch):
+    def forward(self,x, pos, batch):
         # Compute the kNN graph:
         # Here, we need to pass the batch vector to the function call in order
         # to prevent creating edges between points of different examples.
@@ -123,6 +124,10 @@ class GNNEncoder(torch.nn.Module):
         edge_index = knn_graph(pos, k=3, batch=batch, loop=True)
         h = self.conv3(h=h, pos=pos, edge_index=edge_index)
         h = h.relu()
+        index = fps(pos, batch=batch, ratio=0.5)
+        pos = pos[index]
+        h = h[index]
+        batch = batch[index]
 
         # 4. Global Pooling.
         h = global_max_pool(h, batch)  # [num_examples, hidden_channels]
