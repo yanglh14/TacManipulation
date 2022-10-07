@@ -5,14 +5,62 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/gnn_encoder.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/models/mlp_encoder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/models/plot.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/encoder.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/isaacgymenvs/models/encoder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/cnn_encoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/cnn_encoder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/Fig4.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_classifer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_encoder_sample.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_classifer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/lstm_classifer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_cnn_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_cnn_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_cnn_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_cnn_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_cnn_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_cnn_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_16channels_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_16channels_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_16channels_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_16channels_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_16channels_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_16channels_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_2layer_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_2layer_train_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_2layer_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_4layer_64channels_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_4layer_64channels_train_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_4layer_64channels_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_4layer_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_4layer_train_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_4layer_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_5layer_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_5layer_train_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_5layer_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_64channels_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_64channels_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_64channels_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_64channels_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_64channels_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_64channels_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_nofps_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_nofps_train_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_nofps_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_binary_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_train_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_gnn_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_64_encoder.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_64_train_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_64_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/checkpoint/ball_mlp_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/cnn_encoder.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/gnn_encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/mlp_encoder.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/plot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/models/val_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/models/val_loss.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,13 +100,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/yang/COMP9102&quot;,
-    &quot;two.files.diff.last.used.file&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/encoder/gnn_model.py&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding_graph_1.py",
+    "two.files.diff.last.used.file": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/allegro_hand_baoding_graph_1.py"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/isaacgymenvs/models" />
@@ -72,7 +120,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.plot (1)">
+  <component name="RunManager" selected="Python.train_graph_binary">
     <configuration name="Calibration_tac" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -233,7 +281,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=32 experiment=baoding_fullstate headless=True checkpoint=runs_base/baoding_fullstate/nn/baoding_fullstate.pth task.env.observationTouch=False" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/baoding_fullstate/nn/baoding_fullstate.pth task.env.observationTouch=False" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -254,7 +302,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs/baoding_touch/nn/last_baoding_touch_ep_18400_rew_95.94088.pth task.env.observationTouch=True" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding test=True num_envs=1 experiment=baoding_fullstate headless=False checkpoint=runs1/baoding_touch/nn/last_baoding_touch_ep_18400_rew_95.94088.pth task.env.observationTouch=True" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -296,7 +344,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=1 experiment=baoding_graph headless=False checkpoint=runs/baoding_graph/nn/baoding_graph.pth" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=1 experiment=baoding_graph headless=False checkpoint=runs_base/baoding_graph/nn/baoding_graph.pth" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -317,7 +365,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=1 experiment=baoding_graph_binary headless=False checkpoint=runs/baoding_graph_binary/nn/baoding_graph_binary.pth" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=1 experiment=baoding_graph_binary headless=False checkpoint=runs2/baoding_graph_binary/nn/baoding_graph_binary.pth" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -338,7 +386,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=512 sim_device='cuda:1' rl_device='cuda:1' experiment=baoding_fullstate max_iterations=100000 headless=True train.params.config.minibatch_size=4096" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=512 sim_device='cuda:1' rl_device='cuda:1' experiment=baoding_fullstate max_iterations=10000 headless=True train.params.config.minibatch_size=4096" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -359,7 +407,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:2' rl_device='cuda:2'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph max_iterations=10000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:2' rl_device='cuda:2'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -380,7 +428,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraphB num_envs=256 experiment=baoding_graph max_iterations=100000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:3' rl_device='cuda:3' task.env.touchmodel='gnn_binary'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraphB num_envs=256 experiment=baoding_graph max_iterations=10000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:3' rl_device='cuda:3' task.env.touchmodel='gnn_binary'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -422,7 +470,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=512 sim_device='cuda:2' rl_device='cuda:3' experiment=baoding_touch max_iterations=100000 headless=True task.env.observationTouch=True train.params.config.minibatch_size=4096" />
+      <option name="PARAMETERS" value="task=AllegroHandBaoding num_envs=512 sim_device='cuda:2' rl_device='cuda:3' experiment=baoding_touch max_iterations=10000 headless=True task.env.observationTouch=True train.params.config.minibatch_size=4096" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -448,6 +496,7 @@
       <item itemvalue="Python.CoRL2022_Dynamic" />
       <item itemvalue="Python.CoRL2022_Multi" />
       <item itemvalue="Python.gnn_encoder" />
+      <item itemvalue="Python.encoder" />
       <item itemvalue="Python.cnn_encoder (1)" />
       <item itemvalue="Python.mlp_encoder" />
       <item itemvalue="Python.plot (1)" />
@@ -527,11 +576,6 @@
           <url>file://$PROJECT_DIR$/isaacgymenvs/test_env.py</url>
           <line>80</line>
           <option name="timeStamp" value="220" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/models/cnn_encoder.py</url>
-          <line>81</line>
-          <option name="timeStamp" value="234" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

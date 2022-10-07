@@ -108,26 +108,22 @@ class GNNEncoder(torch.nn.Module):
         edge_index = knn_graph(pos, k=6, batch=batch, loop=True)
         h = self.conv1(h=pos, pos=pos, edge_index=edge_index)
         h = h.relu()
-        index = fps(pos, batch=batch, ratio=0.5)
-        pos = pos[index]
-        h = h[index]
-        batch = batch[index]
+        # index = fps(pos, batch=batch, ratio=0.5)
+        # pos = pos[index]
+        # h = h[index]
+        # batch = batch[index]
 
         edge_index = knn_graph(pos, k=4, batch=batch, loop=True)
         h = self.conv2(h=h, pos=pos, edge_index=edge_index)
         h = h.relu()
-        index = fps(pos, batch=batch, ratio=0.5)
-        pos = pos[index]
-        h = h[index]
-        batch = batch[index]
+        # index = fps(pos, batch=batch, ratio=0.5)
+        # pos = pos[index]
+        # h = h[index]
+        # batch = batch[index]
 
         edge_index = knn_graph(pos, k=3, batch=batch, loop=True)
         h = self.conv3(h=h, pos=pos, edge_index=edge_index)
         h = h.relu()
-        index = fps(pos, batch=batch, ratio=0.5)
-        pos = pos[index]
-        h = h[index]
-        batch = batch[index]
 
         # 4. Global Pooling.
         h = global_max_pool(h, batch)  # [num_examples, hidden_channels]

@@ -909,7 +909,7 @@ def compute_hand_reward(
     # Distance from the hand to the object
     angle_dist = object_angle - object_angle_pre
     # goal_dist = torch.norm(object_pos[:,:2] - target_pos[:,:2], p=2, dim=-1) + torch.norm(object_pos[:,3:5] - target_pos[:,3:5], p=2, dim=-1)
-    fall_reset = (((object_pos[:,2]-0.5) <0) + ((object_pos[:,5]-0.5) <0)) > 0
+    fall_reset = (((object_pos[:,2]-0.5) <0) + ((object_pos[:,5]-0.5) <0) + ((object_pos[:, 2] - 0.55) > 0) + ((object_pos[:, 5] - 0.55) > 0)) > 0
     center_dist = torch.norm(object_pos[:,:1] + object_pos[:,3:4],p=2,dim=-1)
 
     if ignore_z_rot:
