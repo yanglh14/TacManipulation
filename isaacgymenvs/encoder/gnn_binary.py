@@ -42,11 +42,11 @@ class PointNet(torch.nn.Module):
         super().__init__()
 
         torch.manual_seed(12345)
-        self.conv1 = PointNetLayer(3, 32,device=device)
-        self.conv2 = PointNetLayer(32, 32,device=device)
-        self.conv3 = PointNetLayer(32, 32,device=device)
+        self.conv1 = PointNetLayer(3, 64,device=device)
+        self.conv2 = PointNetLayer(64, 64,device=device)
+        self.conv3 = PointNetLayer(64, 64,device=device)
 
-        self.regression = Linear(32, output_dim,device=device)
+        self.regression = Linear(64, output_dim,device=device)
 
     def forward(self,x, pos, batch):
         # Compute the kNN graph:

@@ -186,7 +186,7 @@ class AllegroHandBaoding(VecTask):
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
 
-        self.dataset = True
+        self.dataset = False
         if self.dataset:
             self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log = [], [], [], [], [], [], [],[]
             self.log = {}
@@ -870,7 +870,7 @@ class AllegroHandBaoding(VecTask):
 #####################################################################
 
 
-# @torch.jit.script
+@torch.jit.script
 def compute_hand_reward(
     rew_buf, reset_buf, reset_goal_buf, progress_buf, successes, consecutive_successes,
     max_episode_length: float, object_pos, object_rot, target_pos, target_rot,
@@ -881,7 +881,6 @@ def compute_hand_reward(
 ):
     # Distance from the hand to the object
     angle_dist = object_angle - object_angle_pre
-    print(object_pos[0,2],object_pos[0,5])
     # goal_dist = torch.norm(object_pos[:,:2] - target_pos[:,:2], p=2, dim=-1) + torch.norm(object_pos[:,3:5] - target_pos[:,3:5], p=2, dim=-1)
     fall_reset = (((object_pos[:,2]-0.5) <0) + ((object_pos[:,5]-0.5) <0) + ((object_pos[:, 2] - 0.55) > 0) + ((object_pos[:, 5] - 0.55) > 0)) > 0
     center_dist = torch.norm(object_pos[:,:1] + object_pos[:,3:4],p=2,dim=-1)

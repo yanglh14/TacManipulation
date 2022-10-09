@@ -19,7 +19,7 @@ env:
 
   useRelativeControl: False
   dofSpeedScale: 20.0
-  actionsMovingAverage: 0.5
+  actionsMovingAverage: 1.0
   controlFrequencyInv: 1 # 50 Hz
 
   startPositionNoise: 0.01
@@ -41,7 +41,7 @@ env:
   rotRewardScale: 1.0
   rotEps: 0.1
   actionPenaltyScale: -0.0002
-  reachGoalBonus: 100
+  reachGoalBonus: 250
   fallDistance: 0.12
   fallPenalty: -100.0
 

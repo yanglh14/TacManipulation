@@ -19,9 +19,9 @@ class encoder():
         print(f'Selected device: {self.device}')
 
         self.model_dir = './checkpoint'
-        self.if_model = False
+        self.if_model = True
         self.save_dir = '../runs_tac/'
-        self.model_type = 'mlp'
+        self.model_type = 'gnn'
         self.task_name = 'ball_%s'%self.model_type
         self.object_name = 'dataset'
 
@@ -35,6 +35,7 @@ class encoder():
 
         if self.if_model:
             self.model = torch.load(os.path.join(self.model_dir, self.task_name + '_encoder.pt'))
+
         else:
             if self.model_type == 'gnn':
                 self.model = GNNEncoder(device=self.device)
@@ -155,7 +156,6 @@ class encoder():
         self.model.eval()
         test_loss= []
         if self.model_type == 'gnn':
-
             for data in self.valid_loader:
                 logits = self.model(data.x, data.pos, data.batch)  # Forward pass.
                 loss = self.loss_fn(logits, data.y)  # Loss computation.
@@ -218,7 +218,16 @@ class encoder():
         # #plt.title('loss')
         # plt.show()
     def test(self):
-        self.visualize()
+        # self.visualize()
+
+        num_epochs = 1
+        diz_loss = {'train_loss': [], 'val_loss': []}
+        for epoch in range(num_epochs):
+            for i in range(0,20):
+                self.prepare_dataset(i*10,(i+1)*10)
+                val_loss = self.test_epoch()
+                print('\n EPOCH {}/{} \t Index {}-{} \t val loss {}'.format(epoch + 1, num_epochs,i*10,(i+1)*10, val_loss))
+
 
     def visualize(self):
         tac_list = []
