@@ -1,4 +1,5 @@
-from isaacgymenvs.encoder.gnn_binary import *
+from isaacgymenvs.encoder.model import *
+# from model import *
 from torch_geometric.data import Data
 import os.path
 
@@ -29,8 +30,8 @@ class gnn_model_binary():
             self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
             self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
-            self.model = PointNet(device=device)
-        self.model = torch.load('model_binary.pt', map_location=device)
+            self.model = GNNEncoderB(device=device)
+        # self.model = torch.load('model_binary.pt', map_location=device)
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
@@ -52,7 +53,7 @@ class gnn_model_binary():
 
 
 
-    def step(self,obs,pos,y):
+    def step(self,obs,pos,y,pos_pre = None):
 
         pos = pos * 100
         y = y * 100
@@ -77,7 +78,7 @@ class gnn_model_binary():
         tactile_dataset = []
         for i in range(obs.shape[0]):
 
-            if obs.max() >0:
+            if obs[i].max() >0:
 
                 obs[i] /= obs[i].max(0, keepdim=True)[0]
 

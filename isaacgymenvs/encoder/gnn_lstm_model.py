@@ -1,4 +1,3 @@
-from isaacgymenvs.encoder.gnn import *
 from isaacgymenvs.encoder.model import *
 from torch_geometric.data import Data
 import os.path

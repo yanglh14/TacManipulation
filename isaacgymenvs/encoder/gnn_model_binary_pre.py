@@ -1,5 +1,5 @@
 from isaacgymenvs.encoder.model import *
-# from isaacgymenvs.encoder.gnn import *
+# from model import *
 from torch_geometric.data import Data
 import os.path
 
@@ -11,7 +11,7 @@ from torch import nn
 import numpy as np
 import matplotlib.pyplot as plt # plotting library
 
-class gnn_model():
+class gnn_model_binary_pre():
 
     def __init__(self,device,num_envs, touchmodedir, touchmodelexist, test):
         ### Set the random seed for reproducible results
@@ -24,14 +24,15 @@ class gnn_model():
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()
         self.diz_loss = {'train_loss': [], 'val_loss': []}
-
+        self.pos_pre_bool = True
         if self.touchmodelexist:
             self.diz_loss['train_loss'] = list(np.load(self.save_dir+'/train_loss.npy'))
             self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
             self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
-            self.model = GNNEncoder(device=device)
-        # self.model = torch.load('model.pt', map_location=device)
+            self.model = GNNEncoderB(device=device,pos_pre_bool= self.pos_pre_bool)
+        # self.model = torch.load('model_binary.pt', map_location=device)
+
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
         self.horizon_length = 100
@@ -50,51 +51,49 @@ class gnn_model():
         self.y_buf = torch.zeros(
             (self.num_envs*self.horizon_length, 6), device=self.device, dtype=torch.float)
 
+        self.pos_pre_buf = torch.zeros(
+            (self.num_envs * self.horizon_length, 6), device=self.device, dtype=torch.float)
 
-
-    def step(self,obs,pos,y):
+    def step(self,obs,pos,y,pos_pre = None):
 
         pos = pos * 100
         y = y * 100
+        self.obs_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:,:] = obs.view(self.num_envs,-1,1)
+        self.pos_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:,:] = pos
+        self.y_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:] = y
+        if self.pos_pre_bool:
+            self.pos_pre_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :] = pos_pre *100
 
-        if not self.test and self.train_bool:
-            self.obs_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :, :] = obs.view(self.num_envs,
-                                                                                                         -1, 1)
-            self.pos_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :, :] = pos
-            self.y_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :] = y
+        self.step_n += 1
+        if not self.test:
 
-            self.step_n += 1
             if self.step_n == self.horizon_length and self.train_bool:
                 self.data_process()
                 self.step_n = 0
                 self.train()
 
-        return self.forward(obs.view(self.num_envs,-1,1),pos)
+        return self.forward(obs.view(self.num_envs,-1,1),pos,pos_pre)
 
     @torch.no_grad()
-    def forward(self, obs, pos):
-
+    def forward(self, obs, pos, pos_pre):
+        pos_predict = pos_pre.clone()
         self.model.eval()
         tactile_dataset = []
         for i in range(obs.shape[0]):
 
-            if obs.max() >0:
+            if obs[i].max() >0:
+                data = Data(x=obs[i, obs[i, :, 0] != 0, :], pos=pos[i, obs[i, :, 0] != 0, :], pos_pre = pos_pre[i,:].view(1,-1))
 
-                obs[i] /= obs[i].max(0, keepdim=True)[0]
+                tactile_dataset.append(data)
+        if tactile_dataset.__len__() !=0:
+            data_loader = DataLoader(tactile_dataset, batch_size=tactile_dataset.__len__())
 
-                data = Data(x=obs[i, obs[i, :, 0] != 0, :], pos=pos[i, obs[i, :, 0] != 0, :])
+            for data in data_loader:
+                logits = self.model(data.x, data.pos, data.batch, data.pos_pre)
 
-            else:
-                data = Data(x=obs[i, :, :], pos=pos[i, :, :])
+            pos_predict[obs[:,:,0].max(1).values >0,:] = logits
 
-            tactile_dataset.append(data)
-
-        data_loader = DataLoader(tactile_dataset, batch_size=tactile_dataset.__len__())
-
-        for data in data_loader:
-            logits = self.model(data.x, data.pos, data.batch)
-
-        return logits
+        return pos_predict
 
     def train(self):
 
@@ -125,9 +124,7 @@ class gnn_model():
 
             if self.obs_buf[i].max() >0:
 
-                self.obs_buf[i] /= self.obs_buf[i].max(0, keepdim=True)[0]
-
-                data = Data(x=self.obs_buf[i, self.obs_buf[i, :, 0] != 0, :], pos=self.pos_buf[i, self.obs_buf[i, :, 0] != 0, :], y=self.y_buf[i].view(1,-1))
+                data = Data(x=self.obs_buf[i, self.obs_buf[i, :, 0] != 0, :], pos=self.pos_buf[i, self.obs_buf[i, :, 0] != 0, :], y=self.y_buf[i].view(1,-1), pos_pre = self.pos_pre_buf[i].view(1,-1))
                 tactile_dataset.append(data)
 
         m = len(tactile_dataset)
@@ -144,7 +141,7 @@ class gnn_model():
         total_loss = 0
         for data in self.train_loader:
             self.optimizer.zero_grad()  # Clear gradients.
-            logits = self.model(data.x, data.pos, data.batch)  # Forward pass.
+            logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
             loss = self.loss_fn(logits, data.y)  # Loss computation.
             loss.backward()  # Backward pass.
             self.optimizer.step()  # Update model parameters.
@@ -158,7 +155,7 @@ class gnn_model():
         self.model.eval()
         total_loss = 0
         for data in self.valid_loader:
-            logits = self.model(data.x, data.pos, data.batch)  # Forward pass.
+            logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
             loss = self.loss_fn(logits, data.y)  # Loss computation.
             total_loss += loss.item() * data.num_graphs
 

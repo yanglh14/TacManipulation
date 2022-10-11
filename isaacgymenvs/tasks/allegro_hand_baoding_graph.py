@@ -9,6 +9,7 @@ from isaacgym.torch_utils import *
 from .base.vec_task import VecTask
 from isaacgymenvs.encoder.gnn_model import gnn_model
 from isaacgymenvs.encoder.gnn_model_binary import gnn_model_binary
+from isaacgymenvs.encoder.gnn_model_binary_pre import gnn_model_binary_pre
 from isaacgymenvs.encoder.gnn_lstm_model import gnn_lstm_model
 
 class AllegroHandBaodingGraph(VecTask):
@@ -187,9 +188,10 @@ class AllegroHandBaodingGraph(VecTask):
             self.model = gnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
         elif self.model_type == "gnn_binary":
             self.model = gnn_model_binary(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
-
-        elif self.model_type == "gnn":
+        elif self.model_type == "gnn_lstm":
             self.model = gnn_lstm_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+        elif self.model_type == "gnn_binary_pre":
+            self.model = gnn_model_binary_pre(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
 
         self.step_num = 0
 
@@ -204,7 +206,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_angle_pre = torch.zeros(
             (self.num_envs), device=self.device, dtype=torch.float)
 
-        self.log_ = True
+        self.log_ = False
         if self.log_:
             self.log = {}
             self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
@@ -540,7 +542,7 @@ class AllegroHandBaodingGraph(VecTask):
 
                 self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
-                self.object_predict = self.model.step(self.touch_tensor.clone(), self.tactile_pose, self.object_pos)
+                self.object_predict = self.model.step(self.touch_tensor.clone(), self.tactile_pose, self.object_pos,self.object_pos_pre)
                 # print(self.object_predict[0] - self.object_pos[0])
                 # a = np.array((self.object_pos*100).tolist()[0])
                 # b = np.array(object_predict.tolist()[0])
@@ -556,16 +558,16 @@ class AllegroHandBaodingGraph(VecTask):
                 # if self.step_num%1000 == 0:
                 #     print('step num:',self.step_num)
 
-                if self.step_num < 30000:
-                    seq = 10 - self.step_num//3000
-                else:
-                    seq = 1
-                seq = 1
-                if self.step_num%seq == 0:
-                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict / 100
+                # if self.step_num < 30000:
+                #     seq = 10 - self.step_num//3000
+                # else:
+                #     seq = 1
+                # seq = 1
+                # if self.step_num%seq == 0:
+                #     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict / 100
 
-                # if self.step_num > 30000:
-                #     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
+                if self.step_num > 5000:
+                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
 
                 obs_end = touch_sensor_obs_start  #38
             else:
@@ -703,7 +705,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.successes[env_ids] = 0
 
     def pre_physics_step(self, actions):
-
+        self.object_pos_pre = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6).clone()
         self.step_num += 1
         # progress goal position
         if self.object_type == 'baoding':

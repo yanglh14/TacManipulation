@@ -188,7 +188,7 @@ class AllegroHandBaoding(VecTask):
 
         self.dataset = False
         if self.dataset:
-            self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log = [], [], [], [], [], [], [],[]
+            self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log, self.object_pos_pre_log = [], [], [], [], [], [], [],[],[]
             self.log = {}
         self.log_ = False
         if self.log_:
@@ -669,6 +669,8 @@ class AllegroHandBaoding(VecTask):
 
     def pre_physics_step(self, actions):
         # progress goal position
+        if self.step_num == 0:
+            self.object_pos_pre_init = self.root_state_tensor[self.object_indices, 0:3].view(int(self.object_indices.shape[0]/2), 6).clone()
         if self.object_type == 'baoding':
             for env_index in range(self.num_envs):
                 self.goal_states[env_index, 0:3] = self.goal[env_index,self.progress_buf[env_index],0:3]
@@ -745,12 +747,18 @@ class AllegroHandBaoding(VecTask):
             self.touch_tensor[self.progress_buf == 1, :] = 0
 
             self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+            self.object_pos_pre = self.object_pos.clone()
+            self.object_pos_pre[self.progress_buf==1,:] = self.object_pos_pre_init[self.progress_buf==1,:]
 
+            if (self.progress_buf != 1).any():
+                self.object_pos_pre[self.progress_buf != 1, :] = torch.tensor(self.object_pos_pre_clone,dtype=torch.float, device=self.device)[self.progress_buf != 1, :]
+
+            self.object_pos_pre_log.append(self.object_pos_pre.tolist())
             self.tactile_log.append(self.touch_tensor[:, :].tolist())
             self.tactile_pos_log.append(self.tactile_pose[:, :].tolist())
             self.object_pos_log.append(self.object_pos[:, :].tolist())
             self.object_noise_log.append((self.object_noise[:, :]).tolist())
-
+            self.object_pos_pre_clone = self.object_pos_log[-1].copy()
             if self.step_num%100 ==0:
 
                 # self.log['tactile_log'] = np.array(self.tactile_log)
@@ -761,13 +769,16 @@ class AllegroHandBaoding(VecTask):
 
                 data = {'tactile': np.array(self.tactile_log),
                         'tac_pose': np.array(self.tactile_pos_log),
-                        'object_pos': np.array(self.object_pos_log)
+                        'object_pos': np.array(self.object_pos_log),
+                        'object_pos_pre':np.array(self.object_pos_pre_log)
                         }
-
-                with open('runs_tac/dataset_%d'%self.step_num + '.pkl', 'wb') as f:
+                print('saving step num%d'%self.step_num)
+                with open('runs_tac2/dataset_%d'%self.step_num + '.pkl', 'wb') as f:
                     pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
-                self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log = [], [], [], [], [], [], [], []
 
+                self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log, self.object_pos_pre_log = [], [], [], [], [], [], [], [], []
+            if self.step_num == 20000:
+                print('test done')
         if self.log_:
             self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
             self.touch_tensor = self.touch_tensor.abs()
