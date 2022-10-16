@@ -17,7 +17,7 @@ plt.rcParams["font.family"] = 'Times New Roman'
 plt.rcParams["font.size"] = 24
 
 dir_path = 'checkpoint/'
-task_name = 'val_loss'
+task_name = 'train_loss'
 
 # loss_cnn = np.load(dir_path+'ball_cnn_'+task_name+'.npy')
 # loss_gnn = np.load(dir_path+'ball_gnn_'+task_name+'.npy')
@@ -56,31 +56,32 @@ plt.figure(figsize=(10, 8))
 
 # plt.plot(loss_cnn, label='cnn')
 # plt.plot(loss_gnn[:], label='gnn')
-# plt.plot(loss_gnn_binary[:], label='gnn_binary')
+plt.plot(loss_gnn_binary[:], label='gnn')
 # plt.plot(loss_gnn_binary_2layer[:], label='gnn_binary_2layer')
 # plt.plot(loss_gnn_binary_4layer[:], label='gnn_binary_4deeper')
 # plt.plot(loss_gnn_binary_5layer[:], label='gnn_binary_5deeper')
-# plt.plot(loss_gnn_binary_16channels[:], label='loss_gnn_binary_16channels')
-plt.plot(loss_gnn_binary_64channels_noself[:], label='loss_gnn_binary_64channels_noself')
-plt.plot(loss_gnn_binary_64channels_nofps[:], label='loss_gnn_binary_64channels_nofps')
+# plt.plot(loss_gnn_binary_16channels[:], label='gnn_16channels')
+# plt.plot(loss_gnn_binary_64channels_noself[:], label='loss_gnn_binary_64channels_noself')
+# plt.plot(loss_gnn_binary_64channels_nofps[:], label='loss_gnn_binary_64channels_nofps')
 
-plt.plot(loss_gnn_binary_64channels[:], label='loss_gnn_binary_64channels')
-# plt.plot(loss_gnn_binary_128channels[:], label='loss_gnn_binary_128channels')
+# plt.plot(loss_gnn_binary_64channels[:], label='gnn_64channels')
+# plt.plot(loss_gnn_binary_128channels[:], label='gnn_128channels')
 # plt.plot(loss_gnn_binary_16channels[:], label='loss_gnn_binary_16channels')
 # plt.plot(loss_gnn_binary_nofps[:], label='gnn_binary_nofps')
 # plt.plot(loss_mlp_64, label='loss_mlp_64')
-# plt.plot(loss_cnn, label='loss_cnn')
+plt.plot(loss_cnn, label='cnn')
+#
+plt.plot(loss_mlp_64, label='mlp')
 
-plt.plot(loss_mlp_64, label='loss_mlp_64')
 
+plt.semilogy()
 
-# plt.semilogy()
-
-# plt.xlabel('Epoch')
-# plt.ylabel('Average Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Average Loss')
 # plt.grid()
-plt.ylim([0,2])
-plt.legend(loc=0)
+
+plt.ylim([0,200])
+plt.legend(loc=1)
 # plt.title('loss')
 plt.savefig('./'+task_name)
 plt.show()

@@ -774,6 +774,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.compute_reward(self.actions)
 
         self.object_angle_pre = self.object_angle.clone()
+        self.object_angle_pre[self.reset_buf == 1] = 0
 
         if self.log_:
 

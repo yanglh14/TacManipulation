@@ -109,8 +109,8 @@ class gnn_model():
         self.diz_loss['train_loss'].append(train_loss)
         self.diz_loss['val_loss'].append(val_loss)
 
-        os.makedirs(self.save_dir,exist_ok =True)
-        if not self.training_episode_num ==1:
+        os.makedirs(self.save_dir,exist_ok = True)
+        if not self.training_episode_num == 1:
             if self.diz_loss['val_loss'][-1] < self.diz_loss['val_loss'][-2]:
                 torch.save(self.model, os.path.join(self.save_dir, 'model.pt'))
 
