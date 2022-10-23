@@ -1,17 +1,16 @@
 from isaacgymenvs.encoder.model import *
 # from model import *
-from torch_geometric.data import Data
 import os.path
+from torch.utils.data import TensorDataset
 
 import torch
 from torch.utils.data import random_split
-from torch_geometric.loader import DataLoader
 import pickle
 from torch import nn
 import numpy as np
 import matplotlib.pyplot as plt # plotting library
 
-class gnn_model_binary():
+class mlp_model():
 
     def __init__(self,device,num_envs, touchmodedir, touchmodelexist, test):
         ### Set the random seed for reproducible results
@@ -30,8 +29,8 @@ class gnn_model_binary():
             self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
             self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
-            self.model = GNNEncoderB(device=device)
-        self.model = torch.load('encoder/checkpoint/ball_gnn_64_encoder.pt', map_location=device)
+            self.model = MLPEncoder()
+        self.model = torch.load('encoder/checkpoint/ball_mlp_32_encoder.pt', map_location=device)
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
@@ -69,30 +68,14 @@ class gnn_model_binary():
                 self.step_n = 0
                 self.train()
 
-        return self.forward(obs.view(self.num_envs,-1,1),pos)
+        return self.forward(obs,pos)
 
     @torch.no_grad()
     def forward(self, obs, pos):
 
         self.model.eval()
-        tactile_dataset = []
-        for i in range(obs.shape[0]):
 
-            if obs[i].max() >0:
-
-                obs[i] /= obs[i].max(0, keepdim=True)[0]
-
-                data = Data(x=obs[i, obs[i, :, 0] != 0, :], pos=pos[i, obs[i, :, 0] != 0, :])
-
-            else:
-                data = Data(x=obs[i, :, :], pos=pos[i, :, :])
-
-            tactile_dataset.append(data)
-
-        data_loader = DataLoader(tactile_dataset, batch_size=tactile_dataset.__len__())
-
-        for data in data_loader:
-            logits = self.model(data.x, data.pos, data.batch)
+        logits = self.model(obs)
 
         return logits
 
@@ -120,46 +103,42 @@ class gnn_model_binary():
 
     def data_process(self):
 
-        tactile_dataset = []
-        for i in range(self.obs_buf.shape[0]):
-
-            if self.obs_buf[i].max() >0:
-
-                self.obs_buf[i] /= self.obs_buf[i].max(0, keepdim=True)[0]
-
-                data = Data(x=self.obs_buf[i, self.obs_buf[i, :, 0] != 0, :], pos=self.pos_buf[i, self.obs_buf[i, :, 0] != 0, :], y=self.y_buf[i].view(1,-1))
-                tactile_dataset.append(data)
+        x = self.obs_buf.reshape(-1, 653)
+        y = self.y_buf
+        tactile_dataset = TensorDataset(x, y)
 
         m = len(tactile_dataset)
 
-        train_data, val_data = random_split(tactile_dataset, [m - int(m * 0.2), int(m * 0.2)])
+        train_data, val_data = random_split(tactile_dataset, [int(m * 0.8), m - int(m * 0.8)])
 
-        self.train_loader = DataLoader(train_data, batch_size=32)
-        self.valid_loader = DataLoader(val_data, batch_size=32)
+        self.train_loader = torch.utils.data.DataLoader(train_data, batch_size=32)
+        self.valid_loader = torch.utils.data.DataLoader(val_data, batch_size=32)
+
 
     def train_epoch(self):
 
         self.model.train()
 
-        total_loss = 0
-        for data in self.train_loader:
+        train_loss = []
+
+        for features, labels in self.train_loader:
             self.optimizer.zero_grad()  # Clear gradients.
-            logits = self.model(data.x, data.pos, data.batch)  # Forward pass.
-            loss = self.loss_fn(logits, data.y)  # Loss computation.
+            logits = self.model(features)  # Forward pass.
+            loss = self.loss_fn(logits, labels)  # Loss computation.
             loss.backward()  # Backward pass.
             self.optimizer.step()  # Update model parameters.
-            total_loss += loss.item() * data.num_graphs
+            train_loss.append(loss.detach().cpu().numpy())
 
-        return total_loss / len(self.train_loader.dataset)
+        return np.mean(train_loss)
 
     @torch.no_grad()
     def test_epoch(self):
         # Set evaluation mode for encoder and decoder
         self.model.eval()
-        total_loss = 0
-        for data in self.valid_loader:
-            logits = self.model(data.x, data.pos, data.batch)  # Forward pass.
-            loss = self.loss_fn(logits, data.y)  # Loss computation.
-            total_loss += loss.item() * data.num_graphs
+        test_loss = []
+        for features, labels in self.valid_loader:
+            logits = self.model(features)  # Forward pass.
+            loss = self.loss_fn(logits, labels)  # Loss computation.
+            test_loss.append(loss.detach().cpu().numpy())
 
-        return total_loss / len(self.valid_loader.dataset)
+        return np.mean(test_loss)

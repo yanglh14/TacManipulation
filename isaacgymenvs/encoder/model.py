@@ -213,10 +213,9 @@ class GNNEncoderB(torch.nn.Module):
         return o
 
 class GNNEncoderB(torch.nn.Module):
-    def __init__(self,device,output_dim=6,pos_pre_bool= False):
+    def __init__(self,device,output_dim=6,pos_pre_bool= False,channels = 64):
         super().__init__()
         self.pos_pre_bool = pos_pre_bool
-        channels = 64
         torch.manual_seed(12345)
         self.conv1 = PointNetLayer(3, channels,device=device)
         self.conv2 = PointNetLayer(channels, channels,device=device)
@@ -262,10 +261,9 @@ class GNNEncoderB(torch.nn.Module):
         return o
 
 class GNNEncoder(torch.nn.Module):
-    def __init__(self,device,output_dim=6):
+    def __init__(self,device,output_dim=6,channels = 64):
         super().__init__()
 
-        channels = 64
         torch.manual_seed(12345)
         self.conv1 = PointNetLayer(1, channels,device=device)
         self.conv2 = PointNetLayer(channels, channels,device=device)
@@ -283,18 +281,18 @@ class GNNEncoder(torch.nn.Module):
         edge_index = knn_graph(x, k=6, batch=batch, loop=True)
         h = self.conv1(h=pos, pos=pos, edge_index=edge_index)
         h = h.relu()
-        # index = fps(pos, batch=batch, ratio=0.5)
-        # pos = pos[index]
-        # h = h[index]
-        # batch = batch[index]
+        index = fps(pos, batch=batch, ratio=0.5)
+        pos = pos[index]
+        h = h[index]
+        batch = batch[index]
 
         edge_index = knn_graph(pos, k=4, batch=batch, loop=True)
         h = self.conv2(h=h, pos=pos, edge_index=edge_index)
         h = h.relu()
-        # index = fps(pos, batch=batch, ratio=0.5)
-        # pos = pos[index]
-        # h = h[index]
-        # batch = batch[index]
+        index = fps(pos, batch=batch, ratio=0.5)
+        pos = pos[index]
+        h = h[index]
+        batch = batch[index]
 
         edge_index = knn_graph(pos, k=3, batch=batch, loop=True)
         h = self.conv3(h=h, pos=pos, edge_index=edge_index)

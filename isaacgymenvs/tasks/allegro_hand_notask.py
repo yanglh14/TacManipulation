@@ -74,6 +74,7 @@ class AllegroHandNotask():
 
         asset_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../assets')
         shadow_hand_asset_file = "tactile/allegro_hand/allegro_hand.xml"
+        object_asset_file = "tactile/objects/cube_big.urdf"
 
         # load shadow hand_ asset
         asset_options = gymapi.AssetOptions()
@@ -85,7 +86,7 @@ class AllegroHandNotask():
         asset_options.angular_damping = 0.01
 
         asset_options.use_physx_armature = True
-        asset_options.default_dof_drive_mode = gymapi.DOF_MODE_POS
+        asset_options.default_dof_drive_mode = gymapi.DOF_MODE_EFFORT
 
         shadow_hand_asset = self.gym.load_asset(self.sim, asset_root, shadow_hand_asset_file, asset_options)
 
@@ -122,14 +123,11 @@ class AllegroHandNotask():
             self.shadow_hand_dof_default_vel.append(0.0)
 
             print("Max effort: ", shadow_hand_dof_props['effort'][i])
-            shadow_hand_dof_props['effort'][i] = 0.5
+            shadow_hand_dof_props['effort'][i] = 0.05
             shadow_hand_dof_props['stiffness'][i] = 3
             shadow_hand_dof_props['damping'][i] = 0.1
             shadow_hand_dof_props['friction'][i] = 0.01
             shadow_hand_dof_props['armature'][i] = 0.001
-        data = np.load('../scripts/joint_sim2real.npy')
-        shadow_hand_dof_props['stiffness'] = data[0]
-        shadow_hand_dof_props['damping'] = data[1]
 
         self.actuated_dof_indices = to_torch(self.actuated_dof_indices, dtype=torch.long, device=self.device)
         self.shadow_hand_dof_lower_limits = to_torch(self.shadow_hand_dof_lower_limits, device=self.device)
@@ -141,9 +139,24 @@ class AllegroHandNotask():
         shadow_hand_start_pose.p = gymapi.Vec3(*get_axis_params(0.5, 2))
         shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi/12)
 
+        # load manipulated object and goal assets
+        object_asset_options = gymapi.AssetOptions()
+        object_asset_options.disable_gravity = True
+        object_asset_options.fix_base_link = True
+
+        object_asset = self.gym.load_asset(self.sim, asset_root, object_asset_file, object_asset_options)
+
+        object_start_pose = gymapi.Transform()
+        object_start_pose.p = gymapi.Vec3()
+        pose_dx, pose_dy, pose_dz = 0.028, -0.01, 0.05
+
+        object_start_pose.p.x = shadow_hand_start_pose.p.x + pose_dx
+        object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
+        object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
+
         # compute aggregate size
-        max_agg_bodies = self.num_shadow_hand_bodies
-        max_agg_shapes = self.num_shadow_hand_shapes
+        max_agg_bodies = self.num_shadow_hand_bodies + 2
+        max_agg_shapes = self.num_shadow_hand_shapes + 2
 
         self.shadow_hands = []
         self.envs = []
@@ -203,6 +216,7 @@ class AllegroHandNotask():
             hand_idx = self.gym.get_actor_index(env_ptr, finger1_actor, gymapi.DOMAIN_SIM)
             self.hand_indices.append(hand_idx)
 
+            object_handle = self.gym.create_actor(env_ptr, object_asset, object_start_pose, "object", i, 0, 0)
 
             self.gym.end_aggregate(env_ptr)
 
@@ -245,11 +259,12 @@ class AllegroHandNotask():
 
     def sim2real(self,act):
 
-        self.dof_state_target[:,0] = torch.tensor(act,dtype=torch.float32,device=self.device)
+        self.act = torch.tensor(act,dtype=torch.float32)
 
         hand_indices = torch.tensor([1,2,3,4], dtype=torch.int32)
-        self.gym.set_dof_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self.dof_state_target),
-                                                gymtorch.unwrap_tensor(hand_indices), len(hand_indices))
+        # self.gym.set_dof_state_tensor_indexed(self.sim, gymtorch.unwrap_tensor(self.dof_state_target),
+        #                                         gymtorch.unwrap_tensor(hand_indices), len(hand_indices))
+        self.gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(self.act))
 
         # step the physics
         self.gym.simulate(self.sim)
@@ -266,11 +281,10 @@ class AllegroHandNotask():
 
 if __name__ == '__main__':
     hand = AllegroHandNotask()
-    act = np.array([0,0,0,0,
-           0,0,0,0,
-           0,0,0,0,
-           0,0,0,0,],dtype=np.float32)
+    act = np.array([0,0.5,0.5,0.5,
+           0,0.5,0.5,0.5,
+           0,0.5,0.5,0.5,
+           0,0,0.5,0.5,],dtype=np.float32)
+    while True:
 
-    for i in range(100):
-        act[1] = i* np.pi/200
         rigid_body_states = hand.sim2real(act)

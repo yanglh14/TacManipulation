@@ -19,12 +19,12 @@ class encoder():
         print(f'Selected device: {self.device}')
 
         self.model_dir = './checkpoint'
-        self.if_model = True
+        self.if_model = False
         self.save_dir = '../runs_tac2/'
-        self.model_type = 'gnn'
-        self.task_name = 'ball_%s'%self.model_type
+        self.model_type = 'mlp'
+        self.channels = 64
+        self.task_name = 'ball_%s_%d'%(self.model_type,self.channels)
         self.object_name = 'dataset'
-
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()
 
@@ -38,7 +38,9 @@ class encoder():
 
         else:
             if self.model_type == 'gnn':
-                self.model = GNNEncoderB(device=self.device, pos_pre_bool= True)
+                self.model = GNNEncoderB(device=self.device, pos_pre_bool= False, channels = self.channels)
+            elif self.model_type == 'gnn_pre':
+                self.model = GNNEncoderB(device=self.device, pos_pre_bool= True, channels = self.channels)
             elif self.model_type == 'cnn':
                 self.model = CNNEncoder(encoded_space_dim=6)
             elif self.model_type == 'mlp':
@@ -91,7 +93,7 @@ class encoder():
 
         # tac /= tac.max(1,keepdim=True)[0]
         batch_size = 32
-        if self.model_type == 'gnn':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
             tac = tac.view(-1, 653, 1)
 
             tactile_dataset = []
@@ -136,7 +138,7 @@ class encoder():
         self.model.train()
 
         train_loss = []
-        if self.model_type == 'gnn':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
             for data in self.train_loader:
                 self.optimizer.zero_grad()  # Clear gradients.
                 logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
@@ -160,7 +162,7 @@ class encoder():
         # Set evaluation mode for encoder and decoder
         self.model.eval()
         test_loss= []
-        if self.model_type == 'gnn':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
             for data in self.valid_loader:
                 logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
                 loss = self.loss_fn(logits, data.y)  # Loss computation.
@@ -177,19 +179,19 @@ class encoder():
 
     def train(self):
 
-        num_epochs = 30
+        num_epochs = 10
         diz_loss = {'train_loss': [], 'val_loss': []}
 
         for epoch in range(num_epochs):
             # train_loss_list = []
             # test_loss_list = []
-            for i in range(0,20):
-                self.prepare_dataset(i*10,(i+1)*10)
+            for i in range(0,200):
+                self.prepare_dataset(i,(i+1))
                 train_loss = self.train_epoch()
                 val_loss = self.test_epoch()
                 # train_loss_list.append(train_loss)
                 # test_loss_list.append(val_loss)
-                print('\n EPOCH {}/{} \t Index {}-{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs,i*10,(i+1)*10, train_loss, val_loss))
+                print('\n EPOCH {}/{} \t Index {}-{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs,i,(i+1), train_loss, val_loss))
 
             # train_loss = np.mean(train_loss_list)
             # val_loss = np.mean(test_loss_list)
@@ -283,7 +285,7 @@ class encoder():
 
         object_pos_pre = []
 
-        if self.model_type == 'gnn':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
 
             for data in self.visua_loader:
                 logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.

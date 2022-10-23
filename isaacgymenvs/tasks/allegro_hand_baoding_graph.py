@@ -11,6 +11,7 @@ from isaacgymenvs.encoder.gnn_model import gnn_model
 from isaacgymenvs.encoder.gnn_model_binary import gnn_model_binary
 from isaacgymenvs.encoder.gnn_model_binary_pre import gnn_model_binary_pre
 from isaacgymenvs.encoder.gnn_lstm_model import gnn_lstm_model
+from isaacgymenvs.encoder.mlp_model import mlp_model
 
 class AllegroHandBaodingGraph(VecTask):
 
@@ -192,6 +193,8 @@ class AllegroHandBaodingGraph(VecTask):
             self.model = gnn_lstm_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
         elif self.model_type == "gnn_binary_pre":
             self.model = gnn_model_binary_pre(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+        elif self.model_type == "mlp_model":
+            self.model = mlp_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
 
         self.step_num = 0
 
@@ -566,7 +569,7 @@ class AllegroHandBaodingGraph(VecTask):
                 # if self.step_num%seq == 0:
                 #     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict / 100
 
-                if self.step_num > 5000:
+                if self.step_num > 0:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
 
                 obs_end = touch_sensor_obs_start  #38
