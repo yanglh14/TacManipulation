@@ -31,7 +31,7 @@ class gnn_model_binary():
             self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
             self.model = GNNEncoderB(device=device)
-        self.model = torch.load('encoder/checkpoint/ball_gnn_64_encoder.pt', map_location=device)
+        # self.model = torch.load('encoder/checkpoint/ball_gnn_64_encoder.pt', map_location=device)
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 

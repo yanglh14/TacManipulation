@@ -30,7 +30,7 @@ class mlp_model():
             self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
             self.model = MLPEncoder()
-        self.model = torch.load('encoder/checkpoint/ball_mlp_32_encoder.pt', map_location=device)
+        # self.model = torch.load('encoder/checkpoint/ball_mlp_32_encoder.pt', map_location=device)
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
@@ -40,7 +40,7 @@ class mlp_model():
         self.device = device
         self.step_n = 0
         self.train_bool = True
-
+        self.model.to(self.device)
         self.obs_buf = torch.zeros(
             (self.num_envs*self.horizon_length, 653, 1), device=self.device, dtype=torch.float)
 

@@ -20,8 +20,8 @@ class encoder():
 
         self.model_dir = './checkpoint'
         self.if_model = False
-        self.save_dir = '../runs_tac2/'
-        self.model_type = 'mlp'
+        self.save_dir = '../runs_tac/'
+        self.model_type = 'cnn'
         self.channels = 64
         self.task_name = 'ball_%s_%d'%(self.model_type,self.channels)
         self.object_name = 'dataset'
@@ -45,7 +45,8 @@ class encoder():
                 self.model = CNNEncoder(encoded_space_dim=6)
             elif self.model_type == 'mlp':
                 self.model = MLPEncoder(encoded_space_dim=6)
-
+            elif self.model_type == 'gcn':
+                self.model = GCNEncoder(device=self.device, channels = self.channels)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
         # Move both the encoder and the decoder to the selected device
@@ -70,7 +71,7 @@ class encoder():
             tactile_log = np.array(data['tactile']).reshape(-1,653)
             tactile_pos_log = np.array(data['tac_pose']).reshape(-1,653,3)
             object_pos_log = np.array(data['object_pos']).reshape(-1,6)
-            object_pos_pre_log = np.array(data['object_pos_pre']).reshape(-1,6)
+            object_pos_pre_log = np.array(data['object_pos']).reshape(-1,6)
 
             for j in range(tactile_log.shape[0]):
                 tactile = tactile_log[j]
@@ -93,7 +94,7 @@ class encoder():
 
         # tac /= tac.max(1,keepdim=True)[0]
         batch_size = 32
-        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
             tac = tac.view(-1, 653, 1)
 
             tactile_dataset = []
@@ -138,7 +139,7 @@ class encoder():
         self.model.train()
 
         train_loss = []
-        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
             for data in self.train_loader:
                 self.optimizer.zero_grad()  # Clear gradients.
                 logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
@@ -162,7 +163,7 @@ class encoder():
         # Set evaluation mode for encoder and decoder
         self.model.eval()
         test_loss= []
-        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
             for data in self.valid_loader:
                 logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
                 loss = self.loss_fn(logits, data.y)  # Loss computation.
@@ -179,7 +180,7 @@ class encoder():
 
     def train(self):
 
-        num_epochs = 10
+        num_epochs = 30
         diz_loss = {'train_loss': [], 'val_loss': []}
 
         for epoch in range(num_epochs):
@@ -285,7 +286,7 @@ class encoder():
 
         object_pos_pre = []
 
-        if self.model_type == 'gnn' or self.model_type == 'gnn_pre':
+        if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
 
             for data in self.visua_loader:
                 logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
@@ -332,9 +333,9 @@ class encoder():
 
     def tactile_process(self,data):
         tactile_list = []
-        for i in range(len(data)):
+        for j in range(len(data)):
 
-            tactile = data[i]
+            tactile = data[j]
             tac = np.zeros([36,36])
 
             tac[24,18:18+15] = tactile[:15]

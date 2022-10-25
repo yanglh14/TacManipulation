@@ -12,6 +12,7 @@ from isaacgymenvs.encoder.gnn_model_binary import gnn_model_binary
 from isaacgymenvs.encoder.gnn_model_binary_pre import gnn_model_binary_pre
 from isaacgymenvs.encoder.gnn_lstm_model import gnn_lstm_model
 from isaacgymenvs.encoder.mlp_model import mlp_model
+from isaacgymenvs.encoder.cnn_model import cnn_model
 
 class AllegroHandBaodingGraph(VecTask):
 
@@ -195,6 +196,8 @@ class AllegroHandBaodingGraph(VecTask):
             self.model = gnn_model_binary_pre(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
         elif self.model_type == "mlp_model":
             self.model = mlp_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+        elif self.model_type == "cnn_model":
+            self.model = cnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
 
         self.step_num = 0
 

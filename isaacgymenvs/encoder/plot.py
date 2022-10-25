@@ -19,7 +19,7 @@ plt.rcParams["font.size"] = 24
 dir_path = 'checkpoint/'
 task_name = 'val_loss'
 
-data_list = ['ball_gnn_32_','ball_gnn_16_','ball_gnn_64_','ball_gnn_pre_32_','ball_mlp_32_']
+data_list = ['ball_mlp_64_','ball_gnn_64_','ball_gnn_32_','ball_gnn_16_','ball_gcn_32_','ball_cnn_64_']
 
 # Plot losses
 plt.figure(figsize=(10, 8))
