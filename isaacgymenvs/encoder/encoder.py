@@ -22,7 +22,7 @@ class encoder():
         self.if_model = False
         self.save_dir = '../runs_tac/'
         self.model_type = 'cnn'
-        self.channels = 64
+        self.channels = 32
         self.task_name = 'ball_%s_%d'%(self.model_type,self.channels)
         self.object_name = 'dataset'
         ### Define the loss function
@@ -99,10 +99,10 @@ class encoder():
 
             tactile_dataset = []
             for i in range(tac.shape[0]):
-                data = Data(x=tac[i,tac[i,:,0]!=0,:],pos=pos[i,tac[i,:,0]!=0,:],y=y[i].view(1,-1), pos_pre = object_pos_pre[i,:].view(1,-1))
+                if tac[i,tac[i,:,0]!=0,:].shape[0] > 5:
+                    data = Data(x=tac[i,tac[i,:,0]!=0,:],pos=pos[i,tac[i,:,0]!=0,:],y=y[i].view(1,-1), pos_pre = object_pos_pre[i,:].view(1,-1))
 
-                # data = Data(x=object_pos_pre[i,:].view(1,-1),pos=pos[i,tac[i,:,0]!=0,:],y=y[i].view(1,-1))
-                tactile_dataset.append(data)
+                    tactile_dataset.append(data)
 
             m=len(tactile_dataset)
 
@@ -138,23 +138,32 @@ class encoder():
         # Set train mode for both the encoder and the decoder
         self.model.train()
 
+
         train_loss = []
+
         if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
-            for data in self.train_loader:
-                self.optimizer.zero_grad()  # Clear gradients.
-                logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
-                loss = self.loss_fn(logits, data.y)  # Loss computation.
-                loss.backward()  # Backward pass.
-                self.optimizer.step()  # Update model parameters.
-                train_loss.append(loss.detach().cpu().numpy())
+            for i in range(0, 200):
+                self.prepare_dataset(i, (i + 1))
+
+                for data in self.train_loader:
+                    self.optimizer.zero_grad()  # Clear gradients.
+                    logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
+                    loss = self.loss_fn(logits, data.y)  # Loss computation.
+                    loss.backward()  # Backward pass.
+                    self.optimizer.step()  # Update model parameters.
+                    train_loss.append(loss.detach().cpu().numpy())
+
         elif self.model_type == 'cnn' or self.model_type == 'mlp':
-            for features, labels in self.train_loader:
-                self.optimizer.zero_grad()  # Clear gradients.
-                logits = self.model(features)  # Forward pass.
-                loss = self.loss_fn(logits, labels)  # Loss computation.
-                loss.backward()  # Backward pass.
-                self.optimizer.step()  # Update model parameters.
-                train_loss.append(loss.detach().cpu().numpy())
+            for i in range(0, 200):
+                self.prepare_dataset(i, (i + 1))
+
+                for features, labels in self.train_loader:
+                    self.optimizer.zero_grad()  # Clear gradients.
+                    logits = self.model(features)  # Forward pass.
+                    loss = self.loss_fn(logits, labels)  # Loss computation.
+                    loss.backward()  # Backward pass.
+                    self.optimizer.step()  # Update model parameters.
+                    train_loss.append(loss.detach().cpu().numpy())
 
         return np.mean(train_loss)
 
@@ -164,16 +173,22 @@ class encoder():
         self.model.eval()
         test_loss= []
         if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
-            for data in self.valid_loader:
-                logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
-                loss = self.loss_fn(logits, data.y)  # Loss computation.
-                test_loss.append(loss.detach().cpu().numpy())
+            for i in range(0, 200):
+                self.prepare_dataset(i, (i + 1))
+
+                for data in self.valid_loader:
+                    logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
+                    loss = self.loss_fn(logits, data.y)  # Loss computation.
+                    test_loss.append(loss.detach().cpu().numpy())
 
         elif self.model_type == 'cnn' or self.model_type == 'mlp':
-            for features, labels in self.valid_loader:
-                logits = self.model(features)  # Forward pass.
-                loss = self.loss_fn(logits, labels)  # Loss computation.
-                test_loss.append(loss.detach().cpu().numpy())
+            for i in range(0, 200):
+                self.prepare_dataset(i, (i + 1))
+
+                for features, labels in self.valid_loader:
+                    logits = self.model(features)  # Forward pass.
+                    loss = self.loss_fn(logits, labels)  # Loss computation.
+                    test_loss.append(loss.detach().cpu().numpy())
 
         return np.mean(test_loss)
 
@@ -186,19 +201,18 @@ class encoder():
         for epoch in range(num_epochs):
             # train_loss_list = []
             # test_loss_list = []
-            for i in range(0,200):
-                self.prepare_dataset(i,(i+1))
-                train_loss = self.train_epoch()
-                val_loss = self.test_epoch()
-                # train_loss_list.append(train_loss)
-                # test_loss_list.append(val_loss)
-                print('\n EPOCH {}/{} \t Index {}-{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs,i,(i+1), train_loss, val_loss))
+
+            train_loss = self.train_epoch()
+            val_loss = self.test_epoch()
+            # train_loss_list.append(train_loss)
+            # test_loss_list.append(val_loss)
+            print('\n EPOCH {}/{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs, train_loss, val_loss))
 
             # train_loss = np.mean(train_loss_list)
             # val_loss = np.mean(test_loss_list)
             # print('\n EPOCH {}/{} \t train loss {} \t val loss {}'.format(epoch + 1, num_epochs, train_loss, val_loss))
-                diz_loss['train_loss'].append(train_loss)
-                diz_loss['val_loss'].append(val_loss)
+            diz_loss['train_loss'].append(train_loss)
+            diz_loss['val_loss'].append(val_loss)
 
         torch.save(self.model, os.path.join(self.model_dir, self.task_name + '_encoder.pt'))
 

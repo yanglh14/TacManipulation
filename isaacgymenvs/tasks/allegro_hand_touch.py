@@ -79,7 +79,7 @@ class AllegroHandTouch(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 741
+            "full_state": 88
         }
 
         self.up_axis = 'z'
@@ -264,12 +264,13 @@ class AllegroHandTouch(VecTask):
 
         shadow_hand_start_pose = gymapi.Transform()
         shadow_hand_start_pose.p = gymapi.Vec3(*get_axis_params(0.5, self.up_axis_idx))
+        shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi / 12)
         # shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 1, 0), np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), 0.47 * np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 0, 1), 0.25 * np.pi)
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
         object_start_pose.p.x = shadow_hand_start_pose.p.x
-        pose_dy, pose_dz = -0.02, 0.08
+        pose_dy, pose_dz = -0.05, 0.08
 
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
         object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
@@ -530,11 +531,11 @@ class AllegroHandTouch(VecTask):
 
             touch_sensor_obs_start = goal_obs_start + 11  # 72
 
-            touch_tensor = self.net_cf[:, self.sensors_handles, 2]
-            self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] = self.force_torque_obs_scale * touch_tensor
+            # touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+            # self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] = self.force_torque_obs_scale * touch_tensor
 
-            obs_end = touch_sensor_obs_start+653  #725
-            # obs_total = obs_end + num_actions = 725 + 16 = 741
+            obs_end = touch_sensor_obs_start  #72
+            # obs_total = obs_end + num_actions = 72 + 16 = 88
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
     def reset_target_pose(self, env_ids, apply_reset=False):

@@ -185,19 +185,23 @@ class AllegroHandBaodingGraph(VecTask):
         self.touchmodedir = self.cfg["env"]["touchmodedir"]
         self.touchmodelexist = self.cfg["env"]["touchmodelexist"]
         self.test = self.cfg["env"]["touchtest"]
+        self.object_noise = self.cfg["env"]["objectnoise"]
+        self.object_position = self.cfg["env"]["objectposition"]
 
-        if self.model_type == "gnn":
-            self.model = gnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
-        elif self.model_type == "gnn_binary":
-            self.model = gnn_model_binary(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
-        elif self.model_type == "gnn_lstm":
-            self.model = gnn_lstm_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
-        elif self.model_type == "gnn_binary_pre":
-            self.model = gnn_model_binary_pre(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
-        elif self.model_type == "mlp_model":
-            self.model = mlp_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
-        elif self.model_type == "cnn_model":
-            self.model = cnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+        if self.obs_touch:
+
+            if self.model_type == "gnn":
+                self.model = gnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+            elif self.model_type == "gnn_binary":
+                self.model = gnn_model_binary(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+            elif self.model_type == "gnn_lstm":
+                self.model = gnn_lstm_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+            elif self.model_type == "gnn_binary_pre":
+                self.model = gnn_model_binary_pre(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+            elif self.model_type == "mlp_model":
+                self.model = mlp_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
+            elif self.model_type == "cnn_model":
+                self.model = cnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
 
         self.step_num = 0
 
@@ -549,6 +553,7 @@ class AllegroHandBaodingGraph(VecTask):
                 self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
                 self.object_predict = self.model.step(self.touch_tensor.clone(), self.tactile_pose, self.object_pos,self.object_pos_pre)
+
                 # print(self.object_predict[0] - self.object_pos[0])
                 # a = np.array((self.object_pos*100).tolist()[0])
                 # b = np.array(object_predict.tolist()[0])
@@ -572,11 +577,16 @@ class AllegroHandBaodingGraph(VecTask):
                 # if self.step_num%seq == 0:
                 #     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict / 100
 
-                if self.step_num > 0:
-                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
+                self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
 
                 obs_end = touch_sensor_obs_start  #38
             else:
+
+                self.noise = torch.randn(self.num_envs, 6, device=self.device) * self.object_noise
+                self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos + self.noise
+
+                if not self.object_position:
+                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos * 0
 
                 obs_end = touch_sensor_obs_start  #38
                 # obs_total = obs_end + num_actions = 38 + 16 = 54

@@ -9,36 +9,43 @@ import matplotlib.pyplot as plt # plotting library
 
 def smooth_data(data):
     data_list = []
-    for i in range(10):
-        data_list.append(np.mean(data[(i) * 200:(i+1) * 200]))
+    for i in range(30):
+        data_list.append(np.mean(data[(i) * 200+50:(i+1) * 200]))
 
     return(data_list)
+
+plt.style.use('seaborn-darkgrid')
+
 plt.rcParams["font.family"] = 'Times New Roman'
-plt.rcParams["font.size"] = 24
+plt.rcParams["font.size"] = 36
 
 dir_path = 'checkpoint/'
 task_name = 'val_loss'
 
-data_list = ['ball_mlp_64_','ball_gnn_64_','ball_gnn_32_','ball_gnn_16_','ball_gcn_32_','ball_cnn_64_']
+data_list = ['ball_mlp_32_','ball_cnn_32_','ball_gcn_32_','ball_gnn_32_']
+# data_list = ['ball_gnn_binary_','ball_gnn_binary_16channels_','ball_gnn_binary_64channels_','ball_gnn_binary_128channels_']
+# data_list = ['mlp_','cnn_','gcn_','gnn_']
 
+label = ['mlp','cnn','gcn','gnn']
+line_style = ['-','--','-.',':']
 # Plot losses
-plt.figure(figsize=(10, 8))
+plt.figure(figsize=(20,16))
 
-for data in data_list:
+
+for i,data in enumerate(data_list):
     loss = np.load(dir_path + data + task_name + '.npy')
-    loss = smooth_data(loss)
+    # loss = smooth_data(loss)
     print(data,loss[-1])
-    plt.plot(loss[:], label=data)
+    plt.plot(loss[:100], label=label[i],linestyle =line_style[i],linewidth=6 )
 
-# plt.semilogy()
+plt.semilogy()
 
+# plt.title('Object Prediction Results')
 # plt.xlabel('Epoch')
 # plt.ylabel('Average Loss')
-# plt.grid()
-plt.ylim([0,2])
-plt.legend(loc=0)
-# plt.title('loss')
-plt.savefig('./'+task_name)
+plt.ylim([0,20])
+plt.legend(loc=0,edgecolor='blue', frameon = True)
+# plt.savefig('./'+task_name)
 plt.show()
 
 

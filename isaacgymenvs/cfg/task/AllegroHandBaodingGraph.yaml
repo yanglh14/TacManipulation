@@ -53,6 +53,8 @@ env:
   touchmodedir: ${experiment}
   touchmodelexist: ${test}
   touchtest: ${test}
+  objectnoise: 0.0
+  objectposition: True
 
   asymmetric_observations: False
   successTolerance: 0.01
