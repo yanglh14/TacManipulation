@@ -19,11 +19,12 @@ plt.style.use('seaborn-darkgrid')
 plt.rcParams["font.family"] = 'Times New Roman'
 plt.rcParams["font.size"] = 36
 
-dir_path = 'checkpoint/'
+dir_path = 'checkpoint_new/'
 task_name = 'val_loss'
 
-data_list = ['ball_mlp_32_','ball_cnn_32_','ball_gcn_32_','ball_gnn_32_']
+# data_list = ['ball_mlp_32_','ball_cnn_32_','ball_gcn_32_','ball_gnn_32_']
 # data_list = ['ball_gnn_binary_','ball_gnn_binary_16channels_','ball_gnn_binary_64channels_','ball_gnn_binary_128channels_']
+data_list = ['ball_mlp_','ball_cnn_','ball_gcn_','ball_gnn_']
 # data_list = ['mlp_','cnn_','gcn_','gnn_']
 
 label = ['mlp','cnn','gcn','gnn']

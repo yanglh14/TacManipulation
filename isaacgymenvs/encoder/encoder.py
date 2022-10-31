@@ -18,12 +18,12 @@ class encoder():
         self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
         print(f'Selected device: {self.device}')
 
-        self.model_dir = './checkpoint'
+        self.model_dir = './checkpoint_new2'
         self.if_model = False
-        self.save_dir = '../runs_tac/'
-        self.model_type = 'cnn'
+        self.save_dir = '../runs_tac2/'
+        self.model_type = 'gnn'
         self.channels = 32
-        self.task_name = 'ball_%s_%d'%(self.model_type,self.channels)
+        self.task_name = 'ball_%s'%(self.model_type)
         self.object_name = 'dataset'
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()

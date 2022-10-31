@@ -53,7 +53,7 @@ env:
   maxConsecutiveSuccesses: 0
 
   asset:
-    assetFileName: "tactile/allegro_hand/allegro_hand.xml"
+    assetFileName: "urdf/kuka_allegro_description/allegro.urdf"
     assetFileNameBlock: "urdf/objects/cube_multicolor_allegro.urdf"
     assetFileNameEgg: "mjcf/open_ai_assets/hand/egg.xml"
     assetFileNamePen: "mjcf/open_ai_assets/hand/pen.xml"
@@ -87,7 +87,7 @@ task:
       hand:
         color: True
         dof_properties:
-          damping: 
+          damping:
             range: [0.3, 3.0]
             operation: "scaling"
             distribution: "loguniform"

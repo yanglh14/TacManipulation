@@ -67,7 +67,7 @@ def launch_rlg_hydra(cfg: DictConfig):
     while True:
 
         actions = torch.as_tensor(
-            np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0]]),
+            np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0]]),
             dtype=torch.float32, device='cuda:0')
         actions = unscale(actions,env.shadow_hand_dof_lower_limits,env.shadow_hand_dof_upper_limits)
         env.step(actions)
@@ -75,9 +75,9 @@ def launch_rlg_hydra(cfg: DictConfig):
 
         # env.gym.refresh_net_contact_force_tensor(env.sim)
         #
-        touch_sensor = env.net_cf[:,env.sensors_handles,:]
-        tactile = touch_sensor[0,:,2]
-        tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
+        # touch_sensor = env.net_cf[:,env.sensors_handles,:]
+        # tactile = touch_sensor[0,:,2]
+        # tactile_pose = env.rigid_body_states[0,env.sensors_handles,:3]
         # plot_tactile(tactile,tactile_pose)
 
         # contacts = env.gym.get_env_rigid_contacts(env.envs[0])

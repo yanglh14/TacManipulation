@@ -20,12 +20,14 @@ plt.rcParams["font.family"] = 'Times New Roman'
 plt.rcParams["font.size"] = 36
 
 dir_path = 'checkpoint/'
-task_name = 'train_loss'
+task_name = 'val_loss'
 
 data_list = ['ball_mlp_','ball_cnn_','ball_gcn_32_','ball_gnn_binary_']
 # data_list = ['ball_gnn_binary_','ball_gnn_binary_16channels_','ball_gnn_binary_64channels_','ball_gnn_binary_128channels_']
 
 label = ['32channels','16channels','64channels','128channels']
+label = ['mlp','cnn','gcn','gnn']
+
 line_style = ['-','--','-.',':']
 # Plot losses
 plt.figure(figsize=(20,16))
@@ -44,7 +46,7 @@ for i,data in enumerate(data_list):
 # plt.ylabel('Average Loss')
 plt.ylim([0,2])
 plt.legend(loc=0,edgecolor='blue', frameon = True)
-plt.savefig('./'+task_name)
+# plt.savefig('./'+task_name)
 plt.show()
 
 
