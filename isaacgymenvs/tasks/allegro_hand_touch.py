@@ -271,7 +271,7 @@ class AllegroHandTouch(VecTask):
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
         object_start_pose.p.x = shadow_hand_start_pose.p.x
-        pose_dy, pose_dz = -0.08, 0.08
+        pose_dy, pose_dz = -0.06, 0.05
 
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
         object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
@@ -613,7 +613,7 @@ class AllegroHandTouch(VecTask):
                                                         gymtorch.unwrap_tensor(hand_indices), len(env_ids) * 4)
 
         self.gym.set_dof_state_tensor_indexed(self.sim,
-                                              gymtorch.unwrap_tensor(self.dof_state_init),
+                                              gymtorch.unwrap_tensor(self.dof_state),
                                               gymtorch.unwrap_tensor(hand_indices), len(env_ids) * 4)
 
         self.progress_buf[env_ids] = 0

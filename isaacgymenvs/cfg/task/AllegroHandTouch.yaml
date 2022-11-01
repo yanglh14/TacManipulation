@@ -50,7 +50,7 @@ env:
   asymmetric_observations: False
   successTolerance: 0.1
   printNumSuccesses: False
-  maxConsecutiveSuccesses: 0
+  maxConsecutiveSuccesses: 1
 
   asset:
     assetFileName: "tactile/allegro_hand/allegro_hand.xml"

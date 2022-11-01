@@ -7,7 +7,7 @@ physics_engine: ${..physics_engine}
 env: 
   numEnvs: ${resolve_default:16384,${...num_envs}}
   envSpacing: 0.75
-  episodeLength: 600
+  episodeLength: 100
   enableDebugVis: False
   aggregateMode: 1
 
@@ -50,10 +50,10 @@ env:
   asymmetric_observations: False
   successTolerance: 0.1
   printNumSuccesses: False
-  maxConsecutiveSuccesses: 0
+  maxConsecutiveSuccesses: 1
 
   asset:
-    assetFileName: "urdf/kuka_allegro_description/allegro.urdf"
+    assetFileName: "tactile_origin/allegro_hand/allegro_hand.xml"
     assetFileNameBlock: "urdf/objects/cube_multicolor_allegro.urdf"
     assetFileNameEgg: "mjcf/open_ai_assets/hand/egg.xml"
     assetFileNamePen: "mjcf/open_ai_assets/hand/pen.xml"

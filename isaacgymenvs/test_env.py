@@ -69,7 +69,7 @@ def launch_rlg_hydra(cfg: DictConfig):
         actions = torch.as_tensor(
             np.array([[0, 0, 0, 0, 0., 0, 0, 0, 0., 0, 0, 0, 0, 0, 0, 0]]),
             dtype=torch.float32, device='cuda:0')
-        actions = unscale(actions,env.shadow_hand_dof_lower_limits,env.shadow_hand_dof_upper_limits)
+        # actions = unscale(actions,env.shadow_hand_dof_lower_limits,env.shadow_hand_dof_upper_limits)
         env.step(actions)
         # sim2rel(env)
 

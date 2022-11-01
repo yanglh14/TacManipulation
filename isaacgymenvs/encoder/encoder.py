@@ -22,8 +22,8 @@ class encoder():
         self.if_model = False
         self.save_dir = '../runs_tac2/'
         self.model_type = 'gnn'
-        self.channels = 32
-        self.task_name = 'ball_%s'%(self.model_type)
+        self.channels = 16
+        self.task_name = 'ball_%s_%d'%(self.model_type,self.channels)
         self.object_name = 'dataset'
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()

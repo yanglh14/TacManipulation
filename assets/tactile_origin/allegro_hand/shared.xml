@@ -26,6 +26,9 @@
         <default class="finger4">
             <geom contype="0" conaffinity="0"/>
         </default>
+        <default class="robot0:D_Contact">
+            <geom contype="1" conaffinity="0" group="4" type="mesh"></geom>
+        </default>
 
     </default>
 

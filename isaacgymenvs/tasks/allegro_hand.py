@@ -211,7 +211,7 @@ class AllegroHand(VecTask):
         upper = gymapi.Vec3(spacing, spacing, spacing)
 
         asset_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../assets')
-        shadow_hand_asset_file = "tactile/allegro_hand/allegro_hand.xml"
+        shadow_hand_asset_file = "urdf/kuka_allegro_description/allegro.urdf"
 
         if "asset" in self.cfg["env"]:
             asset_root = self.cfg["env"]["asset"].get("assetRoot", asset_root)
@@ -280,13 +280,13 @@ class AllegroHand(VecTask):
 
         shadow_hand_start_pose = gymapi.Transform()
         shadow_hand_start_pose.p = gymapi.Vec3(*get_axis_params(0.5, self.up_axis_idx))
-        # shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi / 12)
-        shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 1, 0), np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), 0.47 * np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 0, 1), 0.25 * np.pi)
+        shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi / 12)
+        # shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 1, 0), np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), 0.47 * np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 0, 1), 0.25 * np.pi)
 
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
         object_start_pose.p.x = shadow_hand_start_pose.p.x
-        pose_dy, pose_dz = -0.2, 0.06
+        pose_dy, pose_dz = -0.06, 0.06
 
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
         object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
