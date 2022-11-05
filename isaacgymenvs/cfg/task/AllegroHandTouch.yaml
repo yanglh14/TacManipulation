@@ -43,9 +43,9 @@ env:
   actionPenaltyScale: -0.0002
   reachGoalBonus: 250
   fallDistance: 0.24
-  fallPenalty: 0.0
+  fallPenalty: -100.0
 
-  objectType: "block" # can be block, egg or pen
+  objectType: "pen" # can be block, egg or pen
   observationType: "full_state" # can be "full_no_vel", "full","full_state"
   asymmetric_observations: False
   successTolerance: 0.1
@@ -53,10 +53,11 @@ env:
   maxConsecutiveSuccesses: 1
 
   asset:
-    assetFileName: "tactile/allegro_hand/allegro_hand.xml"
-    assetFileNameBlock: "urdf/objects/cube_multicolor_allegro.urdf"
+    assetFileName: "tactile_touch/allegro_hand/allegro_hand.xml"
+#    assetFileNameBlock: "urdf/objects/cube_multicolor_allegro.urdf"
+    assetFileNameBlock: "tactile_touch/objects/cylinder.xml"
     assetFileNameEgg: "mjcf/open_ai_assets/hand/egg.xml"
-    assetFileNamePen: "mjcf/open_ai_assets/hand/pen.xml"
+    assetFileNamePen: "tactile_touch/objects/cylinder.xml"
 
 task:
   randomize: False

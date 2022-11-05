@@ -47,7 +47,7 @@ env:
 
   # something added in baoding task
   objectType: "baoding" # can be block, egg, pen or baoding
-  observationType: "full_state" # can be "full_no_vel", "full","full_state"
+  observationType: "full_state" # can be "full_no_vel", "full","full_state","full_state_touch"
   observationTouch: True
   touchmodel: "gnn" #can be "gnn" or "gnn_lstm"
   touchmodedir: ${experiment}

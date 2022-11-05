@@ -80,7 +80,7 @@ class AllegroHandBaodingGraph(VecTask):
         # if obs contains touch sensors
         self.obs_touch = self.cfg["env"]["observationTouch"]
 
-        if not (self.obs_type in ["full_no_vel", "full", "full_state"]):
+        if not (self.obs_type in ["full_no_vel", "full", "full_state","full_state_touch"]):
             raise Exception(
                 "Unknown type of observations!\nobservationType should be one of: [openai, full_no_vel, full, full_state]")
 
@@ -89,7 +89,8 @@ class AllegroHandBaodingGraph(VecTask):
         self.num_obs_dict = {
             "full_no_vel": 50,
             "full": 72,
-            "full_state": 54 if self.obs_touch else 54
+            "full_state": 54 if self.obs_touch else 54,
+            "full_state_touch": 707
         }
 
         self.up_axis = 'z'
@@ -122,7 +123,7 @@ class AllegroHandBaodingGraph(VecTask):
         dof_state_tensor = self.gym.acquire_dof_state_tensor(self.sim)
         rigid_body_tensor = self.gym.acquire_rigid_body_state_tensor(self.sim)
 
-        if self.obs_type == "full_state" or self.asymmetric_obs:
+        if self.obs_type == "full_state" or self.asymmetric_obs or self.obs_type == "full_state_touch":
 
             dof_force_tensor = self.gym.acquire_dof_force_tensor(self.sim)
             self.dof_force_tensor = gymtorch.wrap_tensor(dof_force_tensor).view(self.num_envs, self.num_shadow_hand_dofs)
@@ -188,7 +189,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_noise = self.cfg["env"]["objectnoise"]
         self.object_position = self.cfg["env"]["objectposition"]
 
-        if self.obs_touch:
+        if self.obs_touch and not self.obs_type == 'full_state_touch':
 
             if self.model_type == "gnn":
                 self.model = gnn_model(self.device,self.num_envs,self.touchmodedir,self.touchmodelexist,self.test)
@@ -506,7 +507,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.gym.refresh_actor_root_state_tensor(self.sim)
         self.gym.refresh_rigid_body_state_tensor(self.sim)
 
-        if self.obs_type == "full_state" or self.asymmetric_obs:
+        if self.obs_type == "full_state" or self.asymmetric_obs or self.obs_type == "full_state_touch":
             self.gym.refresh_dof_force_tensor(self.sim)
             self.gym.refresh_net_contact_force_tensor(self.sim)
 
@@ -521,6 +522,8 @@ class AllegroHandBaodingGraph(VecTask):
         self.goal_pos = torch.cat((self.goal_states[:, 0:3],self.goal_states[:, 13:13+3]),1)
 
         if self.obs_type == "full_state":
+             self.compute_full_state()
+        elif self.obs_type == "full_state_touch":
              self.compute_full_state()
         else:
             print("Unkown observations type!")
@@ -545,6 +548,7 @@ class AllegroHandBaodingGraph(VecTask):
             touch_sensor_obs_start = goal_obs_start  # 38
 
             if self.obs_touch:
+
                 self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
                 self.touch_tensor = self.touch_tensor.abs()
                 self.touch_tensor[self.touch_tensor<0.0005] = 0
@@ -552,7 +556,9 @@ class AllegroHandBaodingGraph(VecTask):
 
                 self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
 
-                self.object_predict = self.model.step(self.touch_tensor.clone(), self.tactile_pose, self.object_pos,self.object_pos_pre)
+                if self.obs_type == "full_state":
+
+                    self.object_predict = self.model.step(self.touch_tensor.clone(), self.tactile_pose, self.object_pos,self.object_pos_pre)
 
                 # print(self.object_predict[0] - self.object_pos[0])
                 # a = np.array((self.object_pos*100).tolist()[0])
@@ -577,18 +583,23 @@ class AllegroHandBaodingGraph(VecTask):
                 # if self.step_num%seq == 0:
                 #     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict / 100
 
-                self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
+                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_predict/100
 
-                obs_end = touch_sensor_obs_start  #38
+                    obs_end = touch_sensor_obs_start  #38
+                else:
+                    self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos * 0
+                    self.obs_buf[:, touch_sensor_obs_start:touch_sensor_obs_start + 653] =  self.touch_tensor
+                    obs_end = touch_sensor_obs_start + 653
             else:
 
-                self.noise = torch.randn(self.num_envs, 6, device=self.device) * self.object_noise
+                self.noise = (torch.rand(self.num_envs, 6, device=self.device)-0.5) * 2 * self.object_noise
                 self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos + self.noise
 
                 if not self.object_position:
                     self.obs_buf[:, obj_obs_start:obj_obs_start + 6] = self.object_pos * 0
 
                 obs_end = touch_sensor_obs_start  #38
+
                 # obs_total = obs_end + num_actions = 38 + 16 = 54
 
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions

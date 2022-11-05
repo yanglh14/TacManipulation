@@ -25,9 +25,9 @@ class cnn_model():
         self.diz_loss = {'train_loss': [], 'val_loss': []}
 
         if self.touchmodelexist:
+            self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
             self.diz_loss['train_loss'] = list(np.load(self.save_dir+'/train_loss.npy'))
             self.diz_loss['val_loss'] = list(np.load(self.save_dir+'/val_loss.npy'))
-            self.model = torch.load(self.save_dir+'/model.pt', map_location='cuda:0')
         else:
             self.model = CNNEncoder()
 

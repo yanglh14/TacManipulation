@@ -8,6 +8,7 @@ from isaacgym.torch_utils import *
 
 from .base.vec_task import VecTask
 
+import pickle
 
 class AllegroHandTouch(VecTask):
 
@@ -170,6 +171,13 @@ class AllegroHandTouch(VecTask):
 
         self.rb_forces = torch.zeros((self.num_envs, self.num_bodies, 3), dtype=torch.float, device=self.device)
 
+        self.dataset = False
+        if self.dataset:
+            self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log, self.object_pos_pre_log = [], [], [], [], [], [], [],[],[]
+            self.log = {}
+
+        self.step_num = 0
+
     def create_sim(self):
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
@@ -316,13 +324,13 @@ class AllegroHandTouch(VecTask):
                 self.gym.begin_aggregate(env_ptr, max_agg_bodies, max_agg_shapes, True)
 
             # add hand - collision filter = -1 to use asset collision filters set in mjcf loader
-            shadow_hand_actor = self.gym.create_actor(env_ptr, shadow_hand_asset, shadow_hand_start_pose, "hand", i, -1, 0)
+            shadow_hand_actor = self.gym.create_actor(env_ptr, shadow_hand_asset, shadow_hand_start_pose, "hand", i, 0, 0)
             self.hand_start_states.append([shadow_hand_start_pose.p.x, shadow_hand_start_pose.p.y, shadow_hand_start_pose.p.z,
                                            shadow_hand_start_pose.r.x, shadow_hand_start_pose.r.y, shadow_hand_start_pose.r.z, shadow_hand_start_pose.r.w,
                                            0, 0, 0, 0, 0, 0])
 
             # add finger1
-            finger1_actor = self.gym.create_actor(env_ptr, finger1_asset, shadow_hand_start_pose, "finger1", i, -1, 0)
+            finger1_actor = self.gym.create_actor(env_ptr, finger1_asset, shadow_hand_start_pose, "finger1", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger1_actor, shadow_hand_dof_props[:4])
 
@@ -330,21 +338,21 @@ class AllegroHandTouch(VecTask):
 
 
             # add finger2
-            finger2_actor = self.gym.create_actor(env_ptr, finger2_asset, shadow_hand_start_pose, "finger2", i, -1, 0)
+            finger2_actor = self.gym.create_actor(env_ptr, finger2_asset, shadow_hand_start_pose, "finger2", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger2_actor, shadow_hand_dof_props[4:8])
 
             self.gym.enable_actor_dof_force_sensors(env_ptr, finger2_actor)
 
             # add finger3
-            finger3_actor = self.gym.create_actor(env_ptr, finger3_asset, shadow_hand_start_pose, "finger3", i, -1, 0)
+            finger3_actor = self.gym.create_actor(env_ptr, finger3_asset, shadow_hand_start_pose, "finger3", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger3_actor, shadow_hand_dof_props[8:12])
 
             self.gym.enable_actor_dof_force_sensors(env_ptr, finger3_actor)
 
             # add finger4
-            finger4_actor = self.gym.create_actor(env_ptr, finger4_asset, shadow_hand_start_pose, "finger4", i, -1, 0)
+            finger4_actor = self.gym.create_actor(env_ptr, finger4_asset, shadow_hand_start_pose, "finger4", i, 0, 0)
 
             self.gym.set_actor_dof_properties(env_ptr, finger4_actor, shadow_hand_dof_props[12:16])
 
@@ -539,6 +547,25 @@ class AllegroHandTouch(VecTask):
             # obs_total = obs_end + num_actions = 72 + 16 = 88
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
+
+            # self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+            # self.touch_tensor = self.touch_tensor.abs()
+            # self.touch_tensor[self.touch_tensor < 0.0005] = 0
+            # self.touch_tensor[self.progress_buf == 1, :] = 0
+            # self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+            #
+            # self.tensor = self.touch_tensor.cpu()[0]
+            # self.tensor[self.tensor > 1] = 0
+            # import matplotlib.pyplot as plt
+            #
+            # fig = plt.figure(figsize=(8, 8))
+            # ax = fig.add_subplot(111, projection='3d')
+            # ax.scatter(self.tactile_pose.cpu()[0,:,0], self.tactile_pose.cpu()[0,:,1], self.tactile_pose.cpu()[0,:,2], s= 0.2)
+            # ax.scatter(self.tactile_pose.cpu()[0,:,0], self.tactile_pose.cpu()[0,:,1], self.tactile_pose.cpu()[0,:,2], s=self.tensor*1000, c = 'r' )
+            #
+            # print(self.tensor[self.tensor>0])
+            # plt.show()
+
     def reset_target_pose(self, env_ids, apply_reset=False):
         rand_floats = torch_rand_float(-1.0, 1.0, (len(env_ids), 4), device=self.device)
 
@@ -667,6 +694,34 @@ class AllegroHandTouch(VecTask):
         self.compute_observations()
         self.compute_reward(self.actions)
 
+        self.step_num += 1
+        if self.dataset:
+
+            self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+            self.touch_tensor = self.touch_tensor.abs()
+            self.touch_tensor[self.touch_tensor < 0.0005] = 0
+            self.touch_tensor[self.progress_buf == 1, :] = 0
+
+            self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+
+            self.tactile_log.append(self.touch_tensor[:, :].tolist())
+            self.tactile_pos_log.append(self.tactile_pose[:, :].tolist())
+            self.object_pos_log.append(self.object_pose[:, :].tolist())
+            if self.step_num%100 ==0:
+
+                data = {'tactile': np.array(self.tactile_log),
+                        'tac_pose': np.array(self.tactile_pos_log),
+                        'object_pos': np.array(self.object_pos_log),
+
+                        }
+                print('saving step num%d'%self.step_num)
+                with open('runs_cube/dataset_%d'%self.step_num + '.pkl', 'wb') as f:
+                    pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+
+                self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_noise_log, self.obs_log, self.object_pos_pre_log = [], [], [], [], [], [], [], [], []
+            if self.step_num == 20000:
+                print('test done')
+
         if self.viewer and self.debug_viz:
             # draw axes on target object
             self.gym.clear_lines(self.viewer)
@@ -777,7 +832,7 @@ def compute_hand_reward(
 def randomize_rotation(rand0, rand1, x_unit_tensor, y_unit_tensor):
     return quat_mul(quat_from_angle_axis(rand0 * np.pi, x_unit_tensor),
                     quat_from_angle_axis(rand1 * np.pi, y_unit_tensor))
-
+    # return quat_from_angle_axis(rand1 * np.pi, y_unit_tensor)
 
 @torch.jit.script
 def randomize_rotation_pen(rand0, rand1, max_angle, x_unit_tensor, y_unit_tensor, z_unit_tensor):
