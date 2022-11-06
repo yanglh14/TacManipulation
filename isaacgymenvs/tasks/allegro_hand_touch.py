@@ -279,25 +279,27 @@ class AllegroHandTouch(VecTask):
         object_start_pose = gymapi.Transform()
         object_start_pose.p = gymapi.Vec3()
         object_start_pose.p.x = shadow_hand_start_pose.p.x
-        pose_dy, pose_dz = -0.06, 0.05
+        pose_dy, pose_dz = -0.06, 0.04
 
         object_start_pose.p.y = shadow_hand_start_pose.p.y + pose_dy
         object_start_pose.p.z = shadow_hand_start_pose.p.z + pose_dz
+        object_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi / 2) *  gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 1, 0), np.pi / 2)
 
-        if self.object_type == "pen":
-            object_start_pose.p.z = shadow_hand_start_pose.p.z + 0.02
+        # if self.object_type == "pen":
+        #     object_start_pose.p.z = shadow_hand_start_pose.p.z + 0.02
 
         self.goal_displacement = gymapi.Vec3(-0.2, -0, 0.2)
         self.goal_displacement_tensor = to_torch(
             [self.goal_displacement.x, self.goal_displacement.y, self.goal_displacement.z], device=self.device)
         goal_start_pose = gymapi.Transform()
         goal_start_pose.p = object_start_pose.p + self.goal_displacement
+        goal_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi / 2)
 
         goal_start_pose.p.z -= 0.04
 
         # compute aggregate size
-        max_agg_bodies = self.num_shadow_hand_bodies + 2
-        max_agg_shapes = self.num_shadow_hand_shapes + 2
+        max_agg_bodies = self.num_shadow_hand_bodies + 2 +4
+        max_agg_shapes = self.num_shadow_hand_shapes + 2 +4
 
         self.shadow_hands = []
         self.envs = []
@@ -406,7 +408,7 @@ class AllegroHandTouch(VecTask):
     def compute_reward(self, actions):
         self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:] = compute_hand_reward(
             self.rew_buf, self.reset_buf, self.reset_goal_buf, self.progress_buf, self.successes, self.consecutive_successes,
-            self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot,
+            self.max_episode_length, self.object_pos, self.object_point, self.goal_pos, self.goal_point,
             self.dist_reward_scale, self.rot_reward_scale, self.rot_eps, self.actions, self.action_penalty_scale,
             self.success_tolerance, self.reach_goal_bonus, self.fall_dist, self.fall_penalty,
             self.max_consecutive_successes, self.av_factor, (self.object_type == "pen")
@@ -440,9 +442,17 @@ class AllegroHandTouch(VecTask):
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10]
         self.object_angvel = self.root_state_tensor[self.object_indices, 10:13]
 
+        self.object_p1 = self.rigid_body_states[:,-5,:3]
+        self.object_p2 = self.rigid_body_states[:,-4,:3]
+        self.object_point = torch.cat([self.object_p1,self.object_p2],dim=1)
+
         self.goal_pose = self.goal_states[:, 0:7]
         self.goal_pos = self.goal_states[:, 0:3]
         self.goal_rot = self.goal_states[:, 3:7]
+
+        self.goal_p1 = self.rigid_body_states[:,-2,:3] - self.goal_displacement_tensor
+        self.goal_p2 = self.rigid_body_states[:,-1,:3] - self.goal_displacement_tensor
+        self.goal_point = torch.cat([self.goal_p1,self.goal_p2],dim=1)
 
         # self.fingertip_state = self.rigid_body_states[:, self.fingertip_handles][:, :, 0:13]
         # self.fingertip_pos = self.rigid_body_states[:, self.fingertip_handles][:, :, 0:3]
@@ -569,7 +579,7 @@ class AllegroHandTouch(VecTask):
     def reset_target_pose(self, env_ids, apply_reset=False):
         rand_floats = torch_rand_float(-1.0, 1.0, (len(env_ids), 4), device=self.device)
 
-        new_rot = randomize_rotation(rand_floats[:, 0], rand_floats[:, 1], self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids])
+        new_rot = randomize_rotation(rand_floats[:, 0], rand_floats[:, 1], self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids], torch.ones(len(env_ids),device=self.device))
 
         self.goal_states[env_ids, 0:3] = self.goal_init_state[env_ids, 0:3]
         self.goal_states[env_ids, 3:7] = new_rot
@@ -601,13 +611,13 @@ class AllegroHandTouch(VecTask):
         self.root_state_tensor[self.object_indices[env_ids], self.up_axis_idx] = self.object_init_state[env_ids, self.up_axis_idx] + \
             self.reset_position_noise * rand_floats[:, self.up_axis_idx]
 
-        new_object_rot = randomize_rotation(rand_floats[:, 3], rand_floats[:, 4], self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids])
-        if self.object_type == "pen":
-            rand_angle_y = torch.tensor(0.3)
-            new_object_rot = randomize_rotation_pen(rand_floats[:, 3], rand_floats[:, 4], rand_angle_y,
-                                                    self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids], self.z_unit_tensor[env_ids])
-
-        self.root_state_tensor[self.object_indices[env_ids], 3:7] = new_object_rot
+        # new_object_rot = randomize_rotation(rand_floats[:, 3], rand_floats[:, 4], self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids])
+        # if self.object_type == "pen":
+        #     rand_angle_y = torch.tensor(0.3)
+        #     new_object_rot = randomize_rotation_pen(rand_floats[:, 3], rand_floats[:, 4], rand_angle_y,
+        #                                             self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids], self.z_unit_tensor[env_ids])
+        #
+        # self.root_state_tensor[self.object_indices[env_ids], 3:7] = new_object_rot
         self.root_state_tensor[self.object_indices[env_ids], 7:13] = torch.zeros_like(self.root_state_tensor[self.object_indices[env_ids], 7:13])
 
         object_indices = torch.unique(torch.cat([self.object_indices[env_ids],
@@ -787,11 +797,13 @@ def compute_hand_reward(
         success_tolerance = 2.0 * success_tolerance
 
     # Orientation alignment for the cube in hand and goal cube
-    quat_diff = quat_mul(object_rot, quat_conjugate(target_rot))
-    rot_dist = 2.0 * torch.asin(torch.clamp(torch.norm(quat_diff[:, 0:3], p=2, dim=-1), max=1.0))
+    # quat_diff = quat_mul(object_rot, quat_conjugate(target_rot))
+    # rot_dist = 2.0 * torch.asin(torch.clamp(torch.norm(quat_diff[:, 0:3], p=2, dim=-1), max=1.0))
+    rot_dist = torch.norm(object_rot - target_rot, p=2, dim=-1)
 
     dist_rew = goal_dist * dist_reward_scale
-    rot_rew = 1.0/(torch.abs(rot_dist) + rot_eps) * rot_reward_scale
+    # rot_rew = 1.0/(torch.abs(rot_dist) + rot_eps) * rot_reward_scale
+    rot_rew = rot_dist * dist_reward_scale
 
     action_penalty = torch.sum(actions ** 2, dim=-1)
 
@@ -829,13 +841,15 @@ def compute_hand_reward(
 
 
 @torch.jit.script
-def randomize_rotation(rand0, rand1, x_unit_tensor, y_unit_tensor):
-    return quat_mul(quat_from_angle_axis(rand0 * np.pi, x_unit_tensor),
-                    quat_from_angle_axis(rand1 * np.pi, y_unit_tensor))
-    # return quat_from_angle_axis(rand1 * np.pi, y_unit_tensor)
+def randomize_rotation(rand0, rand1, x_unit_tensor, y_unit_tensor, float):
+
+    return quat_mul(quat_from_angle_axis(float * np.pi/2, x_unit_tensor),
+                    quat_from_angle_axis(float * np.pi/2 + rand1 * np.pi, y_unit_tensor))
+    # return quat_from_angle_axis(rand1 * np.pi, x_unit_tensor)
 
 @torch.jit.script
 def randomize_rotation_pen(rand0, rand1, max_angle, x_unit_tensor, y_unit_tensor, z_unit_tensor):
-    rot = quat_mul(quat_from_angle_axis(0.5 * np.pi + rand0 * max_angle, x_unit_tensor),
-                   quat_from_angle_axis(rand0 * np.pi, z_unit_tensor))
+    # rot = quat_mul(quat_from_angle_axis(0.5 * np.pi + rand0 * max_angle, x_unit_tensor),
+    #                quat_from_angle_axis(rand0 * np.pi, z_unit_tensor))
+    rot = quat_from_angle_axis(0.5 * np.pi + rand0 * max_angle, y_unit_tensor)
     return rot

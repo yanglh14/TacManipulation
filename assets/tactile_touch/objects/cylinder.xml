@@ -14,12 +14,18 @@
 
 
     <worldbody>
-        <body name="object1" pos="0 0 0">
+        <body name="object1" pos="0 0 0" euler="0 1.5708 0">
 
             <geom name="object1_Vis" type="cylinder" size="0.02 0.06" mass="0.5" condim="4" material="MatBall1"></geom>
             <geom name="object1_Con" type="cylinder" size="0.02 0.06" mass="0.5" condim="4" class="robot0:D_Contact"></geom>
 <!--            <joint name="object1:joint" type="free" damping="0.01"></joint>-->
 
+            <body name="point1" pos="0 0 0.03">
+
+            </body>
+            <body name="point2" pos="0 0 -0.03">
+
+            </body>
         </body>
         
         <light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 1 4" dir="0 0 -1" name="light0"></light>

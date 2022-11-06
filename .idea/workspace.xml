@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/encoder_cube.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/tactile_touch/objects/cylinder.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/encoder_cube.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/plot_runs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandBaodingGraph.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandTouch.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/cfg/task/AllegroHandTouch.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/cnn_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/plot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/val_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/val_loss.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/tactile_touch/objects/cylinder.xml" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile_touch/objects/cylinder.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_touch.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_touch.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,13 +47,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/yang/IsaacGym/TacManipulation/assets/tactile_touch/objects",
-    "two.files.diff.last.used.file": "/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/base/vec_task.py"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/yang/IsaacGym/TacManipulation/assets/tactile_touch/objects&quot;,
+    &quot;two.files.diff.last.used.file&quot;: &quot;/home/yang/IsaacGym/TacManipulation/isaacgymenvs/tasks/base/vec_task.py&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/assets/tactile_touch/objects" />
@@ -632,6 +623,21 @@
           <url>file://$PROJECT_DIR$/../isaacgym/python/isaacgym/torch_utils.py</url>
           <line>85</line>
           <option name="timeStamp" value="280" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_touch.py</url>
+          <line>805</line>
+          <option name="timeStamp" value="291" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_touch.py</url>
+          <line>416</line>
+          <option name="timeStamp" value="292" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_touch.py</url>
+          <line>454</line>
+          <option name="timeStamp" value="293" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
