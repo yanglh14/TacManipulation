@@ -515,6 +515,7 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_1 = self.object_pos[:,:2]
         self.object_2 = self.object_pos[:,3:5]
         self.object_vector = self.object_1 - self.object_2
+        #Todo list angle computation bug
         self.object_angle = torch.arccos(self.object_vector[:,0]/torch.linalg.norm(self.object_vector,dim=1)) * (180/torch.pi)
         self.object_angle[self.object_vector[:,1]<0] *= -1
         self.object_linvel = self.root_state_tensor[self.object_indices, 7:10].view(int(self.object_indices.shape[0]/2), 6)

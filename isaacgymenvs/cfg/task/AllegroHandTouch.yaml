@@ -42,13 +42,13 @@ env:
   rotEps: 0.1
   actionPenaltyScale: -0.0002
   reachGoalBonus: 250
-  fallDistance: 0.24
+  fallDistance: 0.1
   fallPenalty: -100.0
 
   objectType: "pen" # can be block, egg or pen
   observationType: "full_state" # can be "full_no_vel", "full","full_state"
   asymmetric_observations: False
-  successTolerance: 0.1
+  successTolerance: 15
   printNumSuccesses: False
   maxConsecutiveSuccesses: 1
 
