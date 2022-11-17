@@ -57,12 +57,13 @@ class gnn_model_binary():
 
         pos = pos * 100
         y = y * 100
-        self.obs_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:,:] = obs.view(self.num_envs,-1,1)
-        self.pos_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:,:] = pos
-        self.y_buf[self.step_n*self.num_envs:(self.step_n+1)*self.num_envs,:] = y
 
         self.step_n += 1
         if not self.test:
+            self.obs_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :, :] = obs.view(self.num_envs,
+                                                                                                         -1, 1)
+            self.pos_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :, :] = pos
+            self.y_buf[self.step_n * self.num_envs:(self.step_n + 1) * self.num_envs, :] = y
 
             if self.step_n == self.horizon_length and self.train_bool:
                 self.data_process()

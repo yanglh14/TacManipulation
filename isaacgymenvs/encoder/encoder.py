@@ -17,20 +17,20 @@ class encoder():
         # Check if the GPU is available
         self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
         print(f'Selected device: {self.device}')
-
-        self.model_dir = './checkpoint_new2'
+        self.dataset_num = 50
+        self.model_dir = './checkpoint_new'
         self.if_model = False
         self.save_dir = '../runs_tac2/'
-        self.model_type = 'gnn'
-        self.channels = 16
-        self.task_name = 'ball_%s_%d'%(self.model_type,self.channels)
+        self.model_type = 'cnn'
+        self.channels = 32
+        self.task_name = 'ball_%s_%d_2'%(self.model_type,self.channels)
         self.object_name = 'dataset'
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()
-
+        print(self.model_type)
         ### Set the random seed for reproducible results
-        torch.manual_seed(0)
-
+        torch.manual_seed(44)
+        np.random.seed(44)
         ### Initialize the network
 
         if self.if_model:
@@ -78,11 +78,11 @@ class encoder():
                 object_pos = object_pos_log[j]
                 tactile_pos = tactile_pos_log[j]
                 object_pos_pre = object_pos_pre_log[j]
-                if tactile[tactile>0].shape[0] >5:
-                    tac_list.append(tactile)
-                    object_pos_list.append(object_pos)
-                    tactile_pos_list.append(tactile_pos)
-                    object_pos_pre_list.append(object_pos_pre)
+
+                tac_list.append(tactile)
+                object_pos_list.append(object_pos)
+                tactile_pos_list.append(tactile_pos)
+                object_pos_pre_list.append(object_pos_pre)
 
         if self.model_type == 'cnn':
             tac_list = self.tactile_process(tac_list)
@@ -139,10 +139,10 @@ class encoder():
         self.model.train()
 
 
-        train_loss = []
-
+        total_loss =0
+        total_num = 0
         if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
-            for i in range(0, 200):
+            for i in range(0, self.dataset_num):
                 self.prepare_dataset(i, (i + 1))
 
                 for data in self.train_loader:
@@ -151,10 +151,11 @@ class encoder():
                     loss = self.loss_fn(logits, data.y)  # Loss computation.
                     loss.backward()  # Backward pass.
                     self.optimizer.step()  # Update model parameters.
-                    train_loss.append(loss.detach().cpu().numpy())
+                    total_loss += loss.item() * data.num_graphs
+                total_num += self.train_loader.dataset.__len__()
 
         elif self.model_type == 'cnn' or self.model_type == 'mlp':
-            for i in range(0, 200):
+            for i in range(0, self.dataset_num):
                 self.prepare_dataset(i, (i + 1))
 
                 for features, labels in self.train_loader:
@@ -163,35 +164,39 @@ class encoder():
                     loss = self.loss_fn(logits, labels)  # Loss computation.
                     loss.backward()  # Backward pass.
                     self.optimizer.step()  # Update model parameters.
-                    train_loss.append(loss.detach().cpu().numpy())
+                    total_loss += loss.item() * labels.shape[0]
+                total_num += self.train_loader.dataset.__len__()
 
-        return np.mean(train_loss)
+        return total_loss/ total_num
 
     @torch.no_grad()
     def test_epoch(self):
         # Set evaluation mode for encoder and decoder
         self.model.eval()
-        test_loss= []
+        total_loss =0
+        total_num = 0
+
         if self.model_type == 'gnn' or self.model_type == 'gnn_pre' or self.model_type == 'gcn':
-            for i in range(0, 200):
+            for i in range(0, self.dataset_num):
                 self.prepare_dataset(i, (i + 1))
 
                 for data in self.valid_loader:
                     logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
                     loss = self.loss_fn(logits, data.y)  # Loss computation.
-                    test_loss.append(loss.detach().cpu().numpy())
+                    total_loss += loss.item() * data.num_graphs
+                total_num += self.valid_loader.dataset.__len__()
 
         elif self.model_type == 'cnn' or self.model_type == 'mlp':
-            for i in range(0, 200):
+            for i in range(0, self.dataset_num):
                 self.prepare_dataset(i, (i + 1))
 
                 for features, labels in self.valid_loader:
                     logits = self.model(features)  # Forward pass.
                     loss = self.loss_fn(logits, labels)  # Loss computation.
-                    test_loss.append(loss.detach().cpu().numpy())
+                    total_loss += loss.item() * labels.shape[0]
+                total_num += self.valid_loader.dataset.__len__()
 
-        return np.mean(test_loss)
-
+        return total_loss/ total_num
 
     def train(self):
 
@@ -352,20 +357,20 @@ class encoder():
             tactile = data[j]
             tac = np.zeros([36,36])
 
-            tac[24,18:18+15] = tactile[:15]
-            tac[25,18:18+15] = tactile[15:30]
-            tac[26,18:18+15] = tactile[30:45]
-            tac[27,18:18+15] = tactile[45:60]
+            tac[24,20:20+15] = tactile[:15]
+            tac[25,20:20+15] = tactile[15:30]
+            tac[26,20:20+15] = tactile[30:45]
+            tac[27,20:20+15] = tactile[45:60]
 
-            tac[28,19:19+13] = tactile[60:73]
-            tac[29,18+8:18+8+6] = tactile[73:79]
-            tac[30,18+8:18+8+6] = tactile[79:85]
-            tac[31,18+8:18+8+6] = tactile[85:91]
-            tac[32,18+8:18+8+6] = tactile[91:97]
+            tac[28,21:21+13] = tactile[60:73]
+            tac[29,20+8:20+8+6] = tactile[73:79]
+            tac[30,20+8:20+8+6] = tactile[79:85]
+            tac[31,20+8:20+8+6] = tactile[85:91]
+            tac[32,20+8:20+8+6] = tactile[91:97]
 
-            tac[33,18+8:18+8+5] = tactile[97:102]
-            tac[34,18+8:18+8+4] = tactile[102:106]
-            tac[35,18+8:18+8+7] = tactile[106:113]
+            tac[33,20+8:20+8+5] = tactile[97:102]
+            tac[34,20+8:20+8+4] = tactile[102:106]
+            tac[35,16+8:16+8+7] = tactile[106:113]
 
             for i in range(12):
                 tac[12-(i+1),18:18+6] = tactile[113+i*6:113+(i+1)*6]
@@ -386,7 +391,16 @@ class encoder():
                 tac[-6:,12-(i+1)] = tactile[113+432+i*6:113+432+(i+1)*6]
             for i in range(6):
                 tac[-6:,12+i] = tactile[113+432+72+i*6:113+432+72+(i+1)*6]
+
+            tac_clone = tac.copy()
+            for i in range(36):
+                tac[:,i] = tac_clone[:,35-i]
             tactile_list.append(tac)
+
+            # fig = plt.figure(figsize=(8, 8))
+            # plt.imshow(tac)
+            # plt.colorbar()
+            # plt.show()
         return np.array(tactile_list)
 
 if __name__ == "__main__":

@@ -222,6 +222,7 @@ class AllegroHandBaodingGraph(VecTask):
             self.log = {}
             self.targets_log, self.actions_log, self.joints_log, self.tactile_log, self.tactile_pos_log, self.object_pos_log, self.object_pre_log, self.obs_log = [], [], [], [], [], [], [],[]
 
+        self.success_num,self.fail_num = 0,0
     def create_sim(self):
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
@@ -371,7 +372,7 @@ class AllegroHandBaodingGraph(VecTask):
 
         shadow_hand_rb_count = self.num_shadow_hand_bodies
         object_rb_count = self.gym.get_asset_rigid_body_count(object_asset)
-        self.object_rb_handles = list(range(shadow_hand_rb_count, shadow_hand_rb_count + object_rb_count))
+        self.object_rb_handles = list(range(shadow_hand_rb_count, shadow_hand_rb_count + object_rb_count*2))
 
         for i in range(self.num_envs):
             # create env instance
@@ -481,12 +482,12 @@ class AllegroHandBaodingGraph(VecTask):
         self.goal_object_indices = to_torch(self.goal_object_indices, dtype=torch.long, device=self.device)
 
     def compute_reward(self, actions):
-        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:] = compute_hand_reward(
+        self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:],self.success_num,self.fail_num = compute_hand_reward(
             self.rew_buf, self.reset_buf, self.reset_goal_buf, self.progress_buf, self.successes, self.consecutive_successes,
             self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot,
             self.dist_reward_scale, self.rot_reward_scale, self.rot_eps, self.actions, self.action_penalty_scale,
             self.success_tolerance, self.reach_goal_bonus, self.fall_dist, self.fall_penalty,
-            self.max_consecutive_successes, self.av_factor, (self.object_type == "pen"), self.object_angle,self.object_angle_pre
+            self.max_consecutive_successes, self.av_factor, (self.object_type == "pen"), self.object_angle,self.object_angle_pre, self.success_num,self.fail_num
         )
         self.extras['consecutive_successes'] = self.consecutive_successes.mean()
         # print(self.rew_buf[0],dist_rew[0])
@@ -804,6 +805,26 @@ class AllegroHandBaodingGraph(VecTask):
         self.object_angle_pre = self.object_angle.clone()
         self.object_angle_pre[self.reset_buf == 1] = 0
 
+        # env_ids = (self.progress_buf > 10).nonzero(as_tuple=False).squeeze(-1)
+        #
+        # self.root_state_tensor[self.object_indices[env_ids*2],7] = 100
+        #
+        # print(self.root_state_tensor[self.object_indices[env_ids*2], -4])
+        #
+        # object_indices = torch.unique(torch.cat([self.object_indices[env_ids*2],self.object_indices[env_ids*2+1]
+        #                                          ]).to(torch.int32))
+        # self.gym.set_actor_root_state_tensor_indexed(self.sim,
+        #                                              gymtorch.unwrap_tensor(self.root_state_tensor),
+        #                                              gymtorch.unwrap_tensor(object_indices), len(object_indices))
+
+        force_indices = (torch.rand(self.num_envs, device=self.device) < self.random_force_prob).nonzero()
+        self.rb_forces[force_indices, self.object_rb_handles, :] = torch.randn(
+            self.rb_forces[force_indices, self.object_rb_handles, :].shape,
+            device=self.device) * self.object_rb_masses * 2
+
+        self.gym.apply_rigid_body_force_tensors(self.sim, gymtorch.unwrap_tensor(self.rb_forces), None,
+                                                gymapi.LOCAL_SPACE)
+
         if self.log_:
 
             self.actions_log.append(scale(self.actions,self.shadow_hand_dof_lower_limits[self.actuated_dof_indices], self.shadow_hand_dof_upper_limits[self.actuated_dof_indices])[0].tolist())
@@ -928,14 +949,14 @@ class AllegroHandBaodingGraph(VecTask):
 #####################################################################
 
 
-@torch.jit.script
+# @torch.jit.script
 def compute_hand_reward(
     rew_buf, reset_buf, reset_goal_buf, progress_buf, successes, consecutive_successes,
     max_episode_length: float, object_pos, object_rot, target_pos, target_rot,
     dist_reward_scale: float, rot_reward_scale: float, rot_eps: float,
     actions, action_penalty_scale: float,
     success_tolerance: float, reach_goal_bonus: float, fall_dist: float,
-    fall_penalty: float, max_consecutive_successes: int, av_factor: float, ignore_z_rot: bool, object_angle, object_angle_pre
+    fall_penalty: float, max_consecutive_successes: int, av_factor: float, ignore_z_rot: bool, object_angle, object_angle_pre, success_num,fail_num
 ):
     # Distance from the hand to the object
     angle_dist = object_angle - object_angle_pre
@@ -958,6 +979,16 @@ def compute_hand_reward(
     goal_resets_index = object_angle > 160
     goal_resets = torch.where(goal_resets_index, torch.ones_like(reset_goal_buf), reset_goal_buf)
     successes = successes + goal_resets
+
+    success_num += sum(goal_resets)
+    fail_num += sum(fall_reset)
+    fail_num += sum(progress_buf >= max_episode_length)
+    # if (success_num+fail_num) > 0:
+    #
+    #     print(success_num/(success_num+fail_num))
+
+    if (success_num+fail_num) >= 300:
+        print(success_num/(success_num+fail_num))
 
     # Success bonus: orientation is within `success_tolerance` of goal orientation
     reward = torch.where(goal_resets == 1, reward + reach_goal_bonus, reward)
@@ -982,7 +1013,7 @@ def compute_hand_reward(
 
     cons_successes = torch.where(num_resets > 0, av_factor*finished_cons_successes/num_resets + (1.0 - av_factor)*consecutive_successes, consecutive_successes)
 
-    return reward, resets, goal_resets, progress_buf, successes, cons_successes
+    return reward, resets, goal_resets, progress_buf, successes, cons_successes, success_num, fail_num
 
 @torch.jit.script
 def randomize_rotation(rand0, rand1, x_unit_tensor, y_unit_tensor):

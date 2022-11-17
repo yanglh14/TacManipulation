@@ -1,4 +1,5 @@
 import os.path
+from isaacgym.torch_utils import *
 
 import torch
 from torch.utils.data import TensorDataset
@@ -17,20 +18,23 @@ class encoder():
         # Check if the GPU is available
         self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
         print(f'Selected device: {self.device}')
-        self.dataset_num = 30
+        self.dataset_num = 50
         self.model_dir = './checkpoint_cube'
         self.if_model = False
-        self.save_dir = '../runs_cube/'
+        self.save_dir = '../runs_tac_cube/'
         self.model_type = 'gcn'
         self.channels = 32
-        self.task_name = 'ball_%s_%d'%(self.model_type,self.channels)
+        self.task_name = 'ball_%s_%d_2'%(self.model_type,self.channels)
         self.object_name = 'dataset'
-        self.num_epochs = 10
+        self.num_epochs = 30
         ### Define the loss function
         self.loss_fn = torch.nn.MSELoss()
 
+        print(self.model_type)
         ### Set the random seed for reproducible results
-        torch.manual_seed(0)
+        torch.manual_seed(2)
+        np.random.seed(2)
+
 
         ### Initialize the network
 
@@ -39,13 +43,13 @@ class encoder():
 
         else:
             if self.model_type == 'gnn':
-                self.model = GNNEncoderB(device=self.device, output_dim=3, channels = self.channels)
+                self.model = GNNEncoderB(device=self.device, output_dim=4, channels = self.channels)
             elif self.model_type == 'cnn':
-                self.model = CNNEncoder(encoded_space_dim=3)
+                self.model = CNNEncoder(encoded_space_dim=4)
             elif self.model_type == 'mlp':
-                self.model = MLPEncoder(encoded_space_dim=3)
+                self.model = MLPEncoder(encoded_space_dim=4)
             elif self.model_type == 'gcn':
-                self.model = GCNEncoder(device=self.device,output_dim=3, channels = self.channels)
+                self.model = GCNEncoder(device=self.device,output_dim=4, channels = self.channels)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=1e-05)
 
         # Move both the encoder and the decoder to the selected device
@@ -69,27 +73,32 @@ class encoder():
                 data = pickle.load(f)
             tactile_log = np.array(data['tactile']).reshape(-1,653)
             tactile_pos_log = np.array(data['tac_pose']).reshape(-1,653,3)
-            object_pos_log = np.array(data['object_pos']).reshape(-1,7)[:,:3]
-            object_pos_pre_log = np.array(data['object_pos']).reshape(-1,7)[:,:3]
+            object_pos_log = np.array(data['object_pos']).reshape(-1,7)[:,3:7]
+            object_pos_pre_log = np.array(data['object_pos']).reshape(-1,7)[:,3:7]
+
+            x, y, z = get_euler_xyz(torch.tensor(object_pos_log))
+            object_pos_log = np.array(data['object_pos']).reshape(-1,7)[:,:3] *100
+            object_pos_log = np.concatenate([object_pos_log,np.array(z%1.57).reshape(-1,1)],axis=-1)
 
             for j in range(tactile_log.shape[0]):
                 tactile = tactile_log[j]
                 object_pos = object_pos_log[j]
                 tactile_pos = tactile_pos_log[j]
                 object_pos_pre = object_pos_pre_log[j]
-                if tactile[tactile>0].shape[0] >5:
-                    tac_list.append(tactile)
-                    object_pos_list.append(object_pos)
-                    tactile_pos_list.append(tactile_pos)
-                    object_pos_pre_list.append(object_pos_pre)
+                # if tactile[tactile>0].shape[0] >5:
+
+                tac_list.append(tactile)
+                object_pos_list.append(object_pos)
+                tactile_pos_list.append(tactile_pos)
+                object_pos_pre_list.append(object_pos_pre)
 
         if self.model_type == 'cnn':
             tac_list = self.tactile_process(tac_list)
 
         tac = torch.tensor(np.array(tac_list), device=self.device, dtype=torch.float32)
         pos = torch.tensor(np.array(tactile_pos_list), device=self.device, dtype=torch.float32) *100
-        y = torch.tensor(np.array(object_pos_list), device=self.device, dtype=torch.float32) *100
-        object_pos_pre = torch.tensor(np.array(object_pos_pre_list), device=self.device, dtype=torch.float32) *100
+        y = torch.tensor(np.array(object_pos_list), device=self.device, dtype=torch.float32)
+        object_pos_pre = torch.tensor(np.array(object_pos_pre_list), device=self.device, dtype=torch.float32)
 
         # tac /= tac.max(1,keepdim=True)[0]
         batch_size = 32
@@ -241,14 +250,12 @@ class encoder():
     def test(self):
         self.visualize()
 
-        # num_epochs = 1
-        # diz_loss = {'train_loss': [], 'val_loss': []}
-        # for epoch in range(num_epochs):
-        #     for i in range(0,20):
-        #         self.prepare_dataset(i*10,(i+1)*10)
-        #         val_loss = self.test_epoch()
-        #         print('\n EPOCH {}/{} \t Index {}-{} \t val loss {}'.format(epoch + 1, num_epochs,i*10,(i+1)*10, val_loss))
-
+        # for i in range(0, 1):
+        #     self.prepare_dataset(i, (i + 1))
+        #
+        #     for data in self.valid_loader:
+        #         logits = self.model(data.x, data.pos, data.batch, data.pos_pre)  # Forward pass.
+        #         loss = self.loss_fn(logits, data.y)  # Loss computation.
 
     def visualize(self):
         tac_list = []
@@ -256,43 +263,48 @@ class encoder():
         object_pos_list = []
         object_pos_pre_list = []
 
-        for i in range(1, 5):
-            index = i * 100
-            with open(self.save_dir + self.object_name + '_%d.pkl' % index, 'rb') as f:
+        for i in range(1,2):
+            index = i *100
+            with open(self.save_dir+self.object_name+'_%d.pkl'%index,'rb') as f:
                 data = pickle.load(f)
-            tactile_log = np.array(data['tactile']).reshape(-1, 653)
-            tactile_pos_log = np.array(data['tac_pose']).reshape(-1, 653, 3)
-            object_pos_log = np.array(data['object_pos']).reshape(-1, 6)
-            object_pos_pre_log = np.array(data['object_pos_pre']).reshape(-1,6)
+            tactile_log = np.array(data['tactile']).reshape(-1,653)
+            tactile_pos_log = np.array(data['tac_pose']).reshape(-1,653,3)
+            object_pos_log = np.array(data['object_pos']).reshape(-1,7)[:,3:7]
+            object_pos_pre_log = np.array(data['object_pos']).reshape(-1,7)[:,3:7]
+
+            x, y, z = get_euler_xyz(torch.tensor(object_pos_log))
+            object_pos_log = np.array(data['object_pos']).reshape(-1,7)[:,:3] *100
+            object_pos_log = np.concatenate([object_pos_log,np.array(z%1.57).reshape(-1,1)],axis=-1)
 
             for j in range(tactile_log.shape[0]):
                 tactile = tactile_log[j]
                 object_pos = object_pos_log[j]
                 tactile_pos = tactile_pos_log[j]
                 object_pos_pre = object_pos_pre_log[j]
-
                 if tactile[tactile > 0].shape[0] > 5:
+
                     tac_list.append(tactile)
                     object_pos_list.append(object_pos)
                     tactile_pos_list.append(tactile_pos)
                     object_pos_pre_list.append(object_pos_pre)
 
         tac = torch.tensor(np.array(tac_list), device=self.device, dtype=torch.float32)
-        pos = torch.tensor(np.array(tactile_pos_list), device=self.device, dtype=torch.float32) * 100
-        y = torch.tensor(np.array(object_pos_list), device=self.device, dtype=torch.float32) * 100
-        object_pos_p = torch.tensor(np.array(object_pos_pre_list), device=self.device, dtype=torch.float32) * 100
+        pos = torch.tensor(np.array(tactile_pos_list), device=self.device, dtype=torch.float32) *100
+        y = torch.tensor(np.array(object_pos_list), device=self.device, dtype=torch.float32)
+        object_pos_pre = torch.tensor(np.array(object_pos_pre_list), device=self.device, dtype=torch.float32)
 
-        # tac /= tac.max(1,keepdim=True)[0]
         batch_size = 32
         tac = tac.view(-1, 653, 1)
 
         tactile_dataset = []
         for i in range(tac.shape[0]):
-            data = Data(x=tac[i, tac[i, :, 0] != 0, :], pos=pos[i, tac[i, :, 0] != 0, :], y=y[i].view(1, -1), pos_pre = object_pos_p[i,:].view(1,-1))
-            tactile_dataset.append(data)
+            tac[i, tac[i, :, 0] > 1, 0] = 0
+            if tac[i, tac[i, :, 0] != 0, :].shape[0] > 5:
+                data = Data(x=tac[i, tac[i, :, 0] != 0, :], pos=pos[i, tac[i, :, 0] != 0, :], y=y[i].view(1, -1),
+                            pos_pre=object_pos_pre[i, :].view(1, -1))
 
-        # m = len(tactile_dataset)
-        # tactile_dataset, val_data = random_split(tactile_dataset, [int(m * 0.8), m - int(m * 0.8)])
+                tactile_dataset.append(data)
+
         self.visua_loader = DataLoader(tactile_dataset, batch_size=batch_size)
 
         self.model.eval()
@@ -307,15 +319,14 @@ class encoder():
                 for i in range(len(logits)):
                     object_pos_pre.append(logits[i])
 
-        self.tactile_plot_sim(tac,pos,y,object_pos_pre,object_pos_p)
+        self.tactile_plot_sim(tac,pos,y,object_pos_pre)
 
-    def tactile_plot_sim(self,tactile,tactile_pos,object_pos,object_pos_pre,object_pos_p):
+    def tactile_plot_sim(self,tactile,tactile_pos,object_pos,object_pos_pre):
 
         tactile_log = np.array(tactile.cpu())[:,:,0]
         tactile_pos_log = np.array(tactile_pos.cpu())/100
         object_pre_log = np.array(object_pos_pre)/100
         object_pos_log = np.array(object_pos.cpu().detach())/100
-        object_pos_p_log = np.array(object_pos_p.cpu())/100
 
         # fig = plt.figure(figsize=(8, 8))
         # ax = fig.add_subplot(111, projection='3d')
@@ -334,11 +345,8 @@ class encoder():
             ax.scatter(x, y, z, s=(tac) * 100 + 1)
             ax.scatter(x, y, z, c='r', s=(tac) * 100)
             ax.scatter(object_pre_log[i, 0], object_pre_log[i, 1], object_pre_log[i, 2], c='g', s=6000)
-            ax.scatter(object_pre_log[i, 3], object_pre_log[i, 4], object_pre_log[i, 5], c='g', s=6000)
             ax.scatter(object_pos_log[i, 0], object_pos_log[i, 1], object_pos_log[i, 2], c='orange', s=6000)
-            ax.scatter(object_pos_log[i, 3], object_pos_log[i, 4], object_pos_log[i, 5], c='orange', s=6000)
-            ax.scatter(object_pos_p_log[i, 0], object_pos_p_log[i, 1], object_pos_p_log[i, 2], c='blue', s=6000)
-            ax.scatter(object_pos_p_log[i, 3], object_pos_p_log[i, 4], object_pos_p_log[i, 5], c='blue', s=6000)
+            print(object_pre_log[i, 3]*100,object_pos_log[i, 3]*100)
             ax.view_init(elev=45, azim=45)
             ax.set(xlim=[-0.1, 0.1], ylim=[-0.1, 0.1], zlim=[0.5, 0.6])
 

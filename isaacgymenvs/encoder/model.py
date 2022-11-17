@@ -218,7 +218,7 @@ class GCNLayer(MessagePassing):
         # Initialization of the MLP:
         # Here, the number of input features correspond to the hidden node
         # dimensionality plus point dimensionality (=3).
-        self.mlp = Sequential(Linear(in_channels, out_channels,device=device),
+        self.mlp = Sequential(Linear(in_channels+3, out_channels,device=device),
                               ReLU(),
                               Linear(out_channels, out_channels,device=device))
 
@@ -231,7 +231,7 @@ class GCNLayer(MessagePassing):
         # pos_j defines the position of neighboring nodes as shape [num_edges, 3]
         # pos_i defines the position of central nodes as shape [num_edges, 3]
 
-        input = h_j  # Compute spatial relation.
+        input = torch.cat([ h_j, pos_j], dim=-1)  # Compute spatial relation.
 
         return self.mlp(input)  # Apply our final MLP.
 

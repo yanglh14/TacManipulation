@@ -273,7 +273,7 @@ class AllegroHandTouch(VecTask):
 
         shadow_hand_start_pose = gymapi.Transform()
         shadow_hand_start_pose.p = gymapi.Vec3(*get_axis_params(0.5, self.up_axis_idx))
-        shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi / 12)
+        shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), np.pi / 36)
         # shadow_hand_start_pose.r = gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 1, 0), np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(1, 0, 0), 0.47 * np.pi) * gymapi.Quat.from_axis_angle(gymapi.Vec3(0, 0, 1), 0.25 * np.pi)
 
         object_start_pose = gymapi.Transform()
@@ -562,23 +562,23 @@ class AllegroHandTouch(VecTask):
             self.obs_buf[:, obs_end:obs_end + self.num_actions] = self.actions
 
 
-            # self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
-            # self.touch_tensor = self.touch_tensor.abs()
-            # self.touch_tensor[self.touch_tensor < 0.0005] = 0
-            # self.touch_tensor[self.progress_buf == 1, :] = 0
-            # self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
-            #
-            # self.tensor = self.touch_tensor.cpu()[0]
-            # self.tensor[self.tensor > 1] = 0
-            # import matplotlib.pyplot as plt
-            #
-            # fig = plt.figure(figsize=(8, 8))
-            # ax = fig.add_subplot(111, projection='3d')
-            # ax.scatter(self.tactile_pose.cpu()[0,:,0], self.tactile_pose.cpu()[0,:,1], self.tactile_pose.cpu()[0,:,2], s= 0.2)
-            # ax.scatter(self.tactile_pose.cpu()[0,:,0], self.tactile_pose.cpu()[0,:,1], self.tactile_pose.cpu()[0,:,2], s=self.tensor*1000, c = 'r' )
-            #
-            # print(self.tensor[self.tensor>0])
-            # plt.show()
+            self.touch_tensor = self.net_cf[:, self.sensors_handles, 2]
+            self.touch_tensor = self.touch_tensor.abs()
+            self.touch_tensor[self.touch_tensor < 0.0005] = 0
+            self.touch_tensor[self.progress_buf == 1, :] = 0
+            self.tactile_pose = self.rigid_body_states[:, self.sensors_handles, :3]
+
+            self.tensor = self.touch_tensor.cpu()[0]
+            self.tensor[self.tensor > 1] = 0
+            import matplotlib.pyplot as plt
+
+            fig = plt.figure(figsize=(8, 8))
+            ax = fig.add_subplot(111, projection='3d')
+            ax.scatter(self.tactile_pose.cpu()[0,:,0], self.tactile_pose.cpu()[0,:,1], self.tactile_pose.cpu()[0,:,2], s= 0.2)
+            ax.scatter(self.tactile_pose.cpu()[0,:,0], self.tactile_pose.cpu()[0,:,1], self.tactile_pose.cpu()[0,:,2], s=self.tensor*1000, c = 'r' )
+
+            print(self.tensor[self.tensor>0])
+            plt.show()
 
     def reset_target_pose(self, env_ids, apply_reset=False):
         rand_floats = torch_rand_float(-1.0, 1.0, (len(env_ids), 4), device=self.device)
@@ -848,10 +848,10 @@ def compute_hand_reward(
 @torch.jit.script
 def randomize_rotation(rand0, rand1, x_unit_tensor, y_unit_tensor, float):
 
-    # return quat_mul(quat_from_angle_axis(float * np.pi/2, x_unit_tensor),
-    #                 quat_from_angle_axis(float * np.pi/2 + rand1 * np.pi, y_unit_tensor))
+    return quat_mul(quat_from_angle_axis(float * np.pi/2, x_unit_tensor),
+                    quat_from_angle_axis(float * np.pi/2 + rand1 * np.pi, y_unit_tensor))
     # return quat_from_angle_axis(rand1 * np.pi, x_unit_tensor)
-    return quat_from_angle_axis(float * np.pi/2, x_unit_tensor)
+    # return quat_from_angle_axis(rand1 * np.pi/2, x_unit_tensor)
 @torch.jit.script
 def randomize_rotation_pen(rand0, rand1, max_angle, x_unit_tensor, y_unit_tensor, z_unit_tensor):
     # rot = quat_mul(quat_from_angle_axis(0.5 * np.pi + rand0 * max_angle, x_unit_tensor),
