@@ -24,7 +24,7 @@ class encoder():
         self.save_dir = '../runs_tac_cube/'
         self.model_type = 'gcn'
         self.channels = 32
-        self.task_name = 'ball_%s_%d_2'%(self.model_type,self.channels)
+        self.task_name = 'ball_%s_%d_1'%(self.model_type,self.channels)
         self.object_name = 'dataset'
         self.num_epochs = 30
         ### Define the loss function
@@ -32,8 +32,8 @@ class encoder():
 
         print(self.model_type)
         ### Set the random seed for reproducible results
-        torch.manual_seed(2)
-        np.random.seed(2)
+        torch.manual_seed(1)
+        np.random.seed(1)
 
 
         ### Initialize the network

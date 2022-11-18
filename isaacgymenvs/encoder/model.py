@@ -218,7 +218,7 @@ class GCNLayer(MessagePassing):
         # Initialization of the MLP:
         # Here, the number of input features correspond to the hidden node
         # dimensionality plus point dimensionality (=3).
-        self.mlp = Sequential(Linear(in_channels+3, out_channels,device=device),
+        self.mlp = Sequential(Linear(in_channels, out_channels,device=device),
                               ReLU(),
                               Linear(out_channels, out_channels,device=device))
 
@@ -231,7 +231,7 @@ class GCNLayer(MessagePassing):
         # pos_j defines the position of neighboring nodes as shape [num_edges, 3]
         # pos_i defines the position of central nodes as shape [num_edges, 3]
 
-        input = torch.cat([ h_j, pos_j], dim=-1)  # Compute spatial relation.
+        input = h_j  # Compute spatial relation.
 
         return self.mlp(input)  # Apply our final MLP.
 
@@ -240,7 +240,7 @@ class GCNEncoder(torch.nn.Module):
         super().__init__()
 
         torch.manual_seed(12345)
-        self.conv1 = GCNLayer(1, channels,device=device)
+        self.conv1 = GCNLayer(4, channels,device=device)
         self.conv2 = GCNLayer(channels, channels,device=device)
         self.conv3 = GCNLayer(channels, channels,device=device)
 
@@ -254,7 +254,7 @@ class GCNEncoder(torch.nn.Module):
         # order to preserve central point information.
 
         edge_index = knn_graph(pos, k=6, batch=batch, loop=True)
-        h = self.conv1(h=x, pos=pos, edge_index=edge_index)
+        h = self.conv1(h=torch.cat([x, pos], dim=-1), pos=pos, edge_index=edge_index)
         h = h.relu()
 
         edge_index = knn_graph(pos, k=6, batch=batch, loop=True)

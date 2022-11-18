@@ -6,94 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="8b8b617f-953c-4f88-8cf2-a0c15aaa8a41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/tactile/objects/cube_big.urdf" beforeDir="false" afterPath="$PROJECT_DIR$/assets/tactile/objects/cube_big.urdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_cnn_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_cnn_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_cnn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_cnn_64_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_cnn_64_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_cnn_64_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gcn_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gcn_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gcn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_16_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_16_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_16_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_64_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_64_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_gnn_64_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_mlp_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_mlp_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_mlp_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_mlp_64_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_mlp_64_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/ball_mlp_64_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/cnn_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/gcn_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/gnn_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint/mlp_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_cnn_32_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_cnn_32_encoder.pt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_cnn_32_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_cnn_32_train_loss.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_cnn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gcn_32_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gcn_32_encoder.pt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gcn_32_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gcn_32_train_loss.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gcn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_encoder.pt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_train_loss.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_cnn_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_cnn_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_cnn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_16_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_16_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_16_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_64_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_64_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_64_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_pre_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_pre_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_gnn_pre_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_mlp_32_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_mlp_32_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_data2/ball_mlp_32_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_cnn_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_cnn_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_cnn_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_gcn_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_gcn_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_gcn_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_gnn_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_gnn_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_gnn_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_mlp_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_mlp_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new/ball_mlp_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new2/ball_cnn_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new2/ball_cnn_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new2/ball_cnn_val_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new2/ball_mlp_encoder.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new2/ball_mlp_train_loss.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_new2/ball_mlp_val_loss.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_1_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_1_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_1_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_1_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_1_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_1_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_2_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_2_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_2_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_2_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_2_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_gnn_32_2_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_1_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_1_val_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_2_encoder.pt" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_2_encoder.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_2_train_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_2_train_loss.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_2_val_loss.npy" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/checkpoint_cube/ball_mlp_32_2_val_loss.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/encoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/encoder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/encoder_cube.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/encoder_cube.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model_binary.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/gnn_model_binary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/mlp_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/mlp_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/encoder/plot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/train_loss.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/encoder/val_loss.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_notask.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_notask.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_touch.py" beforeDir="false" afterPath="$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_touch.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,7 +81,7 @@
       <recent name="$PROJECT_DIR$/isaacgymenvs/tasks" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_gcn">
+  <component name="RunManager" selected="Python.encoder_cube">
     <configuration name="allegro_hand_baoding_graph" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="TacManipulation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -421,7 +347,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=64 experiment=baoding_graph_binary1 headless=True checkpoint=runs/baoding_graph_binary1/nn/baoding_graph_binary.pth task.env.touchmodel='gnn_binary'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=64 experiment=baoding_graph_binary3 headless=True checkpoint=runs/baoding_graph_binary3/nn/baoding_graph_binary.pth task.env.touchmodel='gnn_binary'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -442,7 +368,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=64 experiment=baoding_mlp1 headless=True checkpoint=runs/baoding_mlp1/nn/baoding_mlp.pth task.env.touchmodel='mlp_model'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph test=True num_envs=64 experiment=baoding_mlp3 headless=True checkpoint=runs/baoding_mlp3/nn/baoding_mlp.pth task.env.touchmodel='mlp_model'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -631,7 +557,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/isaacgymenvs/train.py" />
-      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph_binary max_iterations=10000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:2' rl_device='cuda:2' task.env.touchmodel='gnn_binary'" />
+      <option name="PARAMETERS" value="task=AllegroHandBaodingGraph num_envs=256 experiment=baoding_graph_binary max_iterations=10000 headless=True train.params.config.minibatch_size=2048 sim_device='cuda:1' rl_device='cuda:1' task.env.touchmodel='gnn_binary'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -811,14 +737,9 @@
           <option name="timeStamp" value="342" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/isaacgymenvs/encoder/plot.py</url>
-          <line>53</line>
-          <option name="timeStamp" value="364" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/isaacgymenvs/tasks/allegro_hand_baoding_graph.py</url>
-          <line>990</line>
-          <option name="timeStamp" value="367" />
+          <line>994</line>
+          <option name="timeStamp" value="376" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

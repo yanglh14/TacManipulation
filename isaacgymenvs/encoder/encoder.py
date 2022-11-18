@@ -21,7 +21,7 @@ class encoder():
         self.model_dir = './checkpoint_new'
         self.if_model = False
         self.save_dir = '../runs_tac2/'
-        self.model_type = 'cnn'
+        self.model_type = 'gcn'
         self.channels = 32
         self.task_name = 'ball_%s_%d_2'%(self.model_type,self.channels)
         self.object_name = 'dataset'
